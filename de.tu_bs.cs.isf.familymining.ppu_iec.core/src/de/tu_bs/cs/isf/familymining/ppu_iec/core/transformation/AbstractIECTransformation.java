@@ -147,9 +147,9 @@ public abstract class AbstractIECTransformation<Result, Node> implements Transfo
 		String leftLabel = container.getLeftLabel() != null ? container.getLeftLabel().trim() : null;
 		String rightLabel = container.getRightLabel() != null ? container.getRightLabel().trim() : null;
 		
-		if(leftLabel.length() > MAX_LABEL_LENGTH)
+		if (leftLabel != null && leftLabel.length() > MAX_LABEL_LENGTH)
 			leftLabel = shorten(leftLabel);
-		if(rightLabel.length() > MAX_LABEL_LENGTH)
+		if (rightLabel != null && rightLabel.length() > MAX_LABEL_LENGTH)
 			rightLabel = shorten(rightLabel);
 		
 		if (VariabilityThresholdsUtil.isMandatory(container)) {
