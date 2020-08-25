@@ -66,7 +66,12 @@ public class ConfigurationResultToFamilyModelTransformation extends AbstractIECT
 			
 			familyModel.getVariationPoints().addAll(dummyVarPointRoot.getChildren());
 			
+			// remove dummy variation point entirely 
+			for (VariationPoint varPoint : familyModel.getVariationPoints()) {
+				varPoint.setParent(null);
+			}
 			EcoreUtil.delete(dummyVarPointRoot);
+			
 			
 			return familyModel;
 		} else {
@@ -162,4 +167,5 @@ public class ConfigurationResultToFamilyModelTransformation extends AbstractIECT
 	public boolean canTransform(Object object) {
 		return object != null && object instanceof ConfigurationResultRoot;
 	}
+
 }

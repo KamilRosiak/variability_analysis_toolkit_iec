@@ -1,6 +1,6 @@
 package de.tu_bs.cs.isf.familymining.ppu_iec.core.transformation;
 
-import static de.tu_bs.cs.isf.familymining.ppu_iec.core.transformation.TransformationHelper.ifInstanceOfThen;
+import static de.tu_bs.cs.isf.e4cf.core.transform.TransformationHelper.ifInstanceOfThen;
 
 import java.util.function.BiFunction;
 
@@ -147,12 +147,12 @@ public abstract class AbstractIECTransformation<Result, Node> implements Transfo
 		String leftLabel = container.getLeftLabel() != null ? container.getLeftLabel().trim() : null;
 		String rightLabel = container.getRightLabel() != null ? container.getRightLabel().trim() : null;
 		
+		if(leftLabel.length() > MAX_LABEL_LENGTH)
+			leftLabel = shorten(leftLabel);
+		if(rightLabel.length() > MAX_LABEL_LENGTH)
+			rightLabel = shorten(rightLabel);
+		
 		if (VariabilityThresholdsUtil.isMandatory(container)) {
-			if(leftLabel.length() > MAX_LABEL_LENGTH)
-				leftLabel = leftLabel.substring(0, MAX_LABEL_LENGTH)+" ...";
-			if(rightLabel.length() > MAX_LABEL_LENGTH)
-				rightLabel = rightLabel.substring(0, MAX_LABEL_LENGTH)+" ...";
-			
 			return leftLabel != null && rightLabel != null ? leftLabel : "";				
 		} else if (VariabilityThresholdsUtil.isOptional(container)) {
 			if (leftLabel != null) {
@@ -165,6 +165,10 @@ public abstract class AbstractIECTransformation<Result, Node> implements Transfo
 		} else {
 			return PPUStringTable.VARIANT_SUBSYSTEM + " ( "+leftLabel+" / "+rightLabel+" )";	
 		}
+	}
+
+	private String shorten(String label) {
+		return label.substring(0, MAX_LABEL_LENGTH)+" ...";
 	}
 
 	protected <T extends AbstractContainer<?, MetricContainer>> String getLabel(IECAbstractOption<T> option) {
