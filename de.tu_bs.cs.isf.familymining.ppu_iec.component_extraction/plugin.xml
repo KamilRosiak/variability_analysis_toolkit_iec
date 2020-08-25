@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin>
+
+   <extension
+         id="de.tu_bs.cs.isf.familymining.ppu_iec.component_extraction.fragment"
+         point="org.eclipse.e4.workbench.model">
+      <fragment
+            uri="component_extraction.e4xmi">
+      </fragment>
+   </extension>
+   <extension
+         point="de.tu_bs.cs.isf.e4cf.graph.core.GraphHandler">
+      <handler
+            class="de.tu_bs.cs.isf.familymining.ppu_iec.component_extraction.handler.graph_view.ShowFMOnEdgeSelectionHandler"
+            id="ShowFMOnEdgeSelectionHandler">
+      </handler>
+   </extension>
+
+</plugin>
