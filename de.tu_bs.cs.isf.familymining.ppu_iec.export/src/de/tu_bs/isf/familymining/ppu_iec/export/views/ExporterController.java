@@ -89,8 +89,6 @@ public class ExporterController {
 				FMSelection selection = FMSelectionExtractors.fromTree().extract(treeBuilder.getTree());
 				
 				try {
-					System.out.println(exporter);
-				
 					exporter.export(selection, outputPath);
 					MessageDialog.openInformation(exporterView.getShell(), "Export was successful", "The PLCOpenXML was successfully exported!");
 				} catch (ClassNotFoundException | JAXBException | SAXException exception) {
