@@ -26,9 +26,6 @@ import de.tu_bs.isf.familymining.ppu_iec.export.exporter.PLCOpenXmlExporter;
 public class ExporterController {
 	
 	ServiceContainer serviceContainer;
-
-	
-	@Inject
 	private PLCOpenXmlExporter exporter;
 	
 	private ExporterView exporterView;
@@ -39,8 +36,9 @@ public class ExporterController {
 	
 	public static String cHName;
 	
-	public ExporterController(ServiceContainer serviceContainer) {
+	public ExporterController(ServiceContainer serviceContainer,PLCOpenXmlExporter exporter) {
 		this.serviceContainer = serviceContainer;
+		this.exporter = exporter;
 		initView();
 	}
 	

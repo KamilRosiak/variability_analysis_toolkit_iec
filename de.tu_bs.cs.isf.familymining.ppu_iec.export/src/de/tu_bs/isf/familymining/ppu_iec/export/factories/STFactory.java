@@ -18,6 +18,7 @@ public class STFactory {
 	 */
 	public FormattedText createST() {
 		FormattedText st = new FormattedText();
+		
 		return st;
 	}
 }
