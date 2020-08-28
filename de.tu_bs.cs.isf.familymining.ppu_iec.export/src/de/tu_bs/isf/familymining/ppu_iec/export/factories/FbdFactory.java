@@ -5,6 +5,9 @@ import javax.inject.Singleton;
 
 import org.eclipse.e4.core.di.annotations.Creatable;
 
+import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.diagram.Diagram;
+import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.diagram.DiagramType;
+import de.tu_bs.isf.familymining.ppu_iec.export.xsd_objects.Body;
 import de.tu_bs.isf.familymining.ppu_iec.export.xsd_objects.Project.ContentHeader.CoordinateInfo.Fbd;
 
 /**
@@ -27,6 +30,23 @@ public class FbdFactory {
 		Fbd fbd = new Fbd();
 		fbd.setScaling(scalingFactory.createFbdScaling());
 		return fbd;
+	}
+
+	/**
+	 * {@code <FBD>..</FBD>}
+	 * 
+	 * @param fbd
+	 */
+	public Body.FBD createFbd(Diagram fbd) {
+		if (fbd.getType() != DiagramType.FUNCTION_BLOCK_DIAGRAM) {
+			return null;
+		}
+		
+		Body.FBD fbdInstance = new Body.FBD();
+		
+		// TODO: implement fbd parsing
+		
+		return fbdInstance;
 	}
 
 }

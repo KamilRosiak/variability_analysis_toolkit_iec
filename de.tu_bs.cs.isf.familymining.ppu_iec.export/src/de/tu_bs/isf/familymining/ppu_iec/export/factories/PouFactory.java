@@ -7,8 +7,10 @@ import javax.inject.Singleton;
 
 import org.eclipse.e4.core.di.annotations.Creatable;
 
+import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Action;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.POU;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Variable;
+import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.languageelement.LanguageElement;
 import de.tu_bs.isf.familymining.ppu_iec.export.xsd_objects.PouType;
 import de.tu_bs.isf.familymining.ppu_iec.export.xsd_objects.Project.Types.Pous.Pou;
 
@@ -30,6 +32,12 @@ public class PouFactory {
 	 */
 	@Inject
 	public BodyFactory bodyFactory;
+
+	/**
+	 * {@code <action>..</action>}
+	 */
+	@Inject
+	private ActionFactory actionFactory;
 
 	/**
 	 * @param pou             Pou.
@@ -60,8 +68,21 @@ public class PouFactory {
 		pouInstance.setName(pou.getIdentifier());
 		pouInstance.setPouType(pouType);
 		pouInstance.setInterface(interfaceFactory.createInterface(localVariables, inputVariables, outputVariables));
-		pouInstance.getBody().add(bodyFactory.createBody());
+		
+		if (pou.getImplementations().isEmpty()) {
+			pouInstance.getBody().add(bodyFactory.createBody());
+		} else {
+			for (LanguageElement implementation : pou.getImplementations()) {
+				pouInstance.getBody().add(bodyFactory.createBody(implementation));
+			}			
+		}
 
+		Pou.Actions pouActionInstance = new Pou.Actions();
+		for (Action pouAction : pou.getActions()) {
+			pouActionInstance.getAction().add(actionFactory.createAction(pouAction));
+		}
+		pouInstance.setActions(pouActionInstance);
+		
 		return pouInstance;
 	}
 
