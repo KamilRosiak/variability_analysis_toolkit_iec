@@ -9,6 +9,7 @@ import org.eclipse.e4.core.di.annotations.Creatable;
 import org.w3c.dom.Element;
 
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtext.StructuredText;
+import de.tu_bs.isf.familymining.ppu_iec.export.code_gen.st.StructuredTextToStringExporter;
 import de.tu_bs.isf.familymining.ppu_iec.export.constants.XmlDataTable;
 import de.tu_bs.isf.familymining.ppu_iec.export.xsd_objects.FormattedText;
 
@@ -21,11 +22,13 @@ public class StFactory {
 
 	/**
 	 * 
+	 * Note: formatted text only accepts an object of type Element.
 	 * 
 	 * @return {@code <ST>..</ST>};
+	 * 
+	 * @see org.w3c.dom.Element
 	 */
 	public FormattedText createST(StructuredText st) {
-		// formatted text only accepts an object of type
 		DocumentBuilder docBuilder = null;
 		try {
 			docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -34,7 +37,9 @@ public class StFactory {
 			e.printStackTrace();
 		}
 		Element stElement = docBuilder.newDocument().createElement("xhtml");
-		stElement.setTextContent(st.getText());
+		
+		StructuredTextToStringExporter stExporter = new StructuredTextToStringExporter();
+		stElement.setTextContent(stExporter.apply(st));
 		stElement.setAttribute("xmlns", XmlDataTable.XHTML_NAMESPACE);
 		 
 		FormattedText stFormattedText = new FormattedText();
