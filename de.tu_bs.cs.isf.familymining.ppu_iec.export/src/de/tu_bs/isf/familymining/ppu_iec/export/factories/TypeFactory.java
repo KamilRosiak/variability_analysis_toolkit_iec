@@ -1,8 +1,11 @@
 package de.tu_bs.isf.familymining.ppu_iec.export.factories;
 
 import javax.inject.Singleton;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.e4.core.di.annotations.Creatable;
+import org.w3c.dom.Document;
 
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Variable;
 import de.tu_bs.isf.familymining.ppu_iec.export.xsd_objects.DataType;
@@ -24,18 +27,27 @@ public class TypeFactory {
 
 		DataType dataType = new DataType();
 
+		// create dummy xml document required for type setting below
+		Document doc = null;
+		try {
+			doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		switch (variable.getType()) {
 		case BOOL:
-			dataType.setBOOL(true);
+			dataType.setBOOL(doc.createElement(variable.getTypeName()));
 			break;
 		case BYTE:
-			dataType.setBYTE(true);
+			dataType.setBYTE(doc.createElement(variable.getTypeName()));
 			break;
 		case DATE:
-			dataType.setDATE(true);
+			dataType.setDATE(doc.createElement(variable.getTypeName()));
 			break;
 		case DATE_AND_TIME:
-			dataType.setANYDATE(true);
+			dataType.setANYDATE(doc.createElement(variable.getTypeName()));
 			break;
 		case DERIVED:
 			Derived derived = new Derived();
@@ -43,61 +55,61 @@ public class TypeFactory {
 			dataType.setDerived(derived);
 			break;
 		case DINT:
-			dataType.setDINT(true);
+			dataType.setDINT(doc.createElement(variable.getTypeName()));
 			break;
 		case DWORD:
-			dataType.setDWORD(true);
+			dataType.setDWORD(doc.createElement(variable.getTypeName()));
 			break;
 		case INT:
-			dataType.setINT(true);
+			dataType.setINT(doc.createElement(variable.getTypeName()));
 			break;
 		case LINT:
-			dataType.setLINT(true);
+			dataType.setLINT(doc.createElement(variable.getTypeName()));
 			break;
 		case LREAL:
-			dataType.setLREAL(true);
+			dataType.setLREAL(doc.createElement(variable.getTypeName()));
 			break;
 		case LWORD:
-			dataType.setLWORD(true);
+			dataType.setLWORD(doc.createElement(variable.getTypeName()));
 			break;
 		case REAL:
-			dataType.setREAL(true);
+			dataType.setREAL(doc.createElement(variable.getTypeName()));
 			break;
 		case SINT:
-			dataType.setSINT(true);
+			dataType.setSINT(doc.createElement(variable.getTypeName()));
 			break;
 		case STRING:
 			dataType.setString(new DataType.String());
 			break;
 		case TIME:
-			dataType.setTIME(true);
+			dataType.setTIME(doc.createElement(variable.getTypeName()));
 			break;
 		case TIME_OF_DAY:
-			dataType.setTIME(true);
+			dataType.setTIME(doc.createElement(variable.getTypeName()));
 			break;
 		case TOD:
-			dataType.setTOD(true);
+			dataType.setTOD(doc.createElement(variable.getTypeName()));
 			break;
 		case UDINT:
-			dataType.setUDINT(true);
+			dataType.setUDINT(doc.createElement(variable.getTypeName()));
 			break;
 		case UINT:
-			dataType.setUINT(true);
+			dataType.setUINT(doc.createElement(variable.getTypeName()));
 			break;
 		case UNSET:
-			dataType.setANY(true);
+			dataType.setANY(doc.createElement(variable.getTypeName()));
 			break;
 		case USINT:
-			dataType.setUSINT(true);
+			dataType.setUSINT(doc.createElement(variable.getTypeName()));
 			break;
 		case WORD:
-			dataType.setWORD(true);
+			dataType.setWORD(doc.createElement(variable.getTypeName()));
 			break;
 		case WSTRING:
 			dataType.setWstring(new Wstring());
 			break;
 		default:
-			dataType.setANY(true);
+			dataType.setANY(doc.createElement(variable.getTypeName()));
 			break;
 		}
 

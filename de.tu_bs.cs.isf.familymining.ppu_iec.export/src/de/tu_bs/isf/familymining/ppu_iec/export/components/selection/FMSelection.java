@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.POU;
+import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Struct;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Variable;
 import de.tu_bs.isf.familymining.ppu_iec.export.exporter.PLCOpenXmlExporter;
 
@@ -19,6 +20,7 @@ public class FMSelection {
 
 	private final List<POU> pous = new LinkedList<>();
 	private final List<Variable> globalVariables = new LinkedList<>();
+	private final List<Struct> globalDataTypes = new LinkedList<>();
 	private final Map<POU, List<Variable>> localVariableMap = new HashMap<>();
 	private final Map<POU, List<Variable>> inputVariableMap = new HashMap<>();
 	private final Map<POU, List<Variable>> outputVariableMap = new HashMap<>();
@@ -48,6 +50,10 @@ public class FMSelection {
 	 */
 	public List<Variable> getGlobalVariables() {
 		return globalVariables;
+	}
+	
+	public List<Struct> getGlobalDataTypes() {
+		return globalDataTypes;
 	}
 
 	/**

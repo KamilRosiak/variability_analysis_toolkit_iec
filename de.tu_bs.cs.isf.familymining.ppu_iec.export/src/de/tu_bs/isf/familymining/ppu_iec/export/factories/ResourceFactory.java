@@ -46,6 +46,12 @@ public class ResourceFactory {
 	public PouFactory pouFactory;
 
 	/**
+	 * {@code <dataType>..<dataType>}
+	 */
+	@Inject
+	public DataTypeFactory dataTypeFactory;
+	
+	/**
 	 * @param scenarioName Name attribute in content header.
 	 * @param selection    Selected tree items.
 	 * @return {@code <resource>..</resource>}.
@@ -63,6 +69,8 @@ public class ResourceFactory {
 							selection.getOutputVariables(pou)),
 					XmlDataTable.POU_DATA, XmlDataTable.HANDLE_UNKNOWN_IMPLEMENTATION));
 		}
+		
+//		dataFactory.createData( dataTypeFactory., XmlDataTable.DATA_TYPE_DATA, XmlDataTable.HANDLE_UNKNOWN_IMPLEMENTATION)
 
 		resource.setAddData(addDataFactory.createAddData(dataList));
 		return resource;
