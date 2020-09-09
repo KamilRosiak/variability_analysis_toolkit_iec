@@ -41,12 +41,15 @@
       <plugin id="de.tu_bs.cs.isf.e4cf.core.compare.parts.detail_view"/>
       <plugin id="de.tu_bs.cs.isf.e4cf.core.patch_engine"/>
       <plugin id="de.tu_bs.cs.isf.e4cf.family_model_view.prototype"/>
+      <plugin id="de.tu_bs.cs.isf.e4cf.featuremodel.configuration"/>
+      <plugin id="de.tu_bs.cs.isf.e4cf.featuremodel.constraint_view"/>
       <plugin id="de.tu_bs.cs.isf.e4cf.featuremodel.core"/>
       <plugin id="de.tu_bs.cs.isf.e4cf.featuremodel.model"/>
       <plugin id="de.tu_bs.cs.isf.e4cf.graph.core"/>
       <plugin id="de.tu_bs.cs.isf.e4cf.graph.model"/>
       <plugin id="de.tu_bs.cs.isf.e4cf.parser"/>
       <plugin id="de.tu_bs.cs.isf.e4cf.parser.antlr"/>
+      <plugin id="de.tu_bs.cs.isf.e4cf.parts.consol_view"/>
       <plugin id="de.tu_bs.cs.isf.e4cf.parts.project_explorer"/>
       <plugin id="de.tu_bs.cs.isf.familymining.ppu_iec.component_extraction"/>
       <plugin id="de.tu_bs.cs.isf.familymining.ppu_iec.core"/>
@@ -120,6 +123,7 @@
       <plugin id="org.eclipse.e4.ui.workbench3"/>
       <plugin id="org.eclipse.emf.common"/>
       <plugin id="org.eclipse.emf.common.ui"/>
+      <plugin id="org.eclipse.emf.compare"/>
       <plugin id="org.eclipse.emf.diffmerge"/>
       <plugin id="org.eclipse.emf.diffmerge.structures"/>
       <plugin id="org.eclipse.emf.diffmerge.ui"/>
