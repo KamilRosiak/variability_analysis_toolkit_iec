@@ -25,7 +25,12 @@ public class XmlDataTable {
 	public final static String PROJECT_INFORMATION_DATA = "http://www.3s-software.com/plcopenxml/projectinformation";
 	public final static String APPLICATION_DATA = "http://www.3s-software.com/plcopenxml/application";
 	public final static String POU_DATA = "http://www.3s-software.com/plcopenxml/pou";
-
+	public final static String DATA_TYPE_DATA = "http://www.3s-software.com/plcopenxml/datatype";
 	
+	//namespace
+	public final static String XHTML_NAMESPACE = "http://www.w3.org/1999/xhtml";
+
+	//vars
+	public final static String GLOBAL_VARS_NAME = "GVL";
 	
 }

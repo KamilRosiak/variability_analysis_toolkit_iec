@@ -884,7 +884,7 @@ public class CompareEngine implements Runnable {
 	/**
 	 * This method compares Function Blocks with FDBImplAttributes and adds the results to given container.
 	 */
-	private void compareFBDElement(FBDElement first , FBDElement second , DiagramElementImplContainer container) {
+	private void compareFBDElement(FBDElement first, FBDElement second, DiagramElementImplContainer container) {
 		//Compares nested ST implementation
 		if(container.getMetric().isFBDSTCompare()) {
 			if(first instanceof ExecutionBlock && second instanceof ExecutionBlock) {
@@ -894,15 +894,6 @@ public class CompareEngine implements Runnable {
 				LanguageImplementationOption<?> nestedSTImpl = compareSTImpl(firstST.getStatements(), secondST.getStatements(), container.getMetric());
 				container.setImplOption(nestedSTImpl);
 			}	
-		}
-		for(AbstractFBDImplAttribute fbdAttr : container.getMetric().getFBDImplAttributes()) {
-			if(fbdAttr.isEnabled()) {
-				container.setCompared(true);
-				ResultElement<DiagramElement> ldResult = fbdAttr.compare(first, second);
-				if(ldResult != null) {
-					container.addResult(ldResult);
-				}
-			}
 		}
 		for(AbstractFBDImplAttribute fbdAttr : container.getMetric().getFBDImplAttributes()) {
 			if(fbdAttr.isEnabled()) {

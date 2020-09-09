@@ -39,7 +39,7 @@ public class CoordinateInfoFactory {
 		CoordinateInfo coordinateInfo = new CoordinateInfo();
 		coordinateInfo.setFbd(fbdFactory.createFbd());
 		coordinateInfo.setLd(ldFactory.createLd());
-		coordinateInfo.setSfc(sfcFactory.createSfc());
+		coordinateInfo.setSfc(sfcFactory.createSfcInfo());
 		return coordinateInfo;
 	}
 
