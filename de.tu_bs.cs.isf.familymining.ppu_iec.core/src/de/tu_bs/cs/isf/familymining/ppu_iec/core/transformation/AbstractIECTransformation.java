@@ -167,8 +167,12 @@ public abstract class AbstractIECTransformation<Result, Node> implements Transfo
 		}
 	}
 
-	private String shorten(String label) {
-		return label.substring(0, MAX_LABEL_LENGTH)+" ...";
+	protected String shorten(String label) {
+		if (label.length() > MAX_LABEL_LENGTH) {
+			return label.substring(0, MAX_LABEL_LENGTH)+" ...";			
+		} else {
+			return label;
+		}
 	}
 
 	protected <T extends AbstractContainer<?, MetricContainer>> String getLabel(IECAbstractOption<T> option) {

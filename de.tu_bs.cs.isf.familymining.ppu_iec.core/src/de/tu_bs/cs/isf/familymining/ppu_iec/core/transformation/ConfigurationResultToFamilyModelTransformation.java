@@ -87,14 +87,14 @@ public class ConfigurationResultToFamilyModelTransformation extends AbstractIECT
 		T firstArtefact = container.getFirst();
 		if (firstArtefact != null) {
 			Variant firstOrigin = getOrigin(firstArtefact);
-			VariantArtefact firstVarArtefact = fmBuilder.createVariantArtefact(container.getLeftLabel(), toArray(firstArtefact), toArray(firstOrigin));
+			VariantArtefact firstVarArtefact = fmBuilder.createVariantArtefact(shorten(container.getLeftLabel()), toArray(firstArtefact), toArray(firstOrigin));
 			varArtefacts.add(firstVarArtefact);
 		}
 		
 		T secondArtefact = container.getSecond();
 		if (secondArtefact != null) {
 			Variant secondOrigin = getOrigin(secondArtefact);
-			VariantArtefact secondVarArtefact = fmBuilder.createVariantArtefact(container.getRightLabel(), toArray(secondArtefact), toArray(secondOrigin));
+			VariantArtefact secondVarArtefact = fmBuilder.createVariantArtefact(shorten(container.getRightLabel()), toArray(secondArtefact), toArray(secondOrigin));
 			varArtefacts.add(secondVarArtefact);
 		}
 		

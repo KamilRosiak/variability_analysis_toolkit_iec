@@ -4,6 +4,7 @@ Bundle-Name: CompareEngine
 Bundle-SymbolicName: de.tu_bs.cs.isf.familymining.ppu_iec.core;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Export-Package: de.tu_bs.cs.isf.familymining.ppu_iec.core,
+ de.tu_bs.cs.isf.familymining.ppu_iec.core.code_gen.st,
  de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.attributes.action,
  de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.attributes.empty,
  de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.attributes.language.sequential_function_chart,
@@ -53,14 +54,14 @@ Require-Bundle: org.eclipse.e4.core.di,
  org.eclipse.emf.common,
  de.tu_bs.cs.isf.e4cf.core,
  de.tu_bs.cs.isf.e4cf.core.compare,
- de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel,
  de.tu_bs.cs.isf.e4cf.EMFModelLoader,
  de.tu_bs.cs.isf.e4cf.core.compare.parts.attribute_manager,
  de.tu_bs.cs.isf.e4cf.featuremodel.core,
  de.tu_bs.cs.isf.e4cf.featuremodel.model,
  de.tu_bs.cs.isf.e4cf.family_model_view.prototype,
- de.tu_bs.cs.isf.familymining.ppu_iec.core,
  de.tu_bs.cs.isf.e4cf.core.compare.parts.detail_view,
- de.tu_bs.cs.isf.e4cf.parts.project_explorer
+ de.tu_bs.cs.isf.e4cf.parts.project_explorer,
+ de.tu_bs.cs.isf.e4cf.solution,
+ de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Automatic-Module-Name: de.tu_bs.cs.isf.familymining.ppu_iec.rcp_e4.algorithm.CompareEngine

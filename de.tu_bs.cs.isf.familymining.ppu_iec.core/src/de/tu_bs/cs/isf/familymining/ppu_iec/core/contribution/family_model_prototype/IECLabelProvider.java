@@ -1,6 +1,8 @@
 package de.tu_bs.cs.isf.familymining.ppu_iec.core.contribution.family_model_prototype;
 
+import de.tu_bs.cs.isf.e4cf.core.transform.Transformation;
 import de.tu_bs.cs.isf.e4cf.family_model_view.prototype.LabelProvider;
+import de.tu_bs.cs.isf.familymining.ppu_iec.core.code_gen.st.StructuredTextToStringExporter;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Action;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.ArrayVariable;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Configuration;
@@ -36,6 +38,8 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtext.Struc
 
 public class IECLabelProvider implements LabelProvider {
 
+	private Transformation<String> STConverter = new StructuredTextToStringExporter();
+	
 	public IECLabelProvider() {
 		
 	}
@@ -124,17 +128,13 @@ public class IECLabelProvider implements LabelProvider {
 		// ST
 		if (object instanceof StructuredText) {
 			return "Implementation: ST("+((StructuredText) object).getLabel()+")";
-		} else if (object instanceof Case) {
-			String text = ((Case) object).getText();
-			return text.substring(0, text.indexOf("\n")).trim();
-		} else if (object instanceof ConditionalBlock) {
-			String text = ((ConditionalBlock) object).getText();
-			return text.substring(0, text.indexOf("\n")).trim();
-		} else if (object instanceof CaseBlock) {
-			String text = ((CaseBlock) object).getText();
-			return text.substring(0, text.indexOf("\n")).trim();
 		} else if (object instanceof Statement) {
-			return ((Statement) object).getText(); 
+			String text = STConverter.apply(object);
+			int cutIndex = text.indexOf("\n");
+			if (cutIndex < 0) {
+				cutIndex = text.length();
+			}
+			return text.substring(0, cutIndex).trim();
 		}
 		
 		return "<no label>";

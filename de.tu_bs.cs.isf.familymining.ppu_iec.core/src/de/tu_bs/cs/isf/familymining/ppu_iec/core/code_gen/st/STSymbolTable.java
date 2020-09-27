@@ -1,4 +1,4 @@
-package de.tu_bs.isf.familymining.ppu_iec.export.code_gen.st;
+package de.tu_bs.cs.isf.familymining.ppu_iec.core.code_gen.st;
 
 public class STSymbolTable {
 

@@ -13,7 +13,7 @@ import org.w3c.dom.Element;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.ArrayVariable;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Struct;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Variable;
-import de.tu_bs.isf.familymining.ppu_iec.export.code_gen.st.ExpressionToStringExporter;
+import de.tu_bs.cs.isf.familymining.ppu_iec.core.code_gen.st.ExpressionToStringExporter;
 
 /**
  * {@code <dataType>..</dataType>}
