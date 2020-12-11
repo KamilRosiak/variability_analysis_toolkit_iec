@@ -21,3 +21,6 @@ build
 
 # ignore bin files
 bin/
+
+target/
+

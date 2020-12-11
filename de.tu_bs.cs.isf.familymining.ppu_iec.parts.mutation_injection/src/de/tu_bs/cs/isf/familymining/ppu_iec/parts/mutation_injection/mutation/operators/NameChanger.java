@@ -16,12 +16,10 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.MutationCon
 public class NameChanger implements Mutation {
 
 	private final int maxSymbolsMutations;
-	private final int nameLength;
 
 
-	public NameChanger(int maxSymbolsMutations, int generatedNameLength) {
+	public NameChanger(int maxSymbolsMutations) {
 		this.maxSymbolsMutations = maxSymbolsMutations;
-		this.nameLength = generatedNameLength;
 	}
 	
 	@Override
@@ -80,7 +78,7 @@ public class NameChanger implements Mutation {
 	private String generateName(String name) {
 		String generatedName = "";
 		do {
-			generatedName = RandomStringUtils.randomAlphanumeric(nameLength);
+			generatedName = RandomStringUtils.randomAlphanumeric(name.length());
 		} while (generatedName.equalsIgnoreCase(name));
 		return generatedName;
 	}

@@ -28,7 +28,7 @@ public class NumberChanger implements Mutation {
 	@Override
 	public MutationContext apply(MutationContext ctx) {
 		int symbolMutationCount = 0;
-		Set<EAttribute> exclusionList = new TreeSet<>();
+		Set<Number> exclusionList = new TreeSet<>();
 		
 		List<EObject> randomized = new ArrayList<>(ctx.getCtxObjects());
 		Collections.shuffle(randomized);
@@ -44,7 +44,7 @@ public class NumberChanger implements Mutation {
 				
 				Number newValue = generateNumber(oldValue);
 				candidate.eSet(attr, newValue);
-				exclusionList.add(attr);
+				exclusionList.add(newValue);
 				
 				symbolMutationCount++;
 			}
@@ -61,7 +61,7 @@ public class NumberChanger implements Mutation {
 	private Number generateNumber(Number x) {
 		Number number = 0;
 		do {
-			number = Double.parseDouble(RandomStringUtils.randomNumeric(generatedDigitLength));
+			number = Integer.parseInt(RandomStringUtils.randomNumeric(generatedDigitLength));
 		} while (number.equals(x));
 		return number;
 	}
@@ -72,10 +72,10 @@ public class NumberChanger implements Mutation {
 	 * @param exclusions set of names excluded from scan
 	 * @return
 	 */
-	private <T> List<EAttribute> scanForNumberAttributes(EObject eobject, Set<EAttribute> exclusions) {
+	private <T> List<EAttribute> scanForNumberAttributes(EObject eobject, Set<Number> exclusions) {
 		List<EAttribute> attributes = new ArrayList<>();
 		for (EAttribute attr : eobject.eClass().getEAllAttributes()) {
-			if (eobject.eGet(attr) instanceof Number && !exclusions.contains(attr)) {
+			if (eobject.eGet(attr) instanceof Number && !exclusions.contains(eobject.eGet(attr))) {
 				attributes.add(attr);
 			}
 		}

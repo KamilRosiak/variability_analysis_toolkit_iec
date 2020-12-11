@@ -14,11 +14,10 @@ public class Type2Mutator extends RandomMutator {
 	
 	private static final int MAX_AFFECTED_SYMBOLS = 3;
 	
-	private static final int GENERATED_NAME_LENGTH = 10;
 	private static final int GENERATED_DIGIT_LENGTH = 3;
 	
 	private static final List<Mutation> TYPE2_MUTATIONS = Arrays.asList(
-			new NameChanger(MAX_AFFECTED_SYMBOLS, GENERATED_NAME_LENGTH),
+			new NameChanger(MAX_AFFECTED_SYMBOLS),
 			new EnumChanger(MAX_AFFECTED_SYMBOLS),
 			new NumberChanger(MAX_AFFECTED_SYMBOLS, GENERATED_DIGIT_LENGTH)
 			);

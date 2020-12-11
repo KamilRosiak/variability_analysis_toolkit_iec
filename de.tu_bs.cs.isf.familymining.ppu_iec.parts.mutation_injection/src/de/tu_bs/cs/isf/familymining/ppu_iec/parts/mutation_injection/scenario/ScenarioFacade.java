@@ -33,7 +33,7 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.rcp_e4.EMFModelLoader.impl.EMFModelL
 @Creatable
 public class ScenarioFacade {
 
-	private static final String FILE_EXT = ".project";
+	private static final String FILE_EXT = "project";
 	private static final String MUTATION_DIR_NAME = "MutationInjection";
 	
 	@Inject
@@ -63,7 +63,7 @@ public class ScenarioFacade {
 		FileTreeElement mutationDir = mutationDirOpt.orElse(root.create(new CreateSubdirectory(MUTATION_DIR_NAME)));
 		
 		scenario.getResources().get(0).setName(name);
-		EMFModelLoader.save(scenario, FILE_EXT, mutationDir.getAbsolutePath(), FILE_EXT);
+		EMFModelLoader.save(scenario, FILE_EXT, mutationDir.getAbsolutePath()+"/"+name, FILE_EXT);
 	}
 	
 	public String getMutantDirectoryName() {

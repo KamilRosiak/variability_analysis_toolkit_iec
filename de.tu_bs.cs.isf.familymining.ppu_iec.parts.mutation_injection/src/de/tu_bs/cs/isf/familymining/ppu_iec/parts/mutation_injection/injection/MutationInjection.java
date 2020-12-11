@@ -6,7 +6,6 @@ import java.util.Optional;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.eclipse.e4.core.di.annotations.Creatable;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -14,8 +13,11 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.MutationContext;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.Mutator;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.scenario.ScenarioFacade;
+import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Action;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Configuration;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.POU;
+import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtext.Statement;
+import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtextexpression.Expression;
 
 
 public class MutationInjection {
@@ -57,7 +59,13 @@ public class MutationInjection {
 			if (eobject instanceof POU) {
 				MutationContext ctx = factory.createFromPOU((POU) eobject);
 				mutator.mutate(ctx);
-			}
+			} else if (eobject instanceof Action) {
+				MutationContext ctx = factory.createFromAction((Action) eobject);
+				mutator.mutate(ctx);
+			} else if (eobject instanceof Expression) {
+				MutationContext ctx = factory.createFromSTExpression((Expression) eobject);
+				mutator.mutate(ctx);
+			} 
 		}
 		
 		System.out.println(String.format("Scenario mutatant \"%s\" stored as \"%s\" in directory %s.", scenarioName, scenarioName+mutantPostfix, scenarioFacade.getMutantDirectoryName()));
