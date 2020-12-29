@@ -16,14 +16,13 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.scenario.Sc
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Action;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Configuration;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.POU;
-import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtext.Statement;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtextexpression.Expression;
 
 
 public class MutationInjection {
 
 	@Inject
-	@Named("type2")
+	@Named("type2Mutator")
 	private Mutator mutator;
 	
 	@Inject

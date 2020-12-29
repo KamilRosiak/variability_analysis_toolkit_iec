@@ -6,12 +6,19 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.eclipse.e4.core.di.annotations.Creatable;
-import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import de.tu_bs.cs.isf.e4cf.core.file_structure.FileTreeElement;
 import de.tu_bs.cs.isf.e4cf.core.file_structure.WorkspaceFileSystem;
@@ -39,30 +46,19 @@ public class ScenarioFacade {
 	@Inject
 	WorkspaceFileSystem fs;
 	
-	Map<String, Configuration> scenarioByName = new HashMap<>(); 
-	
-	@PostConstruct
-	public void setupScenarios() {
-		Directory root = fs.getWorkspaceDirectory();
-		TreeVisitor scenarioExtractor = new ScenarioExtractor();
-		Iterator<FileTreeElement> it = new DepthFirstTreeIterator(root);
-		while (it.hasNext()) {
-			it.next().accept(scenarioExtractor);
-		}
-	}
+	Map<String, Configuration> scenarioCache = new HashMap<>(); 
 	
 	public Optional<Configuration> loadScenario(String name) {
-		return Optional.ofNullable(scenarioByName.get(name));
+		Configuration config = scenarioCache.computeIfAbsent(name, (scenarioName) -> findScenario(scenarioName));
+		return Optional.ofNullable(config);
 	}
-	
-	
+
 	public void saveScenario(String name, Configuration scenario) throws IOException {
 		// ensure the mutation directory is available
 		Directory root = fs.getWorkspaceDirectory();
 		Optional<FileTreeElement> mutationDirOpt = root.getChildren().stream().filter(dir -> dir.isDirectory() && dir.getAbsolutePath().endsWith(MUTATION_DIR_NAME)).findAny();
 		FileTreeElement mutationDir = mutationDirOpt.orElse(root.create(new CreateSubdirectory(MUTATION_DIR_NAME)));
 		
-		scenario.getResources().get(0).setName(name);
 		EMFModelLoader.save(scenario, FILE_EXT, mutationDir.getAbsolutePath()+"/"+name, FILE_EXT);
 	}
 	
@@ -70,22 +66,63 @@ public class ScenarioFacade {
 		return MUTATION_DIR_NAME;
 	}
 	
-	private class ScenarioExtractor implements TreeVisitor {
+	private Configuration findScenario(String name) {
+		Directory root = fs.getWorkspaceDirectory();
+		ScenarioFinder scenarioFinder = new ScenarioFinder(name);
+		Iterator<FileTreeElement> it = new DepthFirstTreeIterator(root);
+		while (it.hasNext()) {
+			it.next().accept(scenarioFinder);
+		}		
+		return scenarioFinder.getScenario();
+	}
+	
+	private class ScenarioFinder implements TreeVisitor {
 
+		private String targetName;
+		private DocumentBuilder docBuilder;
+		private Configuration foundScenario;
+		
+		public ScenarioFinder(String scenarioName) {
+			this.targetName = scenarioName;
+			
+			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+			try {
+				docBuilder = docBuilderFactory.newDocumentBuilder();
+			} catch (ParserConfigurationException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		@Override
 		public void visit(File file) {
-			try {
-				Configuration sc = (Configuration) EMFModelLoader.load(file.getAbsolutePath(), file.getExtension());
-				String scenarioName = sc.getResources().get(0).getName();
-				scenarioByName.putIfAbsent(scenarioName, EcoreUtil.copy(sc));
-			} catch (Exception e) {
-				 
+			if (file.getAbsolutePath().endsWith(FILE_EXT)) {
+				Document doc;
+				try {
+					doc = docBuilder.parse(file.getAbsolutePath());
+					XPath xpath = XPathFactory.newInstance().newXPath();
+					String pathExpression = "string(/Configuration/resources[1]/@name)";
+				
+					String scenarioName = (String) xpath.compile(pathExpression).evaluate(doc, XPathConstants.STRING);						
+					if (scenarioName.equals(targetName)) {
+						Configuration sc = (Configuration) EMFModelLoader.load(file.getAbsolutePath(), file.getExtension());
+						foundScenario = sc;						
+					}
+				} catch (SAXException | IOException e1) {
+					e1.printStackTrace(); // doc builder
+				} catch (XPathExpressionException e) {
+					e.printStackTrace(); // xpath parser
+				}
+				
 			}
 		}
 
 		@Override
 		public void visit(Directory directory) {
 			
+		}
+		
+		public Configuration getScenario() {
+			return foundScenario;
 		}
 		
 	}

@@ -1,5 +1,7 @@
 package de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators;
 
+import static de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.MutationParameters.NAME_MAX_MUTATIONS;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -7,19 +9,24 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.lang3.RandomStringUtils;
+import org.eclipse.e4.core.di.extensions.Preference;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.MutationContext;
 
+
+
 public class NameChanger implements Mutation {
 
-	private final int maxSymbolsMutations;
+	private int maxSymbolsMutations;
 
-
-	public NameChanger(int maxSymbolsMutations) {
-		this.maxSymbolsMutations = maxSymbolsMutations;
+	@PostConstruct
+	public void postConstruct(@Preference(nodePath = MUTATION_PREF, value = NAME_MAX_MUTATIONS) int maxSymbolsMutations) { 
+		this.maxSymbolsMutations = maxSymbolsMutations;	
 	}
 	
 	@Override

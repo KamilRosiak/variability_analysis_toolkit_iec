@@ -1,5 +1,7 @@
 package de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators;
 
+import static de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.MutationParameters.ENUM_MAX_MUTATIONS;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -9,20 +11,23 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Stream;
 
+import javax.annotation.PostConstruct;
+
+import org.eclipse.e4.core.di.extensions.Preference;
 import org.eclipse.emf.common.util.Enumerator;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EEnum;
-import org.eclipse.emf.ecore.EEnumLiteral;
 import org.eclipse.emf.ecore.EObject;
 
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.MutationContext;
 
 public class EnumChanger implements Mutation {
 
-	private final int maxSymbolsMutations;
-	
-	public EnumChanger(int maxSymbolsMutations) {
-		this.maxSymbolsMutations = maxSymbolsMutations;
+	private int maxSymbolsMutations;
+
+	@PostConstruct
+	public void postConstruct(@Preference(nodePath = MUTATION_PREF, value = ENUM_MAX_MUTATIONS) int maxSymbolsMutations) { 
+		this.maxSymbolsMutations = maxSymbolsMutations;	
 	}
 	
 	@Override
