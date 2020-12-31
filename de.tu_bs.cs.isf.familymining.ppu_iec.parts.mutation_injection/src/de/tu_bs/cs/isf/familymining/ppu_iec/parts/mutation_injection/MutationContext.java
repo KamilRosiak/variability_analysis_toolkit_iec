@@ -1,8 +1,10 @@
 package de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 
 public class MutationContext {
 
@@ -17,14 +19,6 @@ public class MutationContext {
 	}
 
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((ctxObjects == null) ? 0 : ctxObjects.hashCode());
-		return result;
-	}
-
-	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -36,9 +30,21 @@ public class MutationContext {
 		if (ctxObjects == null) {
 			if (other.ctxObjects != null)
 				return false;
-		} else if (!ctxObjects.equals(other.ctxObjects))
+		} else if (!EcoreUtil.equals(ctxObjects, other.ctxObjects))
 			return false;
 		return true;
 	}
-	
+
+	/**
+	 * Deep copy of mutation context.<br><br>
+	 * <b>Note</b>: copies the entire containment tree of eobjects.
+	 */
+	@Override
+	public MutationContext clone() {
+		MutationContext clone = new MutationContext();
+		clone.setCtxObjects(ctxObjects.stream().map(EcoreUtil::copy).collect(Collectors.toList()));
+
+		return clone;
+	}
+
 }

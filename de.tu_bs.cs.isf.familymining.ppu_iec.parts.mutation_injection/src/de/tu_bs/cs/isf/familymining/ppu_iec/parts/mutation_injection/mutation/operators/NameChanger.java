@@ -18,26 +18,24 @@ import org.eclipse.emf.ecore.EObject;
 
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.MutationContext;
 
-
-
 public class NameChanger implements Mutation {
 
 	private int maxSymbolsMutations;
 
 	@PostConstruct
-	public void postConstruct(@Preference(nodePath = MUTATION_PREF, value = NAME_MAX_MUTATIONS) int maxSymbolsMutations) { 
-		this.maxSymbolsMutations = maxSymbolsMutations;	
+	public void postConstruct(
+			@Preference(nodePath = MUTATION_PREF, value = NAME_MAX_MUTATIONS) int maxSymbolsMutations) {
+		this.maxSymbolsMutations = maxSymbolsMutations;
 	}
-	
+
 	@Override
 	public MutationContext apply(MutationContext ctx) {
 		int symbolMutationCount = 0;
 		Set<String> exclusionList = new TreeSet<>();
-		
+
 		List<EObject> randomized = new ArrayList<>(ctx.getCtxObjects());
 		Collections.shuffle(randomized);
-		
-		
+
 		Iterator<EObject> it = randomized.iterator();
 		while (it.hasNext() && symbolMutationCount < maxSymbolsMutations) {
 			EObject candidate = it.next();
@@ -45,13 +43,13 @@ public class NameChanger implements Mutation {
 			if (!stringAttrs.isEmpty()) {
 				EAttribute attr = stringAttrs.get(0);
 				String oldValue = (String) candidate.eGet(attr);
-				
+
 				String newValue = generateName(oldValue);
 				candidate.eSet(attr, newValue);
 
 				exclusionList.add(newValue);
-				replaceOccurrences(oldValue, newValue, ctx);
-				
+				//replaceOccurrences(oldValue, newValue, ctx);
+
 				symbolMutationCount++;
 			}
 		}
@@ -85,14 +83,14 @@ public class NameChanger implements Mutation {
 	private String generateName(String name) {
 		String generatedName = "";
 		do {
-			generatedName = RandomStringUtils.randomAlphanumeric(name.length());
+			generatedName = RandomStringUtils.randomAlphanumeric(name.length() != 0 ? name.length() : 1);
 		} while (generatedName.equalsIgnoreCase(name));
 		return generatedName;
 	}
-	
+
 	/**
 	 * 
-	 * @param eobject source object for attribute scanning
+	 * @param eobject    source object for attribute scanning
 	 * @param exclusions set of names excluded from scan
 	 * @return
 	 */

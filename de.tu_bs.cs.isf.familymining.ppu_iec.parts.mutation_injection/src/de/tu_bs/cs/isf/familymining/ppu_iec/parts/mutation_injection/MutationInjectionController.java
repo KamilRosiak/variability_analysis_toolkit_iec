@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.extensions.Preference;
+import org.osgi.service.prefs.BackingStoreException;
 
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection.MutationInjection;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection.SingleContextFactory;
@@ -46,6 +47,12 @@ public class MutationInjectionController {
 		prefs.putInt(NUMBER_GENERATED_DIGIT_LENGTH, prefs.getInt(NUMBER_GENERATED_DIGIT_LENGTH, NUMBER_GENERATED_DIGIT_LENGTH_DEFAULT));
 		NumberChanger numberChanger = ContextInjectionFactory.make(NumberChanger.class, context);
 		context.set(NumberChanger.class, numberChanger);
+		
+		try {
+			prefs.flush();
+		} catch (BackingStoreException e) {
+			e.printStackTrace();
+		}
 		
 		// mutators and supporting factories
 		Type2Mutator type2Mutator = ContextInjectionFactory.make(Type2Mutator.class, context);

@@ -23,23 +23,22 @@ public class NumberChanger implements Mutation {
 	private int maxSymbolsMutations;
 	private int generatedDigitLength;
 
-
 	@PostConstruct
-	public void postConstruct(@Preference(nodePath = MUTATION_PREF, value = NUMBER_MAX_MUTATIONS) int maxSymbolsMutations,
-			@Preference(nodePath = MUTATION_PREF, value = NUMBER_GENERATED_DIGIT_LENGTH) int generatedDigitLength) { 
+	public void postConstruct(
+			@Preference(nodePath = MUTATION_PREF, value = NUMBER_MAX_MUTATIONS) int maxSymbolsMutations,
+			@Preference(nodePath = MUTATION_PREF, value = NUMBER_GENERATED_DIGIT_LENGTH) int generatedDigitLength) {
 		this.maxSymbolsMutations = maxSymbolsMutations;
 		this.generatedDigitLength = generatedDigitLength;
 	}
-	
+
 	@Override
 	public MutationContext apply(MutationContext ctx) {
 		int symbolMutationCount = 0;
 		Set<Number> exclusionList = new TreeSet<>();
-		
+
 		List<EObject> randomized = new ArrayList<>(ctx.getCtxObjects());
 		Collections.shuffle(randomized);
-		
-		
+
 		Iterator<EObject> it = randomized.iterator();
 		while (it.hasNext() && symbolMutationCount < maxSymbolsMutations) {
 			EObject candidate = it.next();
@@ -47,11 +46,11 @@ public class NumberChanger implements Mutation {
 			if (!numberAttrs.isEmpty()) {
 				EAttribute attr = numberAttrs.get(0);
 				Number oldValue = (Number) candidate.eGet(attr);
-				
+
 				Number newValue = generateNumber(oldValue);
 				candidate.eSet(attr, newValue);
 				exclusionList.add(newValue);
-				
+
 				symbolMutationCount++;
 			}
 		}
@@ -71,10 +70,10 @@ public class NumberChanger implements Mutation {
 		} while (number.equals(x));
 		return number;
 	}
-	
+
 	/**
 	 * 
-	 * @param eobject source object for attribute scanning
+	 * @param eobject    source object for attribute scanning
 	 * @param exclusions set of names excluded from scan
 	 * @return
 	 */
