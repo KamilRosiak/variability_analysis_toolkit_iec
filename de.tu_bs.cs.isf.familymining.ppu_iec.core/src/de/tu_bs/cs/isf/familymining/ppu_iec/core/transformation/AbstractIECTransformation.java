@@ -8,6 +8,7 @@ import org.eclipse.emf.ecore.EObject;
 
 import de.tu_bs.cs.isf.e4cf.core.compare.templates.AbstractContainer;
 import de.tu_bs.cs.isf.e4cf.core.transform.Transformation;
+import de.tu_bs.cs.isf.e4cf.family_model_view.prototype.transformation.FamilyModelTransformation;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.metric.MetricContainer;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.solution.ConfigurationResultRoot;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.solution.action.ActionCompareContainer;
@@ -34,7 +35,7 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Variab
  * @author Oliver Urbaniak
  *
  * @param <Result> denotes the result type for the transformation
- * @param <Node> denotes the node type which makes up the specific tree structure
+ * @param <Node> denotes the node type which makes up the target tree structure
  */
 public abstract class AbstractIECTransformation<Result, Node> implements Transformation<Result> {
 

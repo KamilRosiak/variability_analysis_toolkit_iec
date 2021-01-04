@@ -1,7 +1,9 @@
 package de.tu_bs.cs.isf.familymining.ppu_iec.core.transformation;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.eclipse.emf.ecore.EObject;
@@ -28,6 +30,8 @@ public class ConfigurationResultToFamilyModelTransformation extends AbstractIECT
 	
 	private FamilyModelBuilder fmBuilder;
 	private FamilyModel familyModel;
+	
+	private Map<VariationPoint, Object> variationPointDataMapping = new HashMap<>();
 
 	public ConfigurationResultToFamilyModelTransformation() {
 		fmBuilder = new FamilyModelBuilder();
@@ -38,6 +42,8 @@ public class ConfigurationResultToFamilyModelTransformation extends AbstractIECT
 		if (!(object instanceof ConfigurationResultRoot)) {
 			return null;
 		}
+		
+		variationPointDataMapping.clear();
 		
 		ConfigurationResultRoot config = (ConfigurationResultRoot) object;
 		
@@ -107,12 +113,19 @@ public class ConfigurationResultToFamilyModelTransformation extends AbstractIECT
 		VariationPoint varPoint = 
 				fmBuilder.createVariationPoint(getLabel(container), classify(container), varArtefactArray, EMPTY_VAR_POINT_ARRAY, parent);
 		
+		// ... preserve container information
+		variationPointDataMapping.put(varPoint, container);
+		
 		return varPoint;
 	}
 
 	@Override
 	protected <T extends IECAbstractContainer<?>> VariationPoint connect(IECAbstractOption<T> option, VariationPoint parent) {
 		VariationPoint varPoint = fmBuilder.createVariationPoint(getLabel(option), VariabilityCategory.UNSET, EMPTY_VAR_ARTEFACT_ARRAY, EMPTY_VAR_POINT_ARRAY, parent);
+		
+		// ... preserve option information
+		variationPointDataMapping.put(varPoint, option);
+		
 		return varPoint;
 	}
 
@@ -166,6 +179,11 @@ public class ConfigurationResultToFamilyModelTransformation extends AbstractIECT
 	@Override
 	public boolean canTransform(Object object) {
 		return object != null && object instanceof ConfigurationResultRoot;
+	}
+
+	@Override
+	public Map<VariationPoint, Object> getData() {
+		return variationPointDataMapping;
 	}
 
 }
