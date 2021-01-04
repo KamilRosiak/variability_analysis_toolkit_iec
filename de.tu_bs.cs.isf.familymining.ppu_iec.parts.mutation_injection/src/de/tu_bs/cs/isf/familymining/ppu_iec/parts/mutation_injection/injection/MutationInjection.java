@@ -16,13 +16,14 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.scenario.Sc
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Action;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Configuration;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.POU;
+import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtext.StructuredText;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtextexpression.Expression;
 
 
 public class MutationInjection {
 
 	@Inject
-	@Named("type2Mutator")
+	@Named("STMutator")
 	private Mutator mutator;
 	
 	@Inject
@@ -52,8 +53,16 @@ public class MutationInjection {
 		System.out.println(String.format("Scenario \"%s\" loaded.", scenarioName));
 		
 		TreeIterator<EObject> it = EcoreUtil.<EObject>getAllProperContents(scenario.get(), true);
+		iterate(it);
+		
+		System.out.println(String.format("Scenario mutatant \"%s\" stored as \"%s\" in directory %s.", scenarioName, scenarioName+mutantPostfix, scenarioFacade.getMutantDirectoryName()));
+		scenarioFacade.saveScenario(scenarioName+mutantPostfix, scenario.get());
+	}
+	
+	private void iterate(TreeIterator<EObject> it) {
+		
 		while (it.hasNext()) {
-			EObject eobject = it.next();
+			EObject eobject = it.next();				
 			
 			if (eobject instanceof POU) {
 				MutationContext ctx = factory.createFromPOU((POU) eobject);
@@ -64,10 +73,14 @@ public class MutationInjection {
 			} else if (eobject instanceof Expression) {
 				MutationContext ctx = factory.createFromSTExpression((Expression) eobject);
 				mutator.mutate(ctx);
+			} else if (eobject instanceof StructuredText) {
+				MutationContext ctx = factory.createFromST((StructuredText) eobject);
+				mutator.mutate(ctx);
+				it.prune(); // remove sub tree of structured text since eobjects might have been deleted
+				TreeIterator<EObject> stIt = EcoreUtil.getAllProperContents(eobject, true);
+				stIt.next();
+				iterate(stIt);
 			} 
 		}
-		
-		System.out.println(String.format("Scenario mutatant \"%s\" stored as \"%s\" in directory %s.", scenarioName, scenarioName+mutantPostfix, scenarioFacade.getMutantDirectoryName()));
-		scenarioFacade.saveScenario(scenarioName+mutantPostfix, scenario.get());
 	}
 }

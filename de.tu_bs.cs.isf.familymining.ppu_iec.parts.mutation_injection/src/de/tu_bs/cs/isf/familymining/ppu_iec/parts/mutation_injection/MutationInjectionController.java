@@ -9,6 +9,10 @@ import static de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.muta
 import static de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.MutationParameters.NUMBER_GENERATED_DIGIT_LENGTH_DEFAULT;
 import static de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.MutationParameters.NUMBER_MAX_MUTATIONS;
 import static de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.MutationParameters.NUMBER_MAX_MUTATIONS_DEFAULT;
+import static de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.MutationParameters.STMT_INS_MAX_MUTATIONS;
+import static de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.MutationParameters.STMT_INS_MAX_MUTATIONS_DEFAULT;
+import static de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.MutationParameters.STMT_REM_MAX_MUTATIONS;
+import static de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.MutationParameters.STMT_REM_MAX_MUTATIONS_DEFAULT;
 
 import java.io.IOException;
 
@@ -23,10 +27,13 @@ import org.osgi.service.prefs.BackingStoreException;
 
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection.MutationInjection;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection.SingleContextFactory;
+import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.STMutator;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.Type2Mutator;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.EnumChanger;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.NameChanger;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.NumberChanger;
+import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.StatementInserter;
+import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.StatementRemover;
 
 public class MutationInjectionController {
 
@@ -48,6 +55,14 @@ public class MutationInjectionController {
 		NumberChanger numberChanger = ContextInjectionFactory.make(NumberChanger.class, context);
 		context.set(NumberChanger.class, numberChanger);
 		
+		prefs.putInt(STMT_INS_MAX_MUTATIONS, prefs.getInt(STMT_INS_MAX_MUTATIONS, STMT_INS_MAX_MUTATIONS_DEFAULT));
+		StatementInserter stmtInserter = ContextInjectionFactory.make(StatementInserter.class, context);
+		context.set(StatementInserter.class, stmtInserter);
+		
+		prefs.putInt(STMT_REM_MAX_MUTATIONS, prefs.getInt(STMT_REM_MAX_MUTATIONS, STMT_REM_MAX_MUTATIONS_DEFAULT));
+		StatementRemover stmtRemover = ContextInjectionFactory.make(StatementRemover.class, context);
+		context.set(StatementRemover.class, stmtRemover);
+
 		try {
 			prefs.flush();
 		} catch (BackingStoreException e) {
@@ -57,6 +72,10 @@ public class MutationInjectionController {
 		// mutators and supporting factories
 		Type2Mutator type2Mutator = ContextInjectionFactory.make(Type2Mutator.class, context);
 		context.set("type2Mutator", type2Mutator);
+		
+		STMutator stMutator = ContextInjectionFactory.make(STMutator.class, context);
+		context.set("STMutator", stMutator);
+		
 		context.set("single", new SingleContextFactory());
 		
 		mutationInjection = ContextInjectionFactory.make(MutationInjection.class, context);

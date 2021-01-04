@@ -54,6 +54,9 @@ public class ScenarioFacade {
 	}
 
 	public void saveScenario(String name, Configuration scenario) throws IOException {
+		// rename the resource wrapping the scenario
+		scenario.getResources().get(0).setName(name);
+		
 		// ensure the mutation directory is available
 		Directory root = fs.getWorkspaceDirectory();
 		Optional<FileTreeElement> mutationDirOpt = root.getChildren().stream().filter(dir -> dir.isDirectory() && dir.getAbsolutePath().endsWith(MUTATION_DIR_NAME)).findAny();
