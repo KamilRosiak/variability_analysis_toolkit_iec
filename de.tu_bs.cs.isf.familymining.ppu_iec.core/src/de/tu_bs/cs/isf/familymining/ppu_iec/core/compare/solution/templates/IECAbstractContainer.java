@@ -15,7 +15,7 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.metric.MetricContainer;
 public abstract class IECAbstractContainer<ElementType extends EObject> extends AbstractContainer<ElementType, MetricContainer>  implements ICompareCheck {
 	
 	private static final long serialVersionUID = 1521277552874459308L;
-
+	
 	public IECAbstractContainer(ElementType first, ElementType second, MetricContainer metric) {
 		super(first, second, metric);
 	}

@@ -26,7 +26,7 @@ public class ModelTransformUtil {
 			if(nodeMap.containsKey(pouContainer.getFirst().getIdentifier())) {
 				first = nodeMap.get(pouContainer.getFirst().getIdentifier());
 			} else {
-				first = createNode(pouContainer.getFirst().getIdentifier(),"", new Rectangle(250,250,10,10), Color.AQUAMARINE);
+				first = createNode(pouContainer.getFirst().getIdentifier(),"", new Rectangle(250,250,10,10), Color.LIGHTGREY);
 				nodeMap.put(pouContainer.getFirst().getIdentifier(), first);
 				graph.addChildElement(first);
 			}
@@ -34,7 +34,7 @@ public class ModelTransformUtil {
 			if(nodeMap.containsKey(pouContainer.getSecond().getIdentifier())) {
 				second = nodeMap.get(pouContainer.getSecond().getIdentifier());
 			} else {
-				second = createNode(pouContainer.getSecond().getIdentifier(),"", new Rectangle(250,250,10,10), Color.AQUAMARINE);
+				second = createNode(pouContainer.getSecond().getIdentifier(),"", new Rectangle(250,250,10,10), Color.LIGHTGREY);
 				graph.addChildElement(second);
 				nodeMap.put(pouContainer.getSecond().getIdentifier(), second);
 			}

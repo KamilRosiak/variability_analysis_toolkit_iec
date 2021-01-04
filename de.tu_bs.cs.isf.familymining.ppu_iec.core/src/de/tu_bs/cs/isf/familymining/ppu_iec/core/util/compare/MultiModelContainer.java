@@ -85,6 +85,13 @@ public class MultiModelContainer {
 		}
 		return true;
 	}
+	
+	public void showDependencieGraph() {
+		
+	}
+	
+	
+	
 	/**
 	 * This method creates a CSV-File with all comparison details if status is true.
 	 */

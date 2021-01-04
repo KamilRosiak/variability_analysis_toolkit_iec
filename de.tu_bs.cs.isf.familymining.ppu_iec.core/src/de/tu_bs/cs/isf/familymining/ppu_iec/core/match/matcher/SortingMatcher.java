@@ -38,12 +38,10 @@ public class SortingMatcher extends AbstractMatcher {
 		//if no attributes selected
 		if(root.getChildren() != null) {
 			//first match the underlying elements the the container
-
 			for(ModelCompareContainer modelContainer : root.getChildren()) {
 				matchModelOptions(modelContainer);
 				modelContainer.updateSimilarity();
 			}
-			
 			matchContainer(root.getChildren());
 		}
 		

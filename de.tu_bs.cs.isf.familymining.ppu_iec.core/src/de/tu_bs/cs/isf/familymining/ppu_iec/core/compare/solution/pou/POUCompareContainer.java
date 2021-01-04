@@ -1,5 +1,6 @@
 package de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.solution.pou;
 
+import de.tu_bs.cs.isf.e4cf.core.compare.templates.AbstractOption;
 import de.tu_bs.cs.isf.e4cf.core.compare.templates.ResultElement;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.metric.MetricContainer;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.solution.templates.IECAbstractContainer;
@@ -29,6 +30,7 @@ public class POUCompareContainer extends IECAbstractContainer<POU> {
 	}
 
 	public void setPouActionOption(POUActionOption pouActionOption) {
+		getOptions().add(pouActionOption);
 		this.pouActionOption = pouActionOption;
 	}
 
@@ -37,6 +39,7 @@ public class POUCompareContainer extends IECAbstractContainer<POU> {
 	}
 
 	public void setPouImplOption(POUImplementationOption pouImplOption) {
+		getOptions().add(pouImplOption);
 		this.pouImplOption = pouImplOption;
 	}
 
@@ -45,6 +48,7 @@ public class POUCompareContainer extends IECAbstractContainer<POU> {
 	}
 
 	public void setPouVarOption(POUVariableOption pouVarOption) {
+		getOptions().add(pouVarOption);
 		this.pouVarOption = pouVarOption;
 	}
 	
@@ -64,43 +68,27 @@ public class POUCompareContainer extends IECAbstractContainer<POU> {
 	@Override
 	public void updateSimilarity() {
 		float pouContainerSimilarity = 0.0f;
-		int optionCount = 0;
-		
-		if(pouImplOption != null) {
-			pouImplOption.updateSimilarity();
-			pouContainerSimilarity += getSimilarity(pouImplOption.getSimilarity(), pouImplOption.getOptionAttr(), getMetric().isWeighted());
-			optionCount++;
+		for(AbstractOption option : getOptions()) {
+			option.updateSimilarity();
+			pouContainerSimilarity += getSimilarity(option.getSimilarity(), option.getOptionAttr(), getMetric().isWeighted());
+			
 		}
-		
-		if(pouActionOption != null) {
-			pouActionOption.updateSimilarity();
-			pouContainerSimilarity += getSimilarity(pouActionOption.getSimilarity(), pouActionOption.getOptionAttr(), getMetric().isWeighted());
-			optionCount++;
-		}
-		
-		if(pouVarOption != null) {
-			pouVarOption.updateSimilarity();
-			pouContainerSimilarity += getSimilarity(pouVarOption.getSimilarity(), pouVarOption.getOptionAttr(), getMetric().isWeighted());
-			optionCount++;
-		}
-		
+
 		//adds all results weighted or not weighted.
 		for(ResultElement<?> pouResult : getResults()) {			
 			pouContainerSimilarity += getSimilarity(pouResult.getSimilarity(), pouResult.getAttribute(), getMetric().isWeighted());
 		}
 		
 		//if not weighted we have to dived the similarity with the count of the results else its normed by 100% trough the weights.
-		if(!getMetric().isWeighted() && getResults().size() + optionCount > 0) {
-			pouContainerSimilarity = pouContainerSimilarity / (getResults().size() + optionCount);
+		if(!getMetric().isWeighted() && getResults().size() + getOptions().size() > 0) {
+			pouContainerSimilarity = pouContainerSimilarity / (getResults().size() + getOptions().size());
 		}
 		setSimilarity(pouContainerSimilarity);
 	}
 
 	@Override
 	public void reset() {
-		setPouActionOption(null);
-		setPouImplOption(null);
-		setPouVarOption(null);
+		getOptions().clear();
 		getResults().clear();
 	}
 

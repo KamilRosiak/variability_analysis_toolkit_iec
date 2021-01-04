@@ -884,7 +884,7 @@ public class CompareEngine implements Runnable {
 	/**
 	 * This method compares Function Blocks with FDBImplAttributes and adds the results to given container.
 	 */
-	private void compareFBDElement(FBDElement first, FBDElement second, DiagramElementImplContainer container) {
+	private void compareFBDElement(FBDElement first , FBDElement second , DiagramElementImplContainer container) {
 		//Compares nested ST implementation
 		if(container.getMetric().isFBDSTCompare()) {
 			if(first instanceof ExecutionBlock && second instanceof ExecutionBlock) {

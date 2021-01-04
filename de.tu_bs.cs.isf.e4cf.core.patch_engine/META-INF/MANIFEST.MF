@@ -7,12 +7,13 @@ Automatic-Module-Name: de.tu_bs.cs.isf.e4cf.core.patch_engine
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.equinox.registry,
  org.eclipse.emf.ecore,
- org.eclipse.emf.diffmerge.ui,
  de.tu_bs.cs.isf.e4cf.EMFModelLoader,
  de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel,
  de.tu_bs.cs.isf.familymining.ppu_iec.core;bundle-version="1.0.0",
  de.tu_bs.cs.isf.e4cf.parser,
- de.tu_bs.cs.isf.e4cf.core.compare
+ de.tu_bs.cs.isf.e4cf.core.compare,
+ org.eclipse.emf.diffmerge;bundle-version="0.12.0",
+ org.eclipse.swt
 Export-Package: de.tu_bs.cs.isf.e4cf.core.patch_engine;
   uses:="org.eclipse.emf.ecore,
    org.eclipse.emf.diffmerge.api,
