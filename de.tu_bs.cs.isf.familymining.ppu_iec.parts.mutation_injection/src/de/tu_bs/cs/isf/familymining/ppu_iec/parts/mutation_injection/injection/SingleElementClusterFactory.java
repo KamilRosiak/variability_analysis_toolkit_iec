@@ -1,11 +1,11 @@
 package de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
 
-import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.MutationContext;
+import com.google.common.collect.Lists;
+
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Action;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Configuration;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Declaration;
@@ -18,71 +18,65 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtext.State
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtext.StructuredText;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtextexpression.Expression;
 
-public class SingleContextFactory implements MutationContextFactory {
+public class SingleElementClusterFactory implements ScenarioObjectClusterFactory {
 
 	@Override
-	public MutationContext createFromConfiguration(Configuration config) {
+	public List<EObject> createFromConfiguration(Configuration config) {
 		return createSingleObjectContext(config);
 	}
 
 	@Override
-	public MutationContext createFromPOU(POU pou) {
+	public List<EObject> createFromPOU(POU pou) {
 		return createSingleObjectContext(pou);
 	}
 
 	@Override
-	public MutationContext createFromAction(Action action) {
+	public List<EObject> createFromAction(Action action) {
 		return createSingleObjectContext(action);
 	}
 
 	@Override
-	public MutationContext createFromDeclaration(Declaration declaration) {
+	public List<EObject> createFromDeclaration(Declaration declaration) {
 		return createSingleObjectContext(declaration);
 	}
 
 	@Override
-	public MutationContext createFromST(StructuredText st) {
+	public List<EObject> createFromST(StructuredText st) {
 		return createSingleObjectContext(st);
 	}
 
 	@Override
-	public MutationContext createFromSTStatement(Statement statement) {
+	public List<EObject> createFromSTStatement(Statement statement) {
 		return createSingleObjectContext(statement);
 	}
 
 	@Override
-	public MutationContext createFromSTExpression(Expression expression) {
+	public List<EObject> createFromSTExpression(Expression expression) {
 		return createSingleObjectContext(expression);
 	}
 
 	@Override
-	public MutationContext createFromSFC(SequentialFunctionChart sfc) {
+	public List<EObject> createFromSFC(SequentialFunctionChart sfc) {
 		return createSingleObjectContext(sfc);
 	}
 
 	@Override
-	public MutationContext createFromSFCStep(Step step) {
+	public List<EObject> createFromSFCStep(Step step) {
 		return createSingleObjectContext(step);
 	}
 
 	@Override
-	public MutationContext createFromSFCAction(AbstractAction action) {
+	public List<EObject> createFromSFCAction(AbstractAction action) {
 		return createSingleObjectContext(action);
 	}
 
 	@Override
-	public MutationContext createFromSFCTransition(Transition transition) {
+	public List<EObject> createFromSFCTransition(Transition transition) {
 		return createSingleObjectContext(transition);
 	}
 	
-	private MutationContext createSingleObjectContext(EObject eobject) {
-		List<EObject> eobjects = new ArrayList<>();
-		eobjects.add(eobject);
-		
-		MutationContext mutCtx = new MutationContext();
-		mutCtx.setCtxObjects(eobjects);
-		
-		return mutCtx;
+	private List<EObject> createSingleObjectContext(EObject eobject) {
+		return Lists.newArrayList(eobject);
 	}
 
 }

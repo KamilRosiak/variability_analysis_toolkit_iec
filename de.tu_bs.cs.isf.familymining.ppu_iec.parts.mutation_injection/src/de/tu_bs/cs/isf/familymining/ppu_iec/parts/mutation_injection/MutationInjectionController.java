@@ -15,6 +15,7 @@ import static de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.muta
 import static de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.MutationParameters.STMT_REM_MAX_MUTATIONS_DEFAULT;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -26,7 +27,7 @@ import org.eclipse.e4.core.di.extensions.Preference;
 import org.osgi.service.prefs.BackingStoreException;
 
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection.MutationInjection;
-import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection.SingleContextFactory;
+import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection.SingleElementClusterFactory;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.STMutator;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.Type2Mutator;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.EnumChanger;
@@ -34,6 +35,7 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.op
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.NumberChanger;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.StatementInserter;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.StatementRemover;
+import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Configuration;
 
 public class MutationInjectionController {
 
@@ -76,7 +78,7 @@ public class MutationInjectionController {
 		STMutator stMutator = ContextInjectionFactory.make(STMutator.class, context);
 		context.set("STMutator", stMutator);
 		
-		context.set("single", new SingleContextFactory());
+		context.set("single", new SingleElementClusterFactory());
 		
 		mutationInjection = ContextInjectionFactory.make(MutationInjection.class, context);
 	}
@@ -89,9 +91,34 @@ public class MutationInjectionController {
 	public void demo() {
 		try {
 			String scenario24_small = "scenario24_small";
-			mutationInjection.generateMutant(scenario24_small, "-mutated");
+			Configuration config = mutationInjection.loadScenario(scenario24_small);
+			
+			Configuration mutConfig = mutationInjection.generateMutant(config);
+			
+			mutationInjection.saveScenario(mutConfig, "-mutated");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * 
+	 * 
+	 * @param config
+	 * @return
+	 */
+	public Configuration mutate(Configuration config) {
+		// copy config
+		
+		// mutate 
+		
+		// post processing - somehow store mutation meta data
+		
+		
+		
+		// return 
+		
+		return null;
+	}
+	
 }

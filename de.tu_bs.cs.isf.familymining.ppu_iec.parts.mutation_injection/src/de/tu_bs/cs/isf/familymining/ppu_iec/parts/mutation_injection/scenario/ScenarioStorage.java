@@ -38,7 +38,7 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.rcp_e4.EMFModelLoader.impl.EMFModelL
  */
 @Singleton
 @Creatable
-public class ScenarioFacade {
+public class ScenarioStorage {
 
 	private static final String FILE_EXT = "project";
 	private static final String MUTATION_DIR_NAME = "MutationInjection";
@@ -49,7 +49,7 @@ public class ScenarioFacade {
 	Map<String, Configuration> scenarioCache = new HashMap<>(); 
 	
 	public Optional<Configuration> loadScenario(String name) {
-		Configuration config = scenarioCache.computeIfAbsent(name, (scenarioName) -> findScenario(scenarioName));
+		Configuration config = scenarioCache.computeIfAbsent(name, this::findScenario);
 		return Optional.ofNullable(config);
 	}
 
@@ -67,6 +67,10 @@ public class ScenarioFacade {
 	
 	public String getMutantDirectoryName() {
 		return MUTATION_DIR_NAME;
+	}
+	
+	public String getName(Configuration config) {
+		return config.getResources().get(0).getName();
 	}
 	
 	private Configuration findScenario(String name) {
