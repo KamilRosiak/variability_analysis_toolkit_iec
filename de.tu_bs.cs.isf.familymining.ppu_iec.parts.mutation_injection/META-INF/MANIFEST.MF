@@ -18,4 +18,7 @@ Require-Bundle: org.junit.jupiter.api,
  org.eclipse.emf.common,
  de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel,
  de.tu_bs.cs.isf.e4cf.core,
- de.tu_bs.cs.isf.e4cf.EMFModelLoader
+ de.tu_bs.cs.isf.e4cf.EMFModelLoader,
+ de.tu_bs.cs.isf.e4cf.parts.project_explorer;bundle-version="1.0.0",
+ de.tu_bs.cs.isf.familymining.ppu_iec.core,
+ de.tu_bs.cs.isf.e4cf.core.compare
