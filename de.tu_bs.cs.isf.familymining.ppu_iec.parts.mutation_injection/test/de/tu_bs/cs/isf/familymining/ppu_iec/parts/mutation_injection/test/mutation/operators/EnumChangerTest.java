@@ -34,8 +34,8 @@ class EnumChangerTest extends ScenarioTest {
 
 	@RepeatedTest(5)
 	public void testParameter_maxMutations() {
-		MutationContext ctx = new MutationContext();
-		ctx.setCtxObjects(variables(5));
+		MutationContext ctx = new MutationContext(null, null);
+		ctx.getCtxObjects().addAll(variables(5));
 
 		MutationContext mutCtx = enumChanger.apply(ctx.clone());
 		assertThat(mutCtx.getCtxObjects()).hasSize(5);

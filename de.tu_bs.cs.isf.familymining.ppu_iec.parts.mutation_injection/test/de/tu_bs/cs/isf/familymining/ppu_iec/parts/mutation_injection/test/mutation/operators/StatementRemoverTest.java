@@ -34,8 +34,8 @@ public class StatementRemoverTest extends ScenarioTest {
 
 	@Test
 	public void testParameter_maxMutations() {
-		MutationContext ctx = new MutationContext();
-		ctx.setCtxObjects(structuredText(ST_INSTANCE_SIZE, STMT_SIZE));
+		MutationContext ctx = new MutationContext(null, null);
+		ctx.getCtxObjects().addAll(structuredText(ST_INSTANCE_SIZE, STMT_SIZE));
 
 		MutationContext mutCtx = stmtRemover.apply(ctx.clone());
 

@@ -46,7 +46,11 @@ public class StatementRemover extends StatementMutation {
 			for (EReference stmtRef : stmtRefs) {
 				EList<Statement> stmts = (EList<Statement>) stmtContainer.eGet(stmtRef, true);
 				if (!stmts.isEmpty()) {
-					stmts.remove(randomly.nextInt(stmts.size()));					
+					Statement removedStmt = stmts.remove(randomly.nextInt(stmts.size()));		
+					
+					// log change
+					ctx.logRemoval(removedStmt);
+					ctx.setChangedTreeStructure(true);
 				}
 			}
 		}

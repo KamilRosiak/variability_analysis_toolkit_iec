@@ -48,12 +48,27 @@ public class ScenarioStorage {
 	
 	Map<String, Configuration> scenarioCache = new HashMap<>(); 
 	
+	
+	/**
+	 * Searches and loads a scenario by using the resource name. The name is in the .project file at the path "configuration/resources[name]".
+	 * The scenario search is only within the workspace of the started application.
+	 * 
+	 * @param name scenario name
+	 * @return scenario configuration or none if not found
+	 */
 	public Optional<Configuration> loadScenario(String name) {
 		Configuration config = scenarioCache.computeIfAbsent(name, this::findScenario);
 		return Optional.ofNullable(config);
 	}
 
-	public void saveScenario(String name, Configuration scenario) throws IOException {
+	/**
+	 * Saves the scenario under the given name. Scenarios are stored in the workspace at {@value #MUTATION_DIR_NAME}.
+	 * 
+	 * @param name
+	 * @param scenario
+	 * @throws IOException
+	 */
+	public void saveScenario(Configuration scenario, String name) throws IOException {
 		// rename the resource wrapping the scenario
 		scenario.getResources().get(0).setName(name);
 		

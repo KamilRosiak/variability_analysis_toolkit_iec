@@ -24,8 +24,8 @@ public class MutationContext {
 	private boolean changedTreeStructure = false;
 
 	/**
-	 * Maps original to mutated scenario objects. The map is localized to all scenario objects 
-	 * contained in the list of ctx objects.
+	 * Maps original to mutated scenario objects. The map is localized to all
+	 * scenario objects contained in the list of ctx objects.
 	 */
 	private BiMap<EObject, EObject> interProjectMapping = HashBiMap.create(); // original object -> mutated object
 
@@ -40,11 +40,12 @@ public class MutationContext {
 	}
 
 	/**
-	 * Log the mutated object. Creates the connection between original and mutated scenario object.
+	 * Log the mutated object. Creates the connection between original and mutated
+	 * scenario object.
 	 * 
 	 * @param mutObject
 	 */
-	public void log(EObject mutObject) {
+	public void logChange(EObject mutObject) {
 		if (originalRoot == null) {
 			return;
 		}
@@ -54,39 +55,62 @@ public class MutationContext {
 
 		interProjectMapping.putIfAbsent(origObject, mutObject);
 	}
-	
+
+	public void logRemoval(EObject mutObject) {
+		if (originalRoot == null) {
+			return;
+		}
+
+		String mutObjectFragment = EcoreUtil.getRelativeURIFragmentPath(mutatedRoot, mutObject);
+		EObject origObject = EcoreUtil.getEObject(originalRoot, mutObjectFragment);
+
+		interProjectMapping.putIfAbsent(origObject, null);
+	}
+
+	public void logInsertion(EObject mutObject) {
+		if (originalRoot == null) {
+			return;
+		}
+
+		interProjectMapping.inverse().putIfAbsent(mutObject, null);
+	}
+
 	/**
-	 * Finds the mutated from an original scenario object. 
+	 * Finds the mutated scenario object using the original counterpart.
 	 * 
 	 * @param originalScenarioObject
-	 * @return mutated version of original scenario object or none if removed due to mutation
-	 * @throws UnknownObjectException if the object is not known within this context.
+	 * @return mutated version of original scenario object or none if removed due to
+	 *         mutation
+	 * @throws UnknownObjectException if the object is not known within this
+	 *                                context.
 	 */
 	public Optional<EObject> getMutated(EObject originalScenarioObject) throws UnknownObjectException {
 		if (!interProjectMapping.containsKey(originalScenarioObject)) {
 			throw new UnknownObjectException(originalScenarioObject, this);
-		} 
+		}
 		return Optional.ofNullable(interProjectMapping.get(originalScenarioObject));
 	}
-	
+
 	/**
-	 * Finds the original from an mutated scenario object.
+	 * Finds the original scenario object using the mutated counterpart.
 	 * 
 	 * @param mutatedScenarioObject
-	 * @return original scenario object from which the mutated version was created or none if the mutated object was newly generated.
-	 * @throws UnknownObjectException if the object is not known within this context.
+	 * @return original scenario object from which the mutated version was created
+	 *         or none if the mutated object was newly generated.
+	 * @throws UnknownObjectException if the object is not known within this
+	 *                                context.
 	 */
 	public Optional<EObject> getOriginal(EObject mutatedScenarioObject) throws UnknownObjectException {
 		if (!interProjectMapping.inverse().containsKey(mutatedScenarioObject)) {
 			throw new UnknownObjectException(mutatedScenarioObject, this);
-		} 
-		return Optional.ofNullable(interProjectMapping.inverse().get(mutatedScenarioObject));		
+		}
+		return Optional.ofNullable(interProjectMapping.inverse().get(mutatedScenarioObject));
 	}
-	
+
 	public boolean sharesElementsWith(MutationContext other) {
 		List<EObject> thisObjs = this.getCtxObjects();
 		List<EObject> otherObjs = other.getCtxObjects();
-		
+
 		for (EObject ctxObject : otherObjs) {
 			if (thisObjs.contains(ctxObject)) {
 				return true;
@@ -94,7 +118,7 @@ public class MutationContext {
 		}
 		return false;
 	}
-	
+
 	public boolean hasChangedTreeStructure() {
 		return changedTreeStructure;
 	}
@@ -102,7 +126,7 @@ public class MutationContext {
 	public void setChangedTreeStructure(boolean changedTreeStructure) {
 		this.changedTreeStructure = changedTreeStructure;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

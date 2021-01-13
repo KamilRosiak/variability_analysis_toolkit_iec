@@ -91,6 +91,10 @@ public class StatementInserter extends StatementMutation {
 					assignment.setStructuredText(stmt.getStructuredText());
 				}
 				stmts.add(assignment);
+				
+				// log change
+				ctx.logInsertion(assignment);
+				ctx.setChangedTreeStructure(true);
 			}
 		}
 
