@@ -92,6 +92,7 @@ public class SFCActionContainer extends IECAbstractContainer<AbstractAction> {
 	}
 
 	public void setImplOption(LanguageImplementationOption<AbstractLanguageContainer<?>> nestedSTImpl) {
+		addOption(nestedSTImpl);
 		this.implOption = nestedSTImpl;
 	}
 

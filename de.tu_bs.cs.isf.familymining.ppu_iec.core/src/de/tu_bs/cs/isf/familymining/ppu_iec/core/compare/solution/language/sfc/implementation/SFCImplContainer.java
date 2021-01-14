@@ -17,8 +17,6 @@ public class SFCImplContainer  extends AbstractLanguageContainer<Step>{
 		super(first, second, metric);
 	}
 	
-	
-	
 	public float getTotalWeight() {
 		float totalWeight = 0.0f;
 		for(ResultElement<?> langResult : getResults()) {
@@ -81,6 +79,7 @@ public class SFCImplContainer  extends AbstractLanguageContainer<Step>{
 	@Override
 	public void reset() {
 		getResults().clear();
+		getOptions().clear();
 		setImplOption(null);
 		setActionOption(null);
 	}
@@ -89,6 +88,7 @@ public class SFCImplContainer  extends AbstractLanguageContainer<Step>{
 	}
 
 	public void setActionOption(SFCActionOption actionOption) {
+		addOption(actionOption);
 		this.actionOption = actionOption;
 	}
 	
