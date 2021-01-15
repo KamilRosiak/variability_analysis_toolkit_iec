@@ -40,115 +40,116 @@ public class MutationEngine {
 	private static final int RUNS = 10;
 	private ServiceContainer services;
 	private MutationInjection mutationInjection;
-	
+
 	@Inject
-	public MutationEngine(ServiceContainer services,IEclipseContext context, @Preference(nodePath = MUTATION_PREF) IEclipsePreferences prefs) {
+	public MutationEngine(ServiceContainer services, IEclipseContext context,
+			@Preference(nodePath = MUTATION_PREF) IEclipsePreferences prefs) {
 		this.setServices(services);
 		initMutationInjection(context, prefs);
 	}
-	
+
 	public void startMutation(Configuration seed) {
 		mutationCycle(seed, 0);
 	}
-	
-	private void mutationCycle(Configuration seed, int run) {
-		//TODO: Oli the Configuration must be a copy of the seed
-		Configuration mutant = null;
-		//Configuration mutant = null;// = mutationInjection.generateMutant(seed.getIdentifier(), "1");
-		
-		ConfigurationResultRoot result = ConfigurationCompareUtil.compare(seed, mutant);
-		//find changes
 
+	private void mutationCycle(Configuration seed, int run) {
+		// TODO: Oli the Configuration must be a copy of the seed
+		Configuration mutant = null;
+		// Configuration mutant = null;// =
+		// mutationInjection.generateMutant(seed.getIdentifier(), "1");
+
+		ConfigurationResultRoot result = ConfigurationCompareUtil.compare(seed, mutant);
+		// find changes
 		List<AbstractContainer> changeList = ConfigurationCompareUtil.findChanges(result);
+		
+		// TODO: Oli get all EObject pairs which are changed during a mutation
+		List<MutationPair> containedMutants = null;	
+		
+		//search for accordances between mutants and found changes
+		System.out.println("Mutants in Model: " + containedMutants.size());
+		int foundMutants = searchForMutants(changeList, containedMutants);
+		System.out.println("Found Mutants: " + foundMutants);
+		
+		// next iteration with the mutant as seed
+		if (run < RUNS) {
+			mutationCycle(mutant, run++);
+		}
+	}
+	
+	
+	/**
+	 * This method iterates over both list and removes pairs if elements are matching
+	 */
+	private int searchForMutants(List<AbstractContainer> changeList, List<MutationPair> containedMutants ) {
 		Iterator<AbstractContainer> changeIterator = changeList.iterator();
-		//TODO: Oli get all EObject pairs which are changed during a mutation
-		List<MutationPair> containedMutants = null;
 		Iterator<MutationPair> mutantsIterator = containedMutants.iterator();
-		System.out.println("Mutants in Model: "+ containedMutants.size());
 		int foundMutants = 0;
-		while(changeIterator.hasNext()) {
+		while (changeIterator.hasNext()) {
 			AbstractContainer currentContainer = changeIterator.next();
 			while (mutantsIterator.hasNext()) {
 				MutationPair mutantPair = mutantsIterator.next();
-				//Mutant was found can can be remove from both iterators
-				if(mutantPair.getOrigin().equals(currentContainer.getFirst()) && mutantPair.getMutant().equals(currentContainer.getSecond())) {
+				// Mutant was found can can be remove from both iterators
+				if (mutantPair.getOrigin().equals(currentContainer.getFirst())
+						&& mutantPair.getMutant().equals(currentContainer.getSecond())) {
 					mutantsIterator.remove();
 					changeIterator.remove();
 					foundMutants++;
-					//TODO: Create an evaluation of all runs with detailed information
+					// TODO: Create an evaluation of all runs with detailed information
 				}
 			}
 		}
-		System.out.println("Found Mutants: "+ foundMutants);
-		//next iteration with the mutant as seed
-		if(run < RUNS) {
-			mutationCycle(mutant, run++);
-		}
+		return foundMutants;
 	}
 	
 	/**
 	 * This method initializes the mutationInjection
 	 */
 	@Inject
-	public void initMutationInjection(IEclipseContext context, @Preference(nodePath = MUTATION_PREF) IEclipsePreferences prefs) {		
+	public void initMutationInjection(IEclipseContext context,
+			@Preference(nodePath = MUTATION_PREF) IEclipsePreferences prefs) {
 		// mutation operators
-		prefs.putInt(NAME_MAX_MUTATIONS, prefs.getInt(NAME_MAX_MUTATIONS, NAME_MAX_MUTATIONS_DEFAULT));		
+		prefs.putInt(NAME_MAX_MUTATIONS, prefs.getInt(NAME_MAX_MUTATIONS, NAME_MAX_MUTATIONS_DEFAULT));
 		NameChanger nameChanger = ContextInjectionFactory.make(NameChanger.class, context);
 		context.set(NameChanger.class, nameChanger);
-		
+
 		prefs.putInt(ENUM_MAX_MUTATIONS, prefs.getInt(ENUM_MAX_MUTATIONS, ENUM_MAX_MUTATIONS_DEFAULT));
 		EnumChanger enumChanger = ContextInjectionFactory.make(EnumChanger.class, context);
 		context.set(EnumChanger.class, enumChanger);
-		
+
 		prefs.putInt(NUMBER_MAX_MUTATIONS, prefs.getInt(NUMBER_MAX_MUTATIONS, NUMBER_MAX_MUTATIONS_DEFAULT));
-		prefs.putInt(NUMBER_GENERATED_DIGIT_LENGTH, prefs.getInt(NUMBER_GENERATED_DIGIT_LENGTH, NUMBER_GENERATED_DIGIT_LENGTH_DEFAULT));
+		prefs.putInt(NUMBER_GENERATED_DIGIT_LENGTH,
+				prefs.getInt(NUMBER_GENERATED_DIGIT_LENGTH, NUMBER_GENERATED_DIGIT_LENGTH_DEFAULT));
 		NumberChanger numberChanger = ContextInjectionFactory.make(NumberChanger.class, context);
 		context.set(NumberChanger.class, numberChanger);
-		
+
 		try {
 			prefs.flush();
 		} catch (BackingStoreException e) {
 			e.printStackTrace();
 		}
-		
+
 		// mutators and supporting factories
 		Type2Mutator type2Mutator = ContextInjectionFactory.make(Type2Mutator.class, context);
 		context.set("type2Mutator", type2Mutator);
 		context.set("single", new SingleContextFactory());
-		
-		setMutationInjection(ContextInjectionFactory.make(MutationInjection.class, context));	
-	}
 
+		setMutationInjection(ContextInjectionFactory.make(MutationInjection.class, context));
+	}
 
 	public ServiceContainer getServices() {
 		return services;
 	}
 
-
 	public void setServices(ServiceContainer services) {
 		this.services = services;
 	}
-
 
 	public MutationInjection getMutationInjection() {
 		return mutationInjection;
 	}
 
-
 	public void setMutationInjection(MutationInjection mutationInjection) {
 		this.mutationInjection = mutationInjection;
 	}
-	
-	
-	
-	
-	
 
-	
-	
-	
-	
-
-	
-	
 }
