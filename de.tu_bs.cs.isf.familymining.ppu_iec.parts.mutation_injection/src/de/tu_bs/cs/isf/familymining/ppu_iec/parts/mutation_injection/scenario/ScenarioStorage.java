@@ -134,7 +134,6 @@ public class ScenarioStorage {
 				} catch (XPathExpressionException e) {
 					e.printStackTrace(); // xpath parser
 				}
-				
 			}
 		}
 

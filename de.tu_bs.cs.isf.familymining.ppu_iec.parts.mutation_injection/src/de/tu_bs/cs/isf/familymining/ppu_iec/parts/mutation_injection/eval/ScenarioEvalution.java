@@ -56,7 +56,7 @@ public class ScenarioEvalution implements Runnable {
 	
 	private void evaluateCompareResult(MutationResult mutResult, ModelCompareContainer modelContainer) {
 		// TODO: write evaluation code
-		ContainerIterator evalIt = new EvaluationIterator(mutResult);
+		EvaluationIterator evalIt = new EvaluationIterator(mutResult);
 		evalIt.process(modelContainer);
 	}
 }

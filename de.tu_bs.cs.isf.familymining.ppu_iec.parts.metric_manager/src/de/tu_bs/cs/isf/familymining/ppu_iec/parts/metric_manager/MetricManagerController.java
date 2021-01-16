@@ -50,7 +50,9 @@ public class MetricManagerController implements Serializable {
 
 	@Focus
 	public void setFocus() {
-		_selection.setSelection(view.getTree());
+		if (view != null) {
+			_selection.setSelection(view.getTree());			
+		}
 	}
 	
 	@PostConstruct

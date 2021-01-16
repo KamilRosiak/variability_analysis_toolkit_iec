@@ -3,6 +3,7 @@ package de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -94,7 +95,8 @@ public class MutationInjection {
 			MutationContext mutCtx = new MutationContext(scenario, mutScenario);
 			mutCtx.getCtxObjects().addAll(cluster);
 
-			if (mutCtx.sharesElementsWith(mutRegistry.getMostRecentMutationContext().get())) {
+			Optional<MutationContext> recentMutCtx = mutRegistry.getMostRecentMutationContext();
+			if (recentMutCtx.isPresent() && mutCtx.sharesElementsWith(recentMutCtx.get())) {
 				continue;
 			}
 			

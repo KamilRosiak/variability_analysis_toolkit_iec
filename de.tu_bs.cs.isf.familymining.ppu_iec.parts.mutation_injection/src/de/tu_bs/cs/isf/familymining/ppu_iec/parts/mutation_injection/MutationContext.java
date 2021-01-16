@@ -25,9 +25,13 @@ public class MutationContext {
 
 	/**
 	 * Maps original to mutated scenario objects. The map is localized to all
-	 * scenario objects contained in the list of ctx objects.
+	 * scenario objects contained in the list of ctx objects. The map does not keep
+	 * track of inserted or removed objects resulting through mutation.
 	 */
 	private BiMap<EObject, EObject> interProjectMapping = HashBiMap.create(); // original object -> mutated object
+
+	private List<EObject> removals = new ArrayList<>();
+	private List<EObject> insertions = new ArrayList<>();
 
 	public MutationContext(EObject originalRoot, EObject mutatedRoot) {
 		super();
@@ -56,15 +60,17 @@ public class MutationContext {
 		interProjectMapping.putIfAbsent(origObject, mutObject);
 	}
 
-	public void logRemoval(EObject mutObject) {
+	public void logRemoval(EObject originalScenarioObject) {
 		if (originalRoot == null) {
 			return;
 		}
 
-		String mutObjectFragment = EcoreUtil.getRelativeURIFragmentPath(mutatedRoot, mutObject);
-		EObject origObject = EcoreUtil.getEObject(originalRoot, mutObjectFragment);
-
-		interProjectMapping.putIfAbsent(origObject, null);
+		// check for valid removal
+		if (originalScenarioObject.eContainingFeature() == null) {
+			removals.add(originalScenarioObject);
+		} else {
+			throw new IllegalArgumentException("Object " + originalScenarioObject + " was not removed from its tree.");
+		}
 	}
 
 	public void logInsertion(EObject mutObject) {
@@ -72,23 +78,31 @@ public class MutationContext {
 			return;
 		}
 
-		interProjectMapping.inverse().putIfAbsent(mutObject, null);
+		// check for valid removal
+		if (mutObject.eContainingFeature() != null) {
+			insertions.add(mutObject);
+		} else {
+			throw new IllegalArgumentException("Object " + mutObject + " was not inserted into the tree.");
+		}
 	}
 
 	/**
 	 * Finds the mutated scenario object using the original counterpart.
 	 * 
 	 * @param originalScenarioObject
-	 * @return mutated version of original scenario object or none if removed due to
-	 *         mutation
+	 * @return mutated version of original scenario object or none if removed as a
+	 *         consequence of mutation
 	 * @throws UnknownObjectException if the object is not known within this
 	 *                                context.
 	 */
 	public Optional<EObject> getMutated(EObject originalScenarioObject) throws UnknownObjectException {
-		if (!interProjectMapping.containsKey(originalScenarioObject)) {
+		if (interProjectMapping.containsKey(originalScenarioObject)) {
+			return Optional.ofNullable(interProjectMapping.get(originalScenarioObject));
+		} else if (removals.contains(originalScenarioObject)) {
+			return Optional.empty();
+		} else {
 			throw new UnknownObjectException(originalScenarioObject, this);
 		}
-		return Optional.ofNullable(interProjectMapping.get(originalScenarioObject));
 	}
 
 	/**
@@ -101,10 +115,13 @@ public class MutationContext {
 	 *                                context.
 	 */
 	public Optional<EObject> getOriginal(EObject mutatedScenarioObject) throws UnknownObjectException {
-		if (!interProjectMapping.inverse().containsKey(mutatedScenarioObject)) {
+		if (interProjectMapping.inverse().containsKey(mutatedScenarioObject)) {
+			return Optional.ofNullable(interProjectMapping.get(mutatedScenarioObject));
+		} else if (insertions.contains(mutatedScenarioObject)) {
+			return Optional.empty();
+		} else {
 			throw new UnknownObjectException(mutatedScenarioObject, this);
 		}
-		return Optional.ofNullable(interProjectMapping.inverse().get(mutatedScenarioObject));
 	}
 
 	public boolean sharesElementsWith(MutationContext other) {
