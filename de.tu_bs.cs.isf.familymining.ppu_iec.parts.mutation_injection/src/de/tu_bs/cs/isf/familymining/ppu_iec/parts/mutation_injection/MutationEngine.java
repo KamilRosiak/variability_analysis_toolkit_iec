@@ -27,16 +27,12 @@ import de.tu_bs.cs.isf.e4cf.core.util.ServiceContainer;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.solution.ConfigurationResultRoot;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.solution.util.ConfigurationCompareUtil;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection.MutationInjection;
-import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection.SingleContextFactory;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.MutationPair;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.Type2Mutator;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.EnumChanger;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.NameChanger;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.NumberChanger;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Configuration;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 
 @Creatable
 public class MutationEngine {
@@ -134,7 +130,8 @@ public class MutationEngine {
 		// mutators and supporting factories
 		Type2Mutator type2Mutator = ContextInjectionFactory.make(Type2Mutator.class, context);
 		context.set("type2Mutator", type2Mutator);
-		context.set("single", new SingleContextFactory());
+		//TODO: Oli kp wie das jetzt gemacht wird 
+		//context.set("single", new SingleContextFactory());
 
 		setMutationInjection(ContextInjectionFactory.make(MutationInjection.class, context));
 	}
