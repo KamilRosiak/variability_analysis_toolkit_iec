@@ -28,6 +28,7 @@ import de.tu_bs.cs.isf.e4cf.core.util.RCPMessageProvider;
 import de.tu_bs.cs.isf.e4cf.core.util.ServiceContainer;
 import de.tu_bs.cs.isf.e4cf.family_model_view.prototype.stringtable.FamilyModelViewEvents;
 import de.tu_bs.cs.isf.e4cf.family_model_view.prototype.stringtable.FamilyModelViewStrings;
+import de.tu_bs.cs.isf.e4cf.family_model_view.prototype.transformation.FamilyModelTransformation;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.CompareEngine;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.metric.MetricContainer;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.metric.util.MetricContainerSerializer;
@@ -39,6 +40,7 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.core.match.interfaces.AbstractMatche
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.match.interfaces.IMatcher;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.string_table.PPUEventTable;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.string_table.PPUStringTable;
+import de.tu_bs.cs.isf.familymining.ppu_iec.core.transformation.ConfigurationResultToFamilyModelTransformation;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.util.IECCompareUtil;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.compare_engine_view.string_table.CEStringTable;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Configuration;
@@ -257,9 +259,13 @@ public class CompareEngineView {
 	}
 	
 	public void showResult(ConfigurationResultRoot result) {
-		// show prototype family view
+		// show prototype family view after transforming the result to its internal family model 
 		services.partService.showPart(FamilyModelViewStrings.PART_NAME);
-		services.eventBroker.send(FamilyModelViewEvents.EVENT_TRANSFORM_AND_SHOW_FAMILY_MODEL, result);
+		
+		FamilyModelTransformation fmTransformation = new ConfigurationResultToFamilyModelTransformation();
+		services.eventBroker.send(FamilyModelViewEvents.EVENT_SHOW_FAMILY_MODEL, fmTransformation.apply(result));
+		services.eventBroker.send(FamilyModelViewEvents.EVENT_SET_VAR_POINT_MAPPING, fmTransformation.getData()); // sets the mapping to Compare Containers
+		services.eventBroker.send(FamilyModelViewEvents.EVENT_SET_DATA_SOURCE, result); // sets the configuration result 
 		
 		// show current family view
 		services.partService.showPart("de.tu_bs.cs.isf.familymining.ppu_iec.rcp_e4.familymodel_view"); 

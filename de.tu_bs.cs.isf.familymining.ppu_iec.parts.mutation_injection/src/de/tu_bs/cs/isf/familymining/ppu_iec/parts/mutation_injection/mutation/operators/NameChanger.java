@@ -49,6 +49,9 @@ public class NameChanger implements Mutation {
 
 				exclusionList.add(newValue);
 				//replaceOccurrences(oldValue, newValue, ctx);
+				
+				// log change
+				ctx.logChange(candidate);
 
 				symbolMutationCount++;
 			}

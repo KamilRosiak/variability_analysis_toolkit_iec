@@ -30,8 +30,8 @@ public class NumberChangerTest extends ScenarioTest {
 
 	@RepeatedTest(5)
 	public void testParameter_maxMutations() {
-		MutationContext ctx = new MutationContext();
-		ctx.setCtxObjects(forLoops(5));
+		MutationContext ctx = new MutationContext(null, null);
+		ctx.getCtxObjects().addAll(forLoops(5));
 
 		MutationContext mutCtx = numberChanger.apply(ctx.clone());
 		assertThat(mutCtx.getCtxObjects()).hasSize(5);

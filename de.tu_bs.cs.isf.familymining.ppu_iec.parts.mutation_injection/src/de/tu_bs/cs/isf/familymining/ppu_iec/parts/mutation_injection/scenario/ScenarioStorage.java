@@ -38,7 +38,7 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.rcp_e4.EMFModelLoader.impl.EMFModelL
  */
 @Singleton
 @Creatable
-public class ScenarioFacade {
+public class ScenarioStorage {
 
 	private static final String FILE_EXT = "project";
 	private static final String MUTATION_DIR_NAME = "MutationInjection";
@@ -48,12 +48,30 @@ public class ScenarioFacade {
 	
 	Map<String, Configuration> scenarioCache = new HashMap<>(); 
 	
+	
+	/**
+	 * Searches and loads a scenario by using the resource name. The name is in the .project file at the path "configuration/resources[name]".
+	 * The scenario search is only within the workspace of the started application.
+	 * 
+	 * @param name scenario name
+	 * @return scenario configuration or none if not found
+	 */
 	public Optional<Configuration> loadScenario(String name) {
-		Configuration config = scenarioCache.computeIfAbsent(name, (scenarioName) -> findScenario(scenarioName));
+		Configuration config = scenarioCache.computeIfAbsent(name, this::findScenario);
 		return Optional.ofNullable(config);
 	}
 
-	public void saveScenario(String name, Configuration scenario) throws IOException {
+	/**
+	 * Saves the scenario under the given name. Scenarios are stored in the workspace at {@value #MUTATION_DIR_NAME}.
+	 * 
+	 * @param name
+	 * @param scenario
+	 * @throws IOException
+	 */
+	public void saveScenario(Configuration scenario, String name) throws IOException {
+		// rename the resource wrapping the scenario
+		scenario.getResources().get(0).setName(name);
+		
 		// ensure the mutation directory is available
 		Directory root = fs.getWorkspaceDirectory();
 		Optional<FileTreeElement> mutationDirOpt = root.getChildren().stream().filter(dir -> dir.isDirectory() && dir.getAbsolutePath().endsWith(MUTATION_DIR_NAME)).findAny();
@@ -64,6 +82,10 @@ public class ScenarioFacade {
 	
 	public String getMutantDirectoryName() {
 		return MUTATION_DIR_NAME;
+	}
+	
+	public String getName(Configuration config) {
+		return config.getResources().get(0).getName();
 	}
 	
 	private Configuration findScenario(String name) {

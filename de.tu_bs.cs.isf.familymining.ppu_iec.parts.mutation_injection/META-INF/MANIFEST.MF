@@ -5,21 +5,20 @@ Bundle-SymbolicName: de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injecti
 Bundle-Version: 1.0.0.qualifier
 Automatic-Module-Name: de.tu.bs.cs.isf.familymining.ppu.iec.parts.mutation.injection
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Require-Bundle: org.eclipse.swt,
- org.junit.jupiter.api,
+Require-Bundle: org.junit.jupiter.api,
  org.assertj;bundle-version="3.0.0",
  org.eclipse.equinox.preferences,
  javax.inject,
  org.eclipse.e4.core.contexts,
+ org.eclipse.e4.core.services,
+ org.eclipse.e4.core.di.annotations,
  org.eclipse.emf.ecore,
  org.eclipse.e4.ui.workbench,
  org.eclipse.e4.core.di.extensions;bundle-version="0.16.0",
  org.apache.commons.lang3;bundle-version="3.0.0",
  org.eclipse.emf.common,
  de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel,
- org.eclipse.e4.core.di.annotations,
  de.tu_bs.cs.isf.e4cf.core,
  de.tu_bs.cs.isf.e4cf.EMFModelLoader,
- de.tu_bs.cs.isf.e4cf.parts.project_explorer;bundle-version="1.0.0",
- de.tu_bs.cs.isf.e4cf.core.compare,
- de.tu_bs.cs.isf.familymining.ppu_iec.core
+ de.tu_bs.cs.isf.e4cf.core.compare;bundle-version="1.0.0",
+ de.tu_bs.cs.isf.familymining.ppu_iec.core;bundle-version="1.0.0"

@@ -60,6 +60,9 @@ public class EnumChanger implements Mutation {
 					candidate.eSet(attr, newValue);
 					exclusionList.add(newValue.getLiteral());
 
+					// log change
+					ctx.logChange(candidate);
+					
 					symbolMutationCount++;
 				}
 			}

@@ -1,6 +1,9 @@
 package de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection;
 
-import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.MutationContext;
+import java.util.List;
+
+import org.eclipse.emf.ecore.EObject;
+
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Action;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Configuration;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Declaration;
@@ -14,32 +17,36 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtext.Struc
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtextexpression.Expression;
 
 /**
- * 
+ * Creates a cluster of scenario objects from a given key scenario object. 
+ * The interface holds a cluster factory method for  key scenario object.
+ * The returned cluster should have at least one element for a valid cluster, 
+ * no element for a rejected key scenario object, or null if an error occurred.
  * 
  * @author Oliver Urbaniak
- *
  */
-public interface MutationContextFactory {
+public interface ScenarioObjectClusterFactory {
 
-	MutationContext createFromConfiguration(Configuration config);
+	public final static String MUTATION_PREF = "de.tu_bs.cs.isf.familymining.ppu_iec_parts.mutation_injection";
 	
-	MutationContext createFromPOU(POU pou);
+	List<EObject> createFromConfiguration(Configuration config);
 	
-	MutationContext createFromAction(Action action);
+	List<EObject> createFromPOU(POU pou);
 	
-	MutationContext createFromDeclaration(Declaration declaration);
+	List<EObject> createFromAction(Action action);
 	
-	MutationContext createFromST(StructuredText st);
+	List<EObject> createFromDeclaration(Declaration declaration);
 	
-	MutationContext createFromSTStatement(Statement statement);
+	List<EObject> createFromST(StructuredText st);
 	
-	MutationContext createFromSTExpression(Expression expression);
+	List<EObject> createFromSTStatement(Statement statement);
 	
-	MutationContext createFromSFC(SequentialFunctionChart sfc);
+	List<EObject> createFromSTExpression(Expression expression);
 	
-	MutationContext createFromSFCStep(Step step);
+	List<EObject> createFromSFC(SequentialFunctionChart sfc);
 	
-	MutationContext createFromSFCAction(AbstractAction action);
+	List<EObject> createFromSFCStep(Step step);
 	
-	MutationContext createFromSFCTransition(Transition transition);
+	List<EObject> createFromSFCAction(AbstractAction action);
+	
+	List<EObject> createFromSFCTransition(Transition transition);
 }

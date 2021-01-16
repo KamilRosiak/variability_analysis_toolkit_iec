@@ -14,7 +14,6 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.solution.ConfigurationR
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.solution.model.ModelCompareContainer;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.solution.templates.IECAbstractContainer;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.solution.templates.IECAbstractOption;
-import de.tu_bs.cs.isf.familymining.ppu_iec.core.string_table.PPUStringTable;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.util.VariabilityThresholdsUtil;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Configuration;
 

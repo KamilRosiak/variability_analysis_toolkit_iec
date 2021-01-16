@@ -50,6 +50,9 @@ public class NumberChanger implements Mutation {
 				Number newValue = generateNumber(oldValue);
 				candidate.eSet(attr, newValue);
 				exclusionList.add(newValue);
+				
+				// log change
+				ctx.logChange(candidate);
 
 				symbolMutationCount++;
 			}

@@ -34,7 +34,7 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Variab
  * @author Oliver Urbaniak
  *
  * @param <Result> denotes the result type for the transformation
- * @param <Node> denotes the node type which makes up the specific tree structure
+ * @param <Node> denotes the node type which makes up the target tree structure
  */
 public abstract class AbstractIECTransformation<Result, Node> implements Transformation<Result> {
 

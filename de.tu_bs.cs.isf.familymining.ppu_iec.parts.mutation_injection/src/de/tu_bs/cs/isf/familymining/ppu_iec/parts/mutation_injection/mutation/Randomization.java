@@ -3,12 +3,15 @@ package de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation;
 import java.util.Iterator;
 import java.util.Random;
 
-public class Randomization {
-
-	private final Random rand;
+public class Randomization extends Random {
 	
+	/**
+	 * Implements Serializable
+	 */
+	private static final long serialVersionUID = -2299895016625529311L;
+
 	public Randomization() {
-		rand = new Random(System.currentTimeMillis());		
+		super(System.currentTimeMillis());		
 	}
 	
 	/**
@@ -21,7 +24,7 @@ public class Randomization {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> T pickFrom(T... elements) {
-		int index = rand.nextInt(elements.length);
+		int index = nextInt(elements.length);
 		return elements[index];
 	}
 	
@@ -39,7 +42,7 @@ public class Randomization {
 			throw new IllegalArgumentException("The number of elements is either zero or undefined");
 		}
 		
-		int index = rand.nextInt(size);
+		int index = nextInt(size);
 		Iterator<T> it = elements.iterator();
 		for (int i = 0; i < index; i++) {
 			it.next();
