@@ -34,6 +34,9 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.op
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.NameChanger;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.NumberChanger;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Configuration;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 @Creatable
 public class MutationEngine {
@@ -69,7 +72,7 @@ public class MutationEngine {
 		System.out.println("Mutants in Model: " + containedMutants.size());
 		int foundMutants = searchForMutants(changeList, containedMutants);
 		System.out.println("Found Mutants: " + foundMutants);
-		
+
 		// next iteration with the mutant as seed
 		if (run < RUNS) {
 			mutationCycle(mutant, run++);
