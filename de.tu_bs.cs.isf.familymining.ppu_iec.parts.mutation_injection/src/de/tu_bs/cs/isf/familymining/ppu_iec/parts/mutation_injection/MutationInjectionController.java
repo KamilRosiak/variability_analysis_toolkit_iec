@@ -30,8 +30,8 @@ public class MutationInjectionController {
 	private ScenarioStorage scenarioStorage;
 
 	private List<MutationResult> mutationResults = new ArrayList<>();
-
-	@Inject
+	
+	@Inject	
 	public void fillContext(IEclipseContext context, @Preference(nodePath = MUTATION_PREF) IEclipsePreferences prefs) {
 		scenarioStorage = ContextInjectionFactory.make(ScenarioStorage.class, context);
 

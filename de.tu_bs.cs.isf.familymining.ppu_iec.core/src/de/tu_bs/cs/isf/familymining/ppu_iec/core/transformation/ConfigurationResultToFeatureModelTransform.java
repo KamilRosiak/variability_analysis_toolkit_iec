@@ -15,6 +15,7 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.solution.model.ModelCom
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.solution.templates.IECAbstractContainer;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.solution.templates.IECAbstractOption;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.util.VariabilityThresholdsUtil;
+import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Configuration;
 
 public class ConfigurationResultToFeatureModelTransform extends AbstractIECTransformation<FeatureDiagramm, Feature> {
 	
@@ -34,11 +35,11 @@ public class ConfigurationResultToFeatureModelTransform extends AbstractIECTrans
 			String targetName = "";
 			if(!modelContainer.getResults().isEmpty()) {
 				if(modelContainer.getResults().get(0).getFirst() != null) {
-					sourceName = modelContainer.getResults().get(0).getFirst().getIdentifier();
+					sourceName = ((Configuration)modelContainer.getResults().get(0).getFirst()).getIdentifier();
 				}
 				
 				if(modelContainer.getResults().get(0).getFirst() != null) {
-					targetName = modelContainer.getResults().get(0).getSecond().getIdentifier();
+					targetName = ((Configuration)modelContainer.getResults().get(0).getSecond()).getIdentifier();
 				}
 			}
 			

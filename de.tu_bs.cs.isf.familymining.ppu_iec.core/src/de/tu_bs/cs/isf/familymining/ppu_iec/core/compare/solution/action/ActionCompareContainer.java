@@ -28,6 +28,7 @@ public class ActionCompareContainer extends IECAbstractContainer<Action> {
 	}
 
 	public void setActionImplOption(ActionImplementationOption actionImplOption) {
+		addOption(actionImplOption);
 		this.actionImplOption = actionImplOption;
 	}
 	
@@ -57,6 +58,7 @@ public class ActionCompareContainer extends IECAbstractContainer<Action> {
 	public void reset() {
 		setActionImplOption(null);
 		getResults().clear();
+		getOptions().clear();
 	}
 
 	@Override
