@@ -102,7 +102,7 @@ public class MutationInjection {
 			
 			// apply mutations
 			mutator.mutate(mutCtx);
-			mutRegistry.addMutationContext(mutCtx);
+			mutRegistry.getMutCtxs().add(mutCtx);
 			
 			// remove sub tree since eobjects might have been deleted or inserted, a new iterator can handle these changes
 			if (mutCtx.hasChangedTreeStructure()) {

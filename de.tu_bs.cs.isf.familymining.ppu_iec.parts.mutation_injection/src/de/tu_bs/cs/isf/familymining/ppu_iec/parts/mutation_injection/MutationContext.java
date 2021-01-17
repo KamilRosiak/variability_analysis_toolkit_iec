@@ -1,6 +1,7 @@
 package de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -10,6 +11,8 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+
+import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.MutationPair;
 
 public class MutationContext {
 
@@ -144,6 +147,10 @@ public class MutationContext {
 		this.changedTreeStructure = changedTreeStructure;
 	}
 
+	public int mutatedEObjects() {
+		return interProjectMapping.size() + insertions.size() + removals.size();
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -173,6 +180,14 @@ public class MutationContext {
 		clone.getCtxObjects().addAll(ctxObjects.stream().map(EcoreUtil::copy).collect(Collectors.toList()));
 
 		return clone;
+	}
+
+	public List<MutationPair> getMutationPairs() {
+		List<MutationPair> mutPairs = new ArrayList<>();
+		interProjectMapping.entrySet().forEach(entry -> mutPairs.add(new MutationPair(entry.getKey(), entry.getValue())));
+		removals.forEach(removed -> mutPairs.add(new MutationPair(null, removed)));
+		insertions.forEach(inserted -> mutPairs.add(new MutationPair(inserted, null)));
+		return mutPairs;
 	}
 
 }
