@@ -4,7 +4,6 @@ import static de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.muta
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -13,23 +12,20 @@ import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Creatable;
 import org.eclipse.e4.core.di.extensions.Preference;
-import org.eclipse.emf.ecore.EObject;
 
 import de.tu_bs.cs.isf.e4cf.core.compare.templates.AbstractContainer;
 import de.tu_bs.cs.isf.e4cf.core.util.ServiceContainer;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.solution.ConfigurationResultRoot;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.solution.util.ConfigurationCompareUtil;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.MutationResult;
-import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.UnknownObjectException;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection.MutationInjection;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection.MutationInjectionConfig;
-import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection.MutationRegistry;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.MutationPair;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Configuration;
 
 @Creatable
 public class MutationEngine {
-	private static final int RUNS = 10;
+	private static final int RUNS = 1;
 	private ServiceContainer services;
 	private MutationInjection mutationInjection;
 
@@ -45,31 +41,33 @@ public class MutationEngine {
 	}
 
 	private void mutationCycle(Configuration seed, int run) {
-		// generate and rename mutant 
+		// generate and rename mutant
 		MutationResult mutationResult = mutationInjection.generateMutant(seed);
 		Configuration mutant = mutationResult.getMutated();
 		mutant.getResources().get(0).setName(name(seed));
 
-		// find changes
+		//find changes
 		ConfigurationResultRoot result = ConfigurationCompareUtil.compare(seed, mutant);
 		List<AbstractContainer> changeList = ConfigurationCompareUtil.findChanges(result);
-				
+		
+		
 		//search for accordances between mutants and found changes
 		List<MutationPair> totalMutants = mutationResult.getMutationRegistry().getMutationPairs();
-		System.out.println("Total Mutants: " + totalMutants);		
-		
-		int foundMutants = searchForMutants(changeList, totalMutants);
-		System.out.println("Found Mutants: " + foundMutants);
 
-		// next iteration with the mutant as seed
+		System.out.println("RUN: " + run+" NumberMutants: "+ totalMutants.size() +" ChangesFound: "+ changeList.size());
+		int foundMutants = searchForMutants(changeList, totalMutants);
+
+
+		//next iteration with the mutant as seed
 		if (run < RUNS) {
-			mutationCycle(mutant, run++);
+			run++;
+			mutationCycle(mutant, run);
 		}
 	}
-	
-	
+
 	/**
-	 * This method iterates over both list and removes pairs if elements are matching
+	 * This method iterates over both list and removes pairs if elements are
+	 * matching
 	 */
 	private int searchForMutants(List<AbstractContainer> changeList, List<MutationPair> totalMutants) {
 		Iterator<AbstractContainer> changeIterator = changeList.iterator();
@@ -79,19 +77,42 @@ public class MutationEngine {
 			AbstractContainer currentContainer = changeIterator.next();
 			while (mutantsIterator.hasNext()) {
 				MutationPair mutantPair = mutantsIterator.next();
-				// Mutant was found can can be remove from both iterators
-				if (mutantPair.getOrigin().equals(currentContainer.getFirst())
+				// Added artifact
+				if (mutantPair.getOrigin() == null && mutantPair.getMutant() != null
+						&& currentContainer.getFirst() == null && currentContainer.getSecond() != null
 						&& mutantPair.getMutant().equals(currentContainer.getSecond())) {
 					mutantsIterator.remove();
 					changeIterator.remove();
 					foundMutants++;
+					continue;
+				}
+
+				// Removed artifact
+				if (mutantPair.getOrigin() != null && mutantPair.getMutant() == null
+						&& currentContainer.getFirst() != null && currentContainer.getSecond() == null
+						&& mutantPair.getOrigin().equals(currentContainer.getFirst())) {
+					mutantsIterator.remove();
+					changeIterator.remove();
+					foundMutants++;
+					continue;
+				}
+
+				// Changed artifact
+				if (mutantPair.getOrigin() != null && mutantPair.getMutant() != null
+						&& currentContainer.getFirst() != null && currentContainer.getSecond() != null
+						&& mutantPair.getOrigin().equals(currentContainer.getFirst())
+						&& mutantPair.getMutant().equals(currentContainer.getSecond())) {
+					mutantsIterator.remove();
+					changeIterator.remove();
+					foundMutants++;
+					continue;
 					// TODO: Create an evaluation of all runs with detailed information
 				}
 			}
 		}
 		return foundMutants;
 	}
-	
+
 	/**
 	 * This method initializes the mutationInjection
 	 */
@@ -105,7 +126,7 @@ public class MutationEngine {
 	private String name(Configuration scenario) {
 		return scenario.getResources().get(0).getName();
 	}
-	
+
 	public ServiceContainer getServices() {
 		return services;
 	}

@@ -14,8 +14,8 @@ import de.tu_bs.cs.isf.e4cf.family_model_view.prototype.model.FamilyModel.Variab
 import de.tu_bs.cs.isf.e4cf.family_model_view.prototype.model.FamilyModel.Variant;
 import de.tu_bs.cs.isf.e4cf.family_model_view.prototype.model.FamilyModel.VariantArtefact;
 import de.tu_bs.cs.isf.e4cf.family_model_view.prototype.model.FamilyModel.VariationPoint;
+import de.tu_bs.cs.isf.e4cf.family_model_view.prototype.transformation.FamilyModelTransformation;
 import de.tu_bs.cs.isf.e4cf.family_model_view.prototype.util.FamilyModelBuilder;
-import de.tu_bs.cs.isf.e4cf.family_model_view.prototype.util.FamilyModelTransformation;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.solution.ConfigurationResultRoot;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.solution.model.ModelCompareContainer;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.solution.templates.IECAbstractContainer;

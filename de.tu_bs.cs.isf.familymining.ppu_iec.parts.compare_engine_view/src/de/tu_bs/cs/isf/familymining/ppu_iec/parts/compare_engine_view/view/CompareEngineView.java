@@ -28,7 +28,7 @@ import de.tu_bs.cs.isf.e4cf.core.util.RCPMessageProvider;
 import de.tu_bs.cs.isf.e4cf.core.util.ServiceContainer;
 import de.tu_bs.cs.isf.e4cf.family_model_view.prototype.stringtable.FamilyModelViewEvents;
 import de.tu_bs.cs.isf.e4cf.family_model_view.prototype.stringtable.FamilyModelViewStrings;
-import de.tu_bs.cs.isf.e4cf.family_model_view.prototype.util.FamilyModelTransformation;
+import de.tu_bs.cs.isf.e4cf.family_model_view.prototype.transformation.FamilyModelTransformation;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.CompareEngine;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.metric.MetricContainer;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.metric.util.MetricContainerSerializer;

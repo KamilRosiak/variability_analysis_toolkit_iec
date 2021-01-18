@@ -52,26 +52,27 @@ public class MutationEngine {
 	}
 
 	private void mutationCycle(Configuration seed, int run) {
-		// TODO: Oli the Configuration must be a copy of the seed
-		Configuration mutant = null;
-		// Configuration mutant = null;// =
-		// mutationInjection.generateMutant(seed.getIdentifier(), "1");
+		//create mutant of the seed
+		MutationResult mutation = mutationInjection.generateMutant(seed);
+		Configuration mutant = mutation.getMutated();
 
+		//compare seed with mutant
 		ConfigurationResultRoot result = ConfigurationCompareUtil.compare(seed, mutant);
-		// find changes
+		
+		//iterate over the result structure and identify all changed artifacts
 		List<AbstractContainer> changeList = ConfigurationCompareUtil.findChanges(result);
+		//get all mutation pairs
+		List<MutationPair> containedMutants = mutation.getMutationRegistry().getMutationPairs();
 		
-		// TODO: Oli get all EObject pairs which are changed during a mutation
-		List<MutationPair> containedMutants = null;	
-		
-		//search for accordances between mutants and found changes
+		//search for accordances between mutants and identifyed changes
 		System.out.println("Mutants in Model: " + containedMutants.size());
 		int foundMutants = searchForMutants(changeList, containedMutants);
 		System.out.println("Found Mutants: " + foundMutants);
 
-		// next iteration with the mutant as seed
+		//next iteration with the mutant as seed
 		if (run < RUNS) {
-			mutationCycle(mutant, run++);
+			run++;
+			mutationCycle(mutant, run);
 		}
 	}
 	
