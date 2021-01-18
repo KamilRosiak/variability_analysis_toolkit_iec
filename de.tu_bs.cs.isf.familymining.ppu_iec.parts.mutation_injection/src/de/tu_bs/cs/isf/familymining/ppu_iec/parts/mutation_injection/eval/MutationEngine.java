@@ -55,8 +55,12 @@ public class MutationEngine {
 		List<MutationPair> totalMutants = mutationResult.getMutationRegistry().getMutationPairs();
 
 		System.out.println("RUN: " + run+" NumberMutants: "+ totalMutants.size() +" ChangesFound: "+ changeList.size());
+		for(MutationPair pair : totalMutants) {
+			System.out.println("Original: "+ pair.getOrigin());
+			System.out.println("Mutant: " + pair.getMutant());
+			System.out.println("-------------------------------------------");
+		}
 		int foundMutants = searchForMutants(changeList, totalMutants);
-
 
 		//next iteration with the mutant as seed
 		if (run < RUNS) {

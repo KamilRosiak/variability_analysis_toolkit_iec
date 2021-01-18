@@ -10,7 +10,6 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.metric.MetricContainer;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.solution.model.ModelCompareContainer;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.MutationResult;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection.MutationInjection;
-import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection.MutationRegistry;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.scenario.ScenarioStorage;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Configuration;
 
