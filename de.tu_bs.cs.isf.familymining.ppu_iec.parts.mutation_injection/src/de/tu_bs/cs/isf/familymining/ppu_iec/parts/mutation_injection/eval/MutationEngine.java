@@ -46,23 +46,23 @@ public class MutationEngine {
 		Configuration mutant = mutationResult.getMutated();
 		mutant.getResources().get(0).setName(name(seed));
 
-		//find changes
+		// find changes
 		ConfigurationResultRoot result = ConfigurationCompareUtil.compare(seed, mutant);
 		List<AbstractContainer> changeList = ConfigurationCompareUtil.findChanges(result);
-		
-		
-		//search for accordances between mutants and found changes
+
+		// search for accordances between mutants and found changes
 		List<MutationPair> totalMutants = mutationResult.getMutationRegistry().getMutationPairs();
 
-		System.out.println("RUN: " + run+" NumberMutants: "+ totalMutants.size() +" ChangesFound: "+ changeList.size());
-		for(MutationPair pair : totalMutants) {
-			System.out.println("Original: "+ pair.getOrigin());
+		System.out.println(
+				"RUN: " + run + " NumberMutants: " + totalMutants.size() + " ChangesFound: " + changeList.size());
+		for (MutationPair pair : totalMutants) {
+			System.out.println("Original: " + pair.getOrigin());
 			System.out.println("Mutant: " + pair.getMutant());
 			System.out.println("-------------------------------------------");
 		}
 		int foundMutants = searchForMutants(changeList, totalMutants);
 
-		//next iteration with the mutant as seed
+		// next iteration with the mutant as seed
 		if (run < RUNS) {
 			run++;
 			mutationCycle(mutant, run);
@@ -76,7 +76,10 @@ public class MutationEngine {
 	private int searchForMutants(List<AbstractContainer> changeList, List<MutationPair> totalMutants) {
 		Iterator<AbstractContainer> changeIterator = changeList.iterator();
 		Iterator<MutationPair> mutantsIterator = totalMutants.iterator();
+
+		// TRUE POSITIVE
 		int foundMutants = 0;
+
 		while (changeIterator.hasNext()) {
 			AbstractContainer currentContainer = changeIterator.next();
 			while (mutantsIterator.hasNext()) {
@@ -114,6 +117,14 @@ public class MutationEngine {
 				}
 			}
 		}
+		System.out.println("TRUE POSITIVES: " + foundMutants);
+		System.out.println("FALSE POSITIVES: " + changeList.size());
+		System.out.println("TRUE NEGATIVES: " + totalMutants.size());
+		System.out.println("FALSE NEGATIVES:");
+
+		System.out.println("Precision: " + " ");
+		System.out.println("Recall: " + " ");
+
 		return foundMutants;
 	}
 
