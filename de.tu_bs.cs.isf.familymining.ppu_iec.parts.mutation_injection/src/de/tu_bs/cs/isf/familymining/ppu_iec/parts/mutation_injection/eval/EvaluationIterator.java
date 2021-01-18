@@ -16,7 +16,7 @@ public class EvaluationIterator extends ContainerIterator {
 
 	@Override
 	protected <T extends EObject> void process(IECAbstractContainer<T> container) {
-		System.out.println(container.getFirst()+"\n---\n"+container.getSecond()+"\n");
+		
 	}
 
 	@Override
