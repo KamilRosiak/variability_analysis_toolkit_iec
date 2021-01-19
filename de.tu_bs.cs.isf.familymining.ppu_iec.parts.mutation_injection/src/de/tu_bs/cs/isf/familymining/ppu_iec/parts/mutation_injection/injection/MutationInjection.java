@@ -1,6 +1,7 @@
 package de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection;
 
 import java.io.IOException;
+import java.rmi.UnexpectedException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -10,6 +11,9 @@ import javax.inject.Inject;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.MutationContext;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.MutationResult;
@@ -58,41 +62,25 @@ public class MutationInjection {
 		TreeIterator<EObject> it = EcoreUtil.<EObject>getAllProperContents(mutScenario, true);
 		MutationRegistry mutRegistry = new MutationRegistry();
 		
-		mutateTree(it, scenario, mutScenario, mutRegistry);
+		BiMap<EObject, EObject> mapping = constructOriginalToMutatedTreeMapping(scenario, mutScenario);
+		
+		mutateTree(it, scenario, mutScenario, mutRegistry, mapping);
 		
 		return new MutationResult(scenario, mutScenario, mutRegistry);
 	}
 	
-	private void mutateTree(TreeIterator<EObject> it, Configuration scenario, Configuration mutScenario, MutationRegistry mutRegistry) {
+	private void mutateTree(TreeIterator<EObject> it, Configuration scenario, Configuration mutScenario, MutationRegistry mutRegistry, BiMap<EObject, EObject> mapping) {
 		while (it.hasNext()) {
 			EObject eobject = it.next();
 			
-			// create a cluster from a key scenario object
-			List<EObject> cluster = new ArrayList<>();
-			if (eobject instanceof POU) {
-				cluster = factory.createFromPOU((POU) eobject);
-			} else if (eobject instanceof Action) {
-				cluster = factory.createFromAction((Action) eobject);
-			} else if (eobject instanceof StructuredText) {
-				cluster = factory.createFromST((StructuredText) eobject);
-			} else if (eobject instanceof Expression) {
-				cluster = factory.createFromSTExpression((Expression) eobject);
-			} else if (eobject instanceof SequentialFunctionChart) {
-				cluster = factory.createFromSFC((SequentialFunctionChart) eobject);
-			} else if (eobject instanceof Step) {
-				cluster = factory.createFromSFCStep((Step) eobject);
-			} else if (eobject instanceof AbstractAction) {
-				cluster = factory.createFromSFCAction((AbstractAction) eobject);
-			} else if (eobject instanceof Transition) {
-				cluster = factory.createFromSFCTransition((Transition) eobject);
-			}
+			List<EObject> cluster = createClusterFrom(eobject);
 			
 			if (cluster.isEmpty()) {
 				continue;
 			}
 		
 			// create mutation context
-			MutationContext mutCtx = new MutationContext(scenario, mutScenario);
+			MutationContext mutCtx = new MutationContext(mapping);
 			mutCtx.getCtxObjects().addAll(cluster);
 
 			Optional<MutationContext> recentMutCtx = mutRegistry.getMostRecentMutationContext();
@@ -107,10 +95,54 @@ public class MutationInjection {
 			// remove sub tree since eobjects might have been deleted or inserted, a new iterator can handle these changes
 			if (mutCtx.hasChangedTreeStructure()) {
 				it.prune();
+				
 				TreeIterator<EObject> subtreeIt = EcoreUtil.getAllProperContents(eobject, true);
-				subtreeIt.next();
-				mutateTree(subtreeIt, scenario, mutScenario, mutRegistry);				
+				if (subtreeIt.hasNext()) {
+					subtreeIt.next();
+					mutateTree(subtreeIt, scenario, mutScenario, mutRegistry, mapping);				
+				}
 			}
 		}		
+	}
+
+	private List<EObject> createClusterFrom(EObject eobject) {
+		// create a cluster from a key scenario object
+		List<EObject> cluster = new ArrayList<>();
+		if (eobject instanceof POU) {
+			cluster = factory.createFromPOU((POU) eobject);
+		} else if (eobject instanceof Action) {
+			cluster = factory.createFromAction((Action) eobject);
+		} else if (eobject instanceof StructuredText) {
+			cluster = factory.createFromST((StructuredText) eobject);
+		} else if (eobject instanceof Expression) {
+			cluster = factory.createFromSTExpression((Expression) eobject);
+		} else if (eobject instanceof SequentialFunctionChart) {
+			cluster = factory.createFromSFC((SequentialFunctionChart) eobject);
+		} else if (eobject instanceof Step) {
+			cluster = factory.createFromSFCStep((Step) eobject);
+		} else if (eobject instanceof AbstractAction) {
+			cluster = factory.createFromSFCAction((AbstractAction) eobject);
+		} else if (eobject instanceof Transition) {
+			cluster = factory.createFromSFCTransition((Transition) eobject);
+		}
+		return cluster;
+	}
+	
+	private BiMap<EObject, EObject> constructOriginalToMutatedTreeMapping(Configuration original, Configuration mutated) {
+		BiMap<EObject, EObject> mapping = HashBiMap.create();
+		
+		TreeIterator<EObject> origIt = EcoreUtil.getAllProperContents(original, true);
+		TreeIterator<EObject> mutatedIt = EcoreUtil.getAllProperContents(mutated, true);
+		while (origIt.hasNext() && mutatedIt.hasNext()) {
+			EObject origObject = origIt.next();
+			EObject mutatedObject = mutatedIt.next();
+			mapping.put(origObject, mutatedObject);
+		}
+		
+		if (origIt.hasNext() || mutatedIt.hasNext()) {
+			throw new InequalTreeException("Trees do not have the same structure.");
+		}
+		
+		return mapping;
 	}
 }

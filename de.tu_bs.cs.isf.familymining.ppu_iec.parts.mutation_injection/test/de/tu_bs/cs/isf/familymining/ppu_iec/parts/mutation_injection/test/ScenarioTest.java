@@ -2,6 +2,7 @@ package de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.test;
 
 import java.util.Random;
 
+import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.Randomization;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.ConfigurationFactory;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Location;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Variable;
@@ -11,9 +12,13 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Variab
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.SequentialFunctionChartFactory;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtext.ForLoop;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtext.StructuredTextFactory;
+import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtextexpression.BinaryExpression;
+import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtextexpression.BinaryOperator;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtextexpression.ElementaryDataType;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtextexpression.Expression;
+import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtextexpression.ExpressionType;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtextexpression.StructuredTextExpressionFactory;
+import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtextexpression.VariableExpression;
 
 public abstract class ScenarioTest {
 
@@ -22,8 +27,17 @@ public abstract class ScenarioTest {
 	protected StructuredTextExpressionFactory steFactory = StructuredTextExpressionFactory.eINSTANCE;
 	protected SequentialFunctionChartFactory sfcFactory = SequentialFunctionChartFactory.eINSTANCE;
 	
-	private Random rand = new Random();
-
+	protected Randomization randomly = new Randomization();
+	
+	protected BinaryExpression createBinaryExpr(Expression left, Expression right, BinaryOperator op) {
+		BinaryExpression binary = steFactory.createBinaryExpression();
+		binary.setLeft(left);
+		binary.setRight(right);
+		binary.setOperator(op);
+		binary.setId("");
+		return binary;
+	}
+	
 	protected Variable createVariable(String name, VariableDeclaration scope, ElementaryDataType type,
 			VariableLocationDataType locDataType, VariableLocationType locType) {
 		Variable var = configFactory.createVariable();
@@ -40,6 +54,15 @@ public abstract class ScenarioTest {
 		return var;
 	}
 	
+	protected VariableExpression createVariableExpression(String symbol, ElementaryDataType type) {
+		VariableExpression varExpr = steFactory.createVariableExpression();
+		varExpr.setId("");
+		varExpr.setSymbol(symbol);
+		varExpr.setExpressionType(ExpressionType.VARIABLE);
+		varExpr.setDataType(type);
+		return varExpr;
+	}
+	
 	protected Variable createVariableWithInitialValue(String name, VariableDeclaration scope, ElementaryDataType type,
 			VariableLocationDataType locDataType, VariableLocationType locType, Expression expr) {
 		Variable var = createVariable(name, scope, type, locDataType, locType);
@@ -50,11 +73,11 @@ public abstract class ScenarioTest {
 	
 	protected ForLoop createForLoop(int initialValue, int increment, int upperBound) {
 		ForLoop forLoop = stFactory.createForLoop();
-		forLoop.setAbsStartLine(rand.nextInt(20));
+		forLoop.setAbsStartLine(randomly.nextInt(20));
 		forLoop.setAbsEndLine(forLoop.getAbsStartLine()+3);
-		forLoop.setStartColumnPos(rand.nextInt(20));
+		forLoop.setStartColumnPos(randomly.nextInt(20));
 		forLoop.setEndColumnPos(forLoop.getStartColumnPos()+5);
-		forLoop.setRelStartLine(rand.nextInt(5));
+		forLoop.setRelStartLine(randomly.nextInt(5));
 		forLoop.setRelEndLine(forLoop.getRelStartLine()+ 10);
 		forLoop.setId("");
 		forLoop.setIncrement(increment);

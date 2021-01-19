@@ -26,7 +26,7 @@ public class EnumChanger implements Mutation {
 
 	private int maxSymbolsMutations;
 
-	private Randomization randomly;
+	private Randomization randomly; 
 
 	@PostConstruct
 	public void postConstruct(
@@ -57,11 +57,11 @@ public class EnumChanger implements Mutation {
 				if (!valueCandidates.isEmpty()) {
 					Enumerator newValue = randomly.pickFrom(valueCandidates);
 
-					candidate.eSet(attr, newValue);
-					exclusionList.add(newValue.getLiteral());
-
 					// log change
 					ctx.logChange(candidate);
+
+					candidate.eSet(attr, newValue);
+					exclusionList.add(newValue.getLiteral());
 					
 					symbolMutationCount++;
 				}

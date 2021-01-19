@@ -53,6 +53,8 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtextexpres
 public class StatementInserter extends StatementMutation {
 	private final StructuredTextFactory stFactory = StructuredTextFactory.eINSTANCE;
 	private final StructuredTextExpressionFactory steFactory = StructuredTextExpressionFactory.eINSTANCE;
+	
+	private final float REC_CHANCE = 0.3f;
 
 	private int maxMutations;
 
@@ -163,7 +165,11 @@ public class StatementInserter extends StatementMutation {
 		if (isString(returnType)) {
 			exprType = randomly.pickFrom(LITERAL, VARIABLE);
 		} else {
-			exprType = randomly.pickFrom(UNARY, BINARY, LITERAL, VARIABLE);
+			if (randomly.nextFloat() < REC_CHANCE) {
+				exprType = randomly.pickFrom(UNARY, BINARY);
+			} else {
+				exprType = randomly.pickFrom(LITERAL, VARIABLE);
+			}
 		}
 
 		switch (exprType) {

@@ -11,6 +11,8 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.google.common.collect.HashBiMap;
+
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.MutationContext;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.StatementRemover;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.test.ScenarioTest;
@@ -34,7 +36,7 @@ public class StatementRemoverTest extends ScenarioTest {
 
 	@Test
 	public void testParameter_maxMutations() {
-		MutationContext ctx = new MutationContext(null, null);
+		MutationContext ctx = new MutationContext(HashBiMap.create());
 		ctx.getCtxObjects().addAll(structuredText(ST_INSTANCE_SIZE, STMT_SIZE));
 
 		MutationContext mutCtx = stmtRemover.apply(ctx.clone());

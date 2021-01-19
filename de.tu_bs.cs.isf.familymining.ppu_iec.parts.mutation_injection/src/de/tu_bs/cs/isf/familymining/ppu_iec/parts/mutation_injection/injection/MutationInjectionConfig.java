@@ -44,8 +44,8 @@ import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.extensions.Preference;
 import org.osgi.service.prefs.BackingStoreException;
 
+import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.CompoundMutator;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.Mutator;
-import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.STMutator;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.EnumChanger;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.NameChanger;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.NumberChanger;
@@ -101,8 +101,8 @@ public class MutationInjectionConfig {
 		context.set(ScenarioObjectClusterFactory.class, randomizedClusterFactory);
 		
 		// mutator		
-		STMutator stMutator = ContextInjectionFactory.make(STMutator.class, context);
-		context.set(Mutator.class, stMutator);
+		CompoundMutator compoundMutator = ContextInjectionFactory.make(CompoundMutator.class, context);
+		context.set(Mutator.class, compoundMutator);
 
 		try {
 			prefs.flush();

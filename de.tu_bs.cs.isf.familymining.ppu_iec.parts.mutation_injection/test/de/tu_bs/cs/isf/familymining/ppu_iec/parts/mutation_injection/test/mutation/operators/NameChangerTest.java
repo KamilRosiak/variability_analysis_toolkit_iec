@@ -11,6 +11,8 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 
+import com.google.common.collect.HashBiMap;
+
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.MutationContext;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.NameChanger;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.test.ScenarioTest;
@@ -33,7 +35,7 @@ public class NameChangerTest extends ScenarioTest {
 
 	@RepeatedTest(5)
 	public void testParameter_maxMutations() {
-		MutationContext ctx = new MutationContext(null, null);
+		MutationContext ctx = new MutationContext(HashBiMap.create());
 		ctx.getCtxObjects().addAll(variables(5));
 
 		MutationContext mutCtx = nameChanger.apply(ctx.clone());

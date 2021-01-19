@@ -16,6 +16,14 @@ public class MutationPair {
 		setOrigin(origin);
 	}
 
+	public boolean hasOrigin() {
+		return origin != null;
+	}
+	
+	public boolean hasMutant() {
+		return mutant != null;
+	}
+	
 	public EObject getOrigin() {
 		return origin;
 	}

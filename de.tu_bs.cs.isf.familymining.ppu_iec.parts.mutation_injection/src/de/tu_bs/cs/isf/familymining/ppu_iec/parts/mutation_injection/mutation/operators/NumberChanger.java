@@ -47,12 +47,12 @@ public class NumberChanger implements Mutation {
 				EAttribute attr = numberAttrs.get(0);
 				Number oldValue = (Number) candidate.eGet(attr);
 
+				// log change
+				ctx.logChange(candidate);
+
 				Number newValue = generateNumber(oldValue);
 				candidate.eSet(attr, newValue);
 				exclusionList.add(newValue);
-				
-				// log change
-				ctx.logChange(candidate);
 
 				symbolMutationCount++;
 			}

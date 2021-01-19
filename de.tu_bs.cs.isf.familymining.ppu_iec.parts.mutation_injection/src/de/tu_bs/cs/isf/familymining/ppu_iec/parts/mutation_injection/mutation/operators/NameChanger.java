@@ -44,14 +44,15 @@ public class NameChanger implements Mutation {
 				EAttribute attr = stringAttrs.get(0);
 				String oldValue = (String) candidate.eGet(attr);
 
+				// log change
+				ctx.logChange(candidate);
+
 				String newValue = generateName(oldValue);
 				candidate.eSet(attr, newValue);
 
 				exclusionList.add(newValue);
 				//replaceOccurrences(oldValue, newValue, ctx);
 				
-				// log change
-				ctx.logChange(candidate);
 
 				symbolMutationCount++;
 			}

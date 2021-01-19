@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
@@ -15,9 +16,8 @@ import com.google.common.collect.HashBiMap;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.MutationPair;
 
 public class MutationContext {
-
-	private final EObject originalRoot;
-	private final EObject mutatedRoot;
+	
+	private final BiMap<EObject, EObject> originalToMutatedObjectMapping; 
 
 	private List<EObject> ctxObjects = new ArrayList<>();
 
@@ -31,15 +31,10 @@ public class MutationContext {
 	 * scenario objects contained in the list of ctx objects. The map does not keep
 	 * track of inserted or removed objects resulting through mutation.
 	 */
-	private BiMap<EObject, EObject> interProjectMapping = HashBiMap.create(); // original object -> mutated object
+	private List<MutationPair> mutationPairs = new ArrayList<>();
 
-	private List<EObject> removals = new ArrayList<>();
-	private List<EObject> insertions = new ArrayList<>();
-
-	public MutationContext(EObject originalRoot, EObject mutatedRoot) {
-		super();
-		this.originalRoot = originalRoot;
-		this.mutatedRoot = mutatedRoot;
+	public MutationContext(BiMap<EObject, EObject> originalToMutatedObjectMapping) {
+		this.originalToMutatedObjectMapping = originalToMutatedObjectMapping;
 	}
 
 	public List<EObject> getCtxObjects() {
@@ -47,46 +42,55 @@ public class MutationContext {
 	}
 
 	/**
-	 * Log the mutated object. Creates the connection between original and mutated
+	 * Logs the mutated object. Creates the connection between original and mutated
 	 * scenario object.
 	 * 
-	 * @param mutObject
+	 * @param toBeChangedObject
 	 */
-	public void logChange(EObject mutObject) {
-		if (originalRoot == null) {
+	public void logChange(EObject toBeChangedObject) {
+		// to be changed object was inserted before
+		Optional<MutationPair> newlyInsertedPair = mutationPairs.stream().filter(pair -> !pair.hasOrigin() && pair.hasMutant())
+				.filter(pair -> pair.getMutant().equals(toBeChangedObject)).findFirst();
+		if (newlyInsertedPair.isPresent()) {
+			return;
+		}
+		
+		// to be changed object was changed before
+		boolean isLogged = mutationPairs.stream().anyMatch(pair -> pair.hasMutant() ? pair.getMutant().equals(toBeChangedObject) : false);
+		if (isLogged) {
 			return;
 		}
 
-		String mutObjectFragment = EcoreUtil.getRelativeURIFragmentPath(mutatedRoot, mutObject);
-		EObject origObject = EcoreUtil.getEObject(originalRoot, mutObjectFragment);
-
-		interProjectMapping.putIfAbsent(origObject, mutObject);
+		// not related to known mutation pair, therefore mark as changed
+		EObject originalCounterpart = originalToMutatedObjectMapping.inverse().get(toBeChangedObject);
+		mutationPairs.add(new MutationPair(originalCounterpart, toBeChangedObject));
 	}
 
-	public void logRemoval(EObject originalScenarioObject) {
-		if (originalRoot == null) {
+	public void logRemoval(EObject toBeRemovedMutObject) {
+		// to be removed object was changed before
+		Optional<MutationPair> changedPair = mutationPairs.stream().filter(pair -> pair.hasOrigin() && pair.hasMutant())
+				.filter(pair -> pair.getMutant().equals(toBeRemovedMutObject)).findFirst();
+		if (changedPair.isPresent()) {
+			changedPair.get().setMutant(null);
+			return;
+		}
+		
+		// to be removed object was inserted before
+		Optional<MutationPair> newlyInsertedPair = mutationPairs.stream().filter(pair -> !pair.hasOrigin() && pair.hasMutant())
+				.filter(pair -> pair.getMutant().equals(toBeRemovedMutObject)).findFirst();
+		if (newlyInsertedPair.isPresent()) {
+			mutationPairs.remove(newlyInsertedPair.get());
 			return;
 		}
 
-		// check for valid removal
-		if (originalScenarioObject.eContainingFeature() == null) {
-			removals.add(originalScenarioObject);
-		} else {
-			throw new IllegalArgumentException("Object " + originalScenarioObject + " was not removed from its tree.");
-		}
+		// not related to known mutation pair, therefore mark as removed
+		EObject originalCounterpart = originalToMutatedObjectMapping.inverse().get(toBeRemovedMutObject);
+		mutationPairs.add(new MutationPair(originalCounterpart, null));
 	}
 
-	public void logInsertion(EObject mutObject) {
-		if (originalRoot == null) {
-			return;
-		}
-
-		// check for valid removal
-		if (mutObject.eContainingFeature() != null) {
-			insertions.add(mutObject);
-		} else {
-			throw new IllegalArgumentException("Object " + mutObject + " was not inserted into the tree.");
-		}
+	public void logInsertion(EObject toBeInsertedObject) {
+		// newly generated object should just make a new mutation pair
+		mutationPairs.add(new MutationPair(null, toBeInsertedObject));
 	}
 
 	/**
@@ -99,12 +103,11 @@ public class MutationContext {
 	 *                                context.
 	 */
 	public Optional<EObject> getMutated(EObject originalScenarioObject) throws UnknownObjectException {
-		if (interProjectMapping.containsKey(originalScenarioObject)) {
-			return Optional.ofNullable(interProjectMapping.get(originalScenarioObject));
-		} else if (removals.contains(originalScenarioObject)) {
-			return Optional.empty();
-		} else {
+		Optional<MutationPair> targetMutationPair = mutationPairs.stream().filter(pair -> pair.hasOrigin() && pair.getOrigin().equals(originalScenarioObject)).findFirst();
+		if (!targetMutationPair.isPresent()) {
 			throw new UnknownObjectException(originalScenarioObject, this);
+		} else {
+			return Optional.ofNullable(targetMutationPair.get().getMutant());
 		}
 	}
 
@@ -118,12 +121,11 @@ public class MutationContext {
 	 *                                context.
 	 */
 	public Optional<EObject> getOriginal(EObject mutatedScenarioObject) throws UnknownObjectException {
-		if (interProjectMapping.inverse().containsKey(mutatedScenarioObject)) {
-			return Optional.ofNullable(interProjectMapping.get(mutatedScenarioObject));
-		} else if (insertions.contains(mutatedScenarioObject)) {
-			return Optional.empty();
-		} else {
+		Optional<MutationPair> targetMutationPair = mutationPairs.stream().filter(pair -> pair.hasMutant() && pair.getMutant().equals(mutatedScenarioObject)).findFirst();
+		if (!targetMutationPair.isPresent()) {
 			throw new UnknownObjectException(mutatedScenarioObject, this);
+		} else {
+			return Optional.ofNullable(targetMutationPair.get().getOrigin());
 		}
 	}
 
@@ -138,7 +140,7 @@ public class MutationContext {
 		}
 		return false;
 	}
-
+	
 	public boolean hasChangedTreeStructure() {
 		return changedTreeStructure;
 	}
@@ -148,9 +150,9 @@ public class MutationContext {
 	}
 
 	public int mutatedEObjects() {
-		return interProjectMapping.size() + insertions.size() + removals.size();
+		return mutationPairs.size();
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -175,7 +177,7 @@ public class MutationContext {
 	 */
 	@Override
 	public MutationContext clone() {
-		MutationContext clone = new MutationContext(originalRoot, mutatedRoot);
+		MutationContext clone = new MutationContext(originalToMutatedObjectMapping);
 		clone.getCtxObjects().clear();
 		clone.getCtxObjects().addAll(ctxObjects.stream().map(EcoreUtil::copy).collect(Collectors.toList()));
 
@@ -183,11 +185,7 @@ public class MutationContext {
 	}
 
 	public List<MutationPair> getMutationPairs() {
-		List<MutationPair> mutPairs = new ArrayList<>();
-		interProjectMapping.entrySet().forEach(entry -> mutPairs.add(new MutationPair(entry.getKey(), entry.getValue())));
-		removals.forEach(removed -> mutPairs.add(new MutationPair(null, removed)));
-		insertions.forEach(inserted -> mutPairs.add(new MutationPair(inserted, null)));
-		return mutPairs;
+		return mutationPairs;
 	}
 
 }
