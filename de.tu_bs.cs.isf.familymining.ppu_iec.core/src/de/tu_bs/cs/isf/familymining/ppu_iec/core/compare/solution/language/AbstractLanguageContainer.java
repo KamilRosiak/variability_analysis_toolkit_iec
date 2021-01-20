@@ -53,7 +53,7 @@ public abstract class AbstractLanguageContainer<ElementType extends EObject> ext
 	public void reset() {
 		getResults().clear();
 		getOptions().clear();
-		setImplOption(null);
+		//setImplOption(null);
 	}
 	
 	public LanguageImplementationOption<? extends AbstractLanguageContainer<?>> getImplOption() {

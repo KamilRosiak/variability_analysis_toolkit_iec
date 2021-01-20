@@ -55,7 +55,7 @@ public class IECProjectConverter extends AbstractParserProcess<Configuration> {
 	
 	@Override
 	protected String getModelFilename(Configuration modelInstance) {
-		return null;
+		return modelInstance.getIdentifier();
 	}
 
 	@Override

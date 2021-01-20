@@ -39,15 +39,18 @@ Export-Package: de.tu_bs.cs.isf.familymining.ppu_iec.comparisonMetric.comparison
  de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtextexpression,
  de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtextexpression.impl,
  de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtextexpression.util,
+ de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.util,
  de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.util.ld,
  de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.util.st,
  de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.util.st.expression,
  instructionlist,
  instructionlist.impl,
  instructionlist.util
-Require-Bundle: org.eclipse.emf.ecore;visibility:=reexport,
+Require-Bundle: org.eclipse.emf.ecore.xmi,
+ org.eclipse.emf.ecore;visibility:=reexport,
  org.eclipse.core.runtime,
- de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel;visibility:=reexport
+ de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel;visibility:=reexport,
+ de.tu_bs.cs.isf.e4cf.core
 Bundle-ActivationPolicy: lazy
 Import-Package: de.tu_bs.cs.isf.e4cf.core.compare.algorithm
 

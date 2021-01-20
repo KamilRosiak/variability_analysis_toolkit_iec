@@ -262,10 +262,13 @@ public class CompareEngineView {
 		// show prototype family view after transforming the result to its internal family model 
 		services.partService.showPart(FamilyModelViewStrings.PART_NAME);
 		
+		
+		/** Throws Exceptions when comparing two models org.eclipse.e4.core.di.InjectionException: java.lang.IllegalArgumentException: The 'no null' constraint is violated 
 		FamilyModelTransformation fmTransformation = new ConfigurationResultToFamilyModelTransformation();
 		services.eventBroker.send(FamilyModelViewEvents.EVENT_SHOW_FAMILY_MODEL, fmTransformation.apply(result));
 		services.eventBroker.send(FamilyModelViewEvents.EVENT_SET_VAR_POINT_MAPPING, fmTransformation.getData()); // sets the mapping to Compare Containers
 		services.eventBroker.send(FamilyModelViewEvents.EVENT_SET_DATA_SOURCE, result); // sets the configuration result 
+		**/
 		
 		// show current family view
 		services.partService.showPart("de.tu_bs.cs.isf.familymining.ppu_iec.rcp_e4.familymodel_view"); 

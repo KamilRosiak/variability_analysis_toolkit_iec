@@ -22,10 +22,11 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection.M
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection.MutationInjectionConfig;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.MutationPair;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Configuration;
+import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.util.ConfigurationSerializer;
 
 @Creatable
 public class MutationEngine {
-	private static final int RUNS = 1;
+	private static final int RUNS = 0;
 	private ServiceContainer services;
 	private MutationInjection mutationInjection;
 
@@ -45,7 +46,7 @@ public class MutationEngine {
 		MutationResult mutationResult = mutationInjection.generateMutant(seed);
 		Configuration mutant = mutationResult.getMutated();
 		mutant.getResources().get(0).setName(name(seed));
-
+		ConfigurationSerializer.serializConfiguration(mutant, services);
 		// find changes
 		ConfigurationResultRoot result = ConfigurationCompareUtil.compare(seed, mutant);
 		List<AbstractContainer> changeList = ConfigurationCompareUtil.findChanges(result);
@@ -55,11 +56,19 @@ public class MutationEngine {
 
 		System.out.println(
 				"RUN: " + run + " NumberMutants: " + totalMutants.size() + " ChangesFound: " + changeList.size());
+			System.out.println("MUTANTS__________________________");
 		for (MutationPair pair : totalMutants) {
 			System.out.println("Original: " + pair.getOrigin());
 			System.out.println("Mutant: " + pair.getMutant());
 			System.out.println("-------------------------------------------");
 		}
+		for (AbstractContainer pair : changeList) {
+			System.out.println("First: " + pair.getFirst());
+			System.out.println("Second: " + pair.getSecond());
+			System.out.println("-------------------------------------------");
+		}
+		
+		
 		int foundMutants = searchForMutants(changeList, totalMutants);
 
 		// next iteration with the mutant as seed
@@ -117,14 +126,6 @@ public class MutationEngine {
 				}
 			}
 		}
-		System.out.println("TRUE POSITIVES: " + foundMutants);
-		System.out.println("FALSE POSITIVES: " + changeList.size());
-		System.out.println("TRUE NEGATIVES: " + totalMutants.size());
-		System.out.println("FALSE NEGATIVES:");
-
-		System.out.println("Precision: " + " ");
-		System.out.println("Recall: " + " ");
-
 		return foundMutants;
 	}
 

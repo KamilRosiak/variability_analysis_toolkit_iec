@@ -34,6 +34,7 @@ public class ConfigurationCompareUtil {
 				IECCompareUtil.getDefaultMetric());
 		// Update of the similarity before and after the matching
 		resultRoot.updateSimilarity();
+		
 		SortingMatcher matcher = new SortingMatcher();
 		matcher.match(resultRoot);
 		resultRoot.updateSimilarity();

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
-
+import org.apache.commons.lang3.SerializationUtils;
 import org.eclipse.emf.ecore.EObject;
 
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.solution.ConfigurationResultRoot;
@@ -182,16 +182,24 @@ public class SortingMatcher extends AbstractMatcher {
 		// add all unmarked elements as optional.
 		for (T container : removedContainers) {
 			if (container.getFirst() != null && container.getSecond() != null) {
-				if (!markedElements.contains(container.getFirst())) {
-					markedElements.add(container.getFirst());
+				//If both model contain only one element we have to copy a container
+				T containerClone = SerializationUtils.clone(container);
+				//Note the original elements
+				K first = container.getFirst();
+				K second = container.getSecond();
+				
+				if (!markedElements.contains(first)) {
+					markedElements.add(first);
 					container.setSecond(null);
 					container.reset();
 					containers.add(container);
-				} else if (!markedElements.contains(container.getSecond())) {
-					markedElements.add(container.getSecond());
-					container.setFirst(null);
-					container.reset();
-					containers.add(container);
+				}
+				
+				if (!markedElements.contains(second)) {
+					markedElements.add(second);
+					containerClone.setFirst(null);
+					containerClone.reset();
+					containers.add(containerClone);
 				}
 			} else if (container.getFirst() != null || container.getSecond() != null) {
 				// that are all containers that was added as optional by the compare-engine.
