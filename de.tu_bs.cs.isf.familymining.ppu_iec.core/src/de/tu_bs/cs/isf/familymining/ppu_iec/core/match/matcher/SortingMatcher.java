@@ -184,9 +184,13 @@ public class SortingMatcher extends AbstractMatcher {
 			if (container.getFirst() != null && container.getSecond() != null) {
 				//If both model contain only one element we have to copy a container
 				T containerClone = SerializationUtils.clone(container);
+
 				//Note the original elements
 				K first = container.getFirst();
 				K second = container.getSecond();
+				//set back original references
+				containerClone.setFirst(first);
+				containerClone.setFirst(second);
 				
 				if (!markedElements.contains(first)) {
 					markedElements.add(first);

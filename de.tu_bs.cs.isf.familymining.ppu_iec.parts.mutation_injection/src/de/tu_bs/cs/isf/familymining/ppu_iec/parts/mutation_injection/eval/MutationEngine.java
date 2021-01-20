@@ -62,14 +62,15 @@ public class MutationEngine {
 			System.out.println("Mutant: " + pair.getMutant());
 			System.out.println("-------------------------------------------");
 		}
+		System.out.println("Changes__________________________");
 		for (AbstractContainer pair : changeList) {
 			System.out.println("First: " + pair.getFirst());
 			System.out.println("Second: " + pair.getSecond());
 			System.out.println("-------------------------------------------");
 		}
-		
-		
+
 		int foundMutants = searchForMutants(changeList, totalMutants);
+		System.out.println("KILLED: "+ foundMutants);
 
 		// next iteration with the mutant as seed
 		if (run < RUNS) {
@@ -93,6 +94,7 @@ public class MutationEngine {
 			AbstractContainer currentContainer = changeIterator.next();
 			while (mutantsIterator.hasNext()) {
 				MutationPair mutantPair = mutantsIterator.next();
+				
 				// Added artifact
 				if (mutantPair.getOrigin() == null && mutantPair.getMutant() != null
 						&& currentContainer.getFirst() == null && currentContainer.getSecond() != null
