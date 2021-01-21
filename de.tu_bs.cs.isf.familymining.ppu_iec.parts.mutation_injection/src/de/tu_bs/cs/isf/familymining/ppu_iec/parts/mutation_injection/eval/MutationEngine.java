@@ -83,7 +83,7 @@ public class MutationEngine {
 		mutationInjection = ContextInjectionFactory.make(MutationInjection.class, context);
 
 	}
-
+	
 	public void startMutation() {
 		// prepare result structure
 		EvaluationResult evalResult = new EvaluationResult();
@@ -99,7 +99,7 @@ public class MutationEngine {
 		}
 
 		// export the results
-		evalResult.setName("result_" + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+		evalResult.setName("result_" + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME).replace(":", "_"));
 		evalResult.setDirectory(resultDirectory);
 		evalResult.setTotalRuns(RUNS);
 
@@ -139,7 +139,8 @@ public class MutationEngine {
 	}
 
 	public Configuration selectSeed() {
-		String seedName = randomly.pickFrom(SCENARIO_SEEDS);
+		//String seedName = randomly.pickFrom(SCENARIO_SEEDS);
+		String seedName = randomly.pickFrom("ST_Evolution_1");
 		Optional<Configuration> configuration = scenarioStorage.loadScenario(seedName);
 		if (!configuration.isPresent()) {
 			throw new ScenarioStorageException(String.format("Scenario \"%s\" could not be loaded", seedName));
@@ -205,25 +206,24 @@ public class MutationEngine {
 	 * matching
 	 */
 	private int searchForMutants(List<AbstractContainer> changeList, List<MutationPair> totalMutants) {
-		Iterator<AbstractContainer> changeIterator = changeList.iterator();
-		Iterator<MutationPair> mutantsIterator = totalMutants.iterator();
-
 		// TRUE POSITIVE
 		int foundMutants = 0;
-
+		
+		Iterator<AbstractContainer> changeIterator = changeList.iterator();
 		while (changeIterator.hasNext()) {
 			AbstractContainer currentContainer = changeIterator.next();
+			Iterator<MutationPair> mutantsIterator = totalMutants.iterator();
 			while (mutantsIterator.hasNext()) {
 				MutationPair mutantPair = mutantsIterator.next();
 
-				// Added artifact
+				//Added artifact
 				if (mutantPair.getOrigin() == null && mutantPair.getMutant() != null
 						&& currentContainer.getFirst() == null && currentContainer.getSecond() != null
 						&& mutantPair.getMutant().equals(currentContainer.getSecond())) {
 					mutantsIterator.remove();
 					changeIterator.remove();
 					foundMutants++;
-					continue;
+					break;
 				}
 
 				// Removed artifact
@@ -233,7 +233,7 @@ public class MutationEngine {
 					mutantsIterator.remove();
 					changeIterator.remove();
 					foundMutants++;
-					continue;
+					break;
 				}
 
 				// Changed artifact
@@ -244,7 +244,7 @@ public class MutationEngine {
 					mutantsIterator.remove();
 					changeIterator.remove();
 					foundMutants++;
-					continue;
+					break;
 					// TODO: Create an evaluation of all runs with detailed information
 				}
 			}

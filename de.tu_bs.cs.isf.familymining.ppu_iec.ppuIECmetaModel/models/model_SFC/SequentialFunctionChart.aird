@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:description="http://www.eclipse.org/sirius/description/1.1.0" xmlns:description_1="http://www.eclipse.org/sirius/diagram/description/1.1.0" xmlns:diagram="http://www.eclipse.org/sirius/diagram/1.1.0" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.2/notation" xmlns:style="http://www.eclipse.org/sirius/diagram/description/style/1.1.0" xmlns:viewpoint="http://www.eclipse.org/sirius/1.1.0" xsi:schemaLocation="http://www.eclipse.org/sirius/description/1.1.0 http://www.eclipse.org/sirius/1.1.0#//description http://www.eclipse.org/sirius/diagram/description/1.1.0 http://www.eclipse.org/sirius/diagram/1.1.0#//description http://www.eclipse.org/sirius/diagram/description/style/1.1.0 http://www.eclipse.org/sirius/diagram/1.1.0#//description/style">
-  <viewpoint:DAnalysis uid="_FUun0Pw3EeeooLe7-5v6vQ" selectedViews="_FWm3IPw3EeeooLe7-5v6vQ _FW1goPw3EeeooLe7-5v6vQ _FXBt4Pw3EeeooLe7-5v6vQ _FXPwUPw3EeeooLe7-5v6vQ" version="14.3.0.201909031200">
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:description="http://www.eclipse.org/sirius/description/1.1.0" xmlns:description_1="http://www.eclipse.org/sirius/diagram/description/1.1.0" xmlns:diagram="http://www.eclipse.org/sirius/diagram/1.1.0" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.3/notation" xmlns:style="http://www.eclipse.org/sirius/diagram/description/style/1.1.0" xmlns:viewpoint="http://www.eclipse.org/sirius/1.1.0" xsi:schemaLocation="http://www.eclipse.org/sirius/description/1.1.0 http://www.eclipse.org/sirius/1.1.0#//description http://www.eclipse.org/sirius/diagram/description/1.1.0 http://www.eclipse.org/sirius/diagram/1.1.0#//description http://www.eclipse.org/sirius/diagram/description/style/1.1.0 http://www.eclipse.org/sirius/diagram/1.1.0#//description/style">
+  <viewpoint:DAnalysis uid="_FUun0Pw3EeeooLe7-5v6vQ" selectedViews="_FWm3IPw3EeeooLe7-5v6vQ _FW1goPw3EeeooLe7-5v6vQ _FXBt4Pw3EeeooLe7-5v6vQ _FXPwUPw3EeeooLe7-5v6vQ" version="14.3.1.202003261200">
     <semanticResources>SequentialFunctionChart.ecore</semanticResources>
     <semanticResources>http://www.eclipse.org/emf/2002/Ecore</semanticResources>
     <semanticResources>SequentialFunctionChart.genmodel</semanticResources>
@@ -12,7 +12,7 @@
     <semanticResources>../model_ST/model_expression/StructuredTextExpression.ecore</semanticResources>
     <ownedViews xmi:type="viewpoint:DView" uid="_FWm3IPw3EeeooLe7-5v6vQ">
       <viewpoint xmi:type="description:Viewpoint" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']"/>
-      <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" uid="_NOJfoMg6EemciIrK_p3pwQ" name="sequentialfunctionchart class diagram" repPath="#_NN5oAMg6EemciIrK_p3pwQ" changeId="a2853178-4c88-48ae-a3c3-4676a9ac9485">
+      <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" uid="_NOJfoMg6EemciIrK_p3pwQ" name="sequentialfunctionchart class diagram" repPath="#_NN5oAMg6EemciIrK_p3pwQ" changeId="b5237fbe-7b72-4d80-9ce5-357b62b5d8e5">
         <description xmi:type="description_1:DiagramDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']"/>
         <target xmi:type="ecore:EPackage" href="SequentialFunctionChart.ecore#/"/>
       </ownedRepresentationDescriptors>
@@ -147,31 +147,6 @@
           </children>
           <styles xmi:type="notation:ShapeStyle" xmi:id="_Nm_de8g6EemciIrK_p3pwQ" fontName="Segoe UI" fontHeight="8"/>
           <layoutConstraint xmi:type="notation:Bounds" xmi:id="_Nm_dfMg6EemciIrK_p3pwQ" x="264" y="366"/>
-        </children>
-        <children xmi:type="notation:Node" xmi:id="_NnAEgMg6EemciIrK_p3pwQ" type="2003" element="_NmoREcg6EemciIrK_p3pwQ">
-          <children xmi:type="notation:Node" xmi:id="_NnAEg8g6EemciIrK_p3pwQ" type="5007"/>
-          <children xmi:type="notation:Node" xmi:id="_NnAEhMg6EemciIrK_p3pwQ" type="7004">
-            <children xmi:type="notation:Node" xmi:id="_NnDH2cg6EemciIrK_p3pwQ" type="3010" element="_Nm1FYMg6EemciIrK_p3pwQ">
-              <styles xmi:type="notation:FontStyle" xmi:id="_NnDH2sg6EemciIrK_p3pwQ" fontName="Segoe UI" fontHeight="8"/>
-              <layoutConstraint xmi:type="notation:Location" xmi:id="_NnDH28g6EemciIrK_p3pwQ"/>
-            </children>
-            <children xmi:type="notation:Node" xmi:id="_NnDu4Mg6EemciIrK_p3pwQ" type="3010" element="_Nm1FYsg6EemciIrK_p3pwQ">
-              <styles xmi:type="notation:FontStyle" xmi:id="_NnDu4cg6EemciIrK_p3pwQ" fontName="Segoe UI" fontHeight="8"/>
-              <layoutConstraint xmi:type="notation:Location" xmi:id="_NnDu4sg6EemciIrK_p3pwQ"/>
-            </children>
-            <children xmi:type="notation:Node" xmi:id="_NnDu48g6EemciIrK_p3pwQ" type="3010" element="_Nm1FZMg6EemciIrK_p3pwQ">
-              <styles xmi:type="notation:FontStyle" xmi:id="_NnDu5Mg6EemciIrK_p3pwQ" fontName="Segoe UI" fontHeight="8"/>
-              <layoutConstraint xmi:type="notation:Location" xmi:id="_NnDu5cg6EemciIrK_p3pwQ"/>
-            </children>
-            <children xmi:type="notation:Node" xmi:id="_NnDu5sg6EemciIrK_p3pwQ" type="3010" element="_Nm1FZsg6EemciIrK_p3pwQ">
-              <styles xmi:type="notation:FontStyle" xmi:id="_NnDu58g6EemciIrK_p3pwQ" fontName="Segoe UI" fontHeight="8"/>
-              <layoutConstraint xmi:type="notation:Location" xmi:id="_NnDu6Mg6EemciIrK_p3pwQ"/>
-            </children>
-            <styles xmi:type="notation:SortingStyle" xmi:id="_NnAEhcg6EemciIrK_p3pwQ"/>
-            <styles xmi:type="notation:FilteringStyle" xmi:id="_NnAEhsg6EemciIrK_p3pwQ"/>
-          </children>
-          <styles xmi:type="notation:ShapeStyle" xmi:id="_NnAEgcg6EemciIrK_p3pwQ" fontName="Segoe UI" fontHeight="8"/>
-          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_NnAEgsg6EemciIrK_p3pwQ" x="948" y="528"/>
         </children>
         <children xmi:type="notation:Node" xmi:id="_NnAEh8g6EemciIrK_p3pwQ" type="2003" element="_Nmo4Icg6EemciIrK_p3pwQ">
           <children xmi:type="notation:Node" xmi:id="_NnAEisg6EemciIrK_p3pwQ" type="5007"/>
@@ -558,49 +533,6 @@
           <description xmi:type="style:BundledImageDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='EC%20EAttribute']/@style"/>
         </ownedStyle>
         <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='EC%20EAttribute']"/>
-      </ownedElements>
-    </ownedDiagramElements>
-    <ownedDiagramElements xmi:type="diagram:DNodeList" uid="_NmoREcg6EemciIrK_p3pwQ" name="Type" tooltipText="" width="12" height="10">
-      <target xmi:type="ecore:EEnum" href="SequentialFunctionChart.ecore#//Type"/>
-      <semanticElements xmi:type="ecore:EEnum" href="SequentialFunctionChart.ecore#//Type"/>
-      <arrangeConstraints>KEEP_LOCATION</arrangeConstraints>
-      <arrangeConstraints>KEEP_SIZE</arrangeConstraints>
-      <arrangeConstraints>KEEP_RATIO</arrangeConstraints>
-      <ownedStyle xmi:type="diagram:FlatContainerStyle" uid="_NmoREsg6EemciIrK_p3pwQ" borderSize="1" borderSizeComputationExpression="1" borderColor="125,125,125" backgroundStyle="Liquid" foregroundColor="221,236,202">
-        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EEnum']/@style"/>
-      </ownedStyle>
-      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EEnum']"/>
-      <ownedElements xmi:type="diagram:DNodeListElement" uid="_Nm1FYMg6EemciIrK_p3pwQ" name="UNDEFINED" tooltipText="">
-        <target xmi:type="ecore:EEnumLiteral" href="SequentialFunctionChart.ecore#//Type/UNDEFINED"/>
-        <semanticElements xmi:type="ecore:EEnumLiteral" href="SequentialFunctionChart.ecore#//Type/UNDEFINED"/>
-        <ownedStyle xmi:type="diagram:BundledImage" uid="_Nm1FYcg6EemciIrK_p3pwQ" labelAlignment="LEFT">
-          <description xmi:type="style:BundledImageDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EEnum']/@subNodeMappings[name='EC%20EEnumLiteral']/@style"/>
-        </ownedStyle>
-        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EEnum']/@subNodeMappings[name='EC%20EEnumLiteral']"/>
-      </ownedElements>
-      <ownedElements xmi:type="diagram:DNodeListElement" uid="_Nm1FYsg6EemciIrK_p3pwQ" name="ENTRY" tooltipText="">
-        <target xmi:type="ecore:EEnumLiteral" href="SequentialFunctionChart.ecore#//Type/ENTRY"/>
-        <semanticElements xmi:type="ecore:EEnumLiteral" href="SequentialFunctionChart.ecore#//Type/ENTRY"/>
-        <ownedStyle xmi:type="diagram:BundledImage" uid="_Nm1FY8g6EemciIrK_p3pwQ" labelAlignment="LEFT">
-          <description xmi:type="style:BundledImageDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EEnum']/@subNodeMappings[name='EC%20EEnumLiteral']/@style"/>
-        </ownedStyle>
-        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EEnum']/@subNodeMappings[name='EC%20EEnumLiteral']"/>
-      </ownedElements>
-      <ownedElements xmi:type="diagram:DNodeListElement" uid="_Nm1FZMg6EemciIrK_p3pwQ" name="EXIT" tooltipText="">
-        <target xmi:type="ecore:EEnumLiteral" href="SequentialFunctionChart.ecore#//Type/EXIT"/>
-        <semanticElements xmi:type="ecore:EEnumLiteral" href="SequentialFunctionChart.ecore#//Type/EXIT"/>
-        <ownedStyle xmi:type="diagram:BundledImage" uid="_Nm1FZcg6EemciIrK_p3pwQ" labelAlignment="LEFT">
-          <description xmi:type="style:BundledImageDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EEnum']/@subNodeMappings[name='EC%20EEnumLiteral']/@style"/>
-        </ownedStyle>
-        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EEnum']/@subNodeMappings[name='EC%20EEnumLiteral']"/>
-      </ownedElements>
-      <ownedElements xmi:type="diagram:DNodeListElement" uid="_Nm1FZsg6EemciIrK_p3pwQ" name="DO" tooltipText="">
-        <target xmi:type="ecore:EEnumLiteral" href="SequentialFunctionChart.ecore#//Type/DO"/>
-        <semanticElements xmi:type="ecore:EEnumLiteral" href="SequentialFunctionChart.ecore#//Type/DO"/>
-        <ownedStyle xmi:type="diagram:BundledImage" uid="_Nm1scMg6EemciIrK_p3pwQ" labelAlignment="LEFT">
-          <description xmi:type="style:BundledImageDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EEnum']/@subNodeMappings[name='EC%20EEnumLiteral']/@style"/>
-        </ownedStyle>
-        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EEnum']/@subNodeMappings[name='EC%20EEnumLiteral']"/>
       </ownedElements>
     </ownedDiagramElements>
     <ownedDiagramElements xmi:type="diagram:DNodeList" uid="_Nmo4Icg6EemciIrK_p3pwQ" name="StepQualifier" tooltipText="" width="12" height="10">

@@ -183,27 +183,30 @@ public class SortingMatcher extends AbstractMatcher {
 		for (T container : removedContainers) {
 			if (container.getFirst() != null && container.getSecond() != null) {
 				//If both model contain only one element we have to copy a container
-				T containerClone = SerializationUtils.clone(container);
-
+				
 				//Note the original elements
 				K first = container.getFirst();
 				K second = container.getSecond();
-				//set back original references to the copy of the container
-				containerClone.setFirst(first);
-				containerClone.setFirst(second);
-				
-				if (!markedElements.contains(first)) {
+
+				if (!markedElements.contains(first) && !markedElements.contains(second)) {
+					T containerClone = SerializationUtils.clone(container);
+					containerClone.setFirst(null);
+					containerClone.setSecond(container.getSecond());
+					container.setSecond(null);
+					containers.add(containerClone);
+					containers.add(container);
+					markedElements.add(first);
+					markedElements.add(second);
+				} else if (!markedElements.contains(first)) {
 					markedElements.add(first);
 					container.setSecond(null);
 					container.reset();
 					containers.add(container);
-				}
-				
-				if (!markedElements.contains(second)) {
+				} else if (!markedElements.contains(second)) {
 					markedElements.add(second);
-					containerClone.setFirst(null);
-					containerClone.reset();
-					containers.add(containerClone);
+					container.setFirst(null);
+					container.reset();
+					containers.add(container);
 				}
 			} else if (container.getFirst() != null || container.getSecond() != null) {
 				// that are all containers that was added as optional by the compare-engine.

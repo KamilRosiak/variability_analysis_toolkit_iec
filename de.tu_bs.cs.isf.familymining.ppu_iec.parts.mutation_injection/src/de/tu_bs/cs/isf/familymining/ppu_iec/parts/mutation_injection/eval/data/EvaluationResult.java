@@ -1,17 +1,20 @@
 package de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.eval.data;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.eval.MutationEngine;
 
 public class EvaluationResult {
 
 	private String name;
-	
+
 	private String directory;
-	
+
 	private int totalRuns;
-	
-	private List<RunResult> result;
-	
+
+	private List<RunResult> result = new ArrayList<>();
+
 	public String getName() {
 		return name;
 	}
@@ -43,20 +46,20 @@ public class EvaluationResult {
 	public void setResult(List<RunResult> result) {
 		this.result = result;
 	}
-	
+
 	public static class RunResult {
-		
+
 		private int run;
-		
+
 		private String name;
-		
+
 		// debug
 		private int totalMutations;
 		private int compareContainersFound;
 		private int mutationsFound;
-		
+
 		private float recall;
-		
+
 		private float precision;
 
 		public int getRun() {

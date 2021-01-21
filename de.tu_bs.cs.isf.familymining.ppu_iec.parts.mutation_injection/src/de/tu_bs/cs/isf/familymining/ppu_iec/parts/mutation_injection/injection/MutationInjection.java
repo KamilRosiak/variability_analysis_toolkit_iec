@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
+import org.eclipse.e4.core.di.annotations.Creatable;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -36,8 +37,9 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtextexpres
  *
  * @see MutationContext
  */
+@Creatable
 public class MutationInjection {
-
+	
 	@Inject
 	private Mutator mutator;
 	

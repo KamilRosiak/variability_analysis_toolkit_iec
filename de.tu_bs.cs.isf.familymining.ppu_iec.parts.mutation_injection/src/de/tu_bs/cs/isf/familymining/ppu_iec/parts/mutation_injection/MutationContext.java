@@ -1,17 +1,14 @@
 package de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.MutationPair;
 

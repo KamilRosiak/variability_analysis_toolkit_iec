@@ -41,11 +41,14 @@ import javax.inject.Inject;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
+import org.eclipse.e4.core.di.annotations.Creatable;
 import org.eclipse.e4.core.di.extensions.Preference;
 import org.osgi.service.prefs.BackingStoreException;
 
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.CompoundMutator;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.Mutator;
+import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.Type2Mutator;
+import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.Type3Mutator;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.EnumChanger;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.NameChanger;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.NumberChanger;
@@ -59,8 +62,13 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.op
  * 
  * @see MutationInjection
  */
+@Creatable
 public class MutationInjectionConfig {
-
+	
+	public MutationInjectionConfig() {
+		
+	}
+	
 	@Inject
 	public void prepareContext(IEclipseContext context, @Preference(nodePath = MUTATION_PREF) IEclipsePreferences prefs) {
 		// mutation operators
@@ -101,9 +109,15 @@ public class MutationInjectionConfig {
 		context.set(ScenarioObjectClusterFactory.class, randomizedClusterFactory);
 		
 		// mutator		
-		CompoundMutator compoundMutator = ContextInjectionFactory.make(CompoundMutator.class, context);
-		context.set(Mutator.class, compoundMutator);
-
+		Type2Mutator compoundMutator = ContextInjectionFactory.make(Type2Mutator.class, context);
+		context.set(Type2Mutator.class, compoundMutator);
+		
+		Type3Mutator renameMutator = ContextInjectionFactory.make(Type3Mutator.class, context);
+		context.set(Type3Mutator.class, renameMutator);
+		
+		CompoundMutator compoundMutator2 = ContextInjectionFactory.make(CompoundMutator.class, context);
+		context.set(Mutator.class, compoundMutator2);
+		
 		try {
 			prefs.flush();
 		} catch (BackingStoreException e) {
