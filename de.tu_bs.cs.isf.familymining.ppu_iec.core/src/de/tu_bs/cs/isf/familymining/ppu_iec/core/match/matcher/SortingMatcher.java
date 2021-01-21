@@ -188,7 +188,7 @@ public class SortingMatcher extends AbstractMatcher {
 				//Note the original elements
 				K first = container.getFirst();
 				K second = container.getSecond();
-				//set back original references
+				//set back original references to the copy of the container
 				containerClone.setFirst(first);
 				containerClone.setFirst(second);
 				

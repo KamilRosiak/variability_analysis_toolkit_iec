@@ -20,7 +20,7 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Config
 
 public class ConfigurationSerializer {
 	
-	public static void serializConfiguration(Configuration configuration, ServiceContainer services) {
+	public static void serializConfiguration(Configuration configuration, ServiceContainer services, String postfix) {
 		FileTreeElement root = services.workspaceFileSystem.getWorkspaceDirectory();
 		Path rootPath = FileHandlingUtility.getPath(root);
 		Path projectPath = rootPath.resolve("");
@@ -30,7 +30,7 @@ public class ConfigurationSerializer {
         m.put("feature-metamodel", new XMIResourceFactoryImpl());
         // Obtain a new resource set
         ResourceSet resSet = new ResourceSetImpl();
-        Resource resource = resSet.createResource(URI.createURI(projectPath.resolve(E4CStringTable.MODEL_DIRECTORY).toUri() + configuration.getIdentifier()+E4CStringTable.FILE_ENDING_CONFIGURATION));
+        Resource resource = resSet.createResource(URI.createURI(projectPath.resolve(E4CStringTable.MODEL_DIRECTORY).toUri() + configuration.getIdentifier()+postfix+"."+E4CStringTable.FILE_ENDING_CONFIGURATION));
         resource.getContents().add(configuration);
         // now save the content.
         try {

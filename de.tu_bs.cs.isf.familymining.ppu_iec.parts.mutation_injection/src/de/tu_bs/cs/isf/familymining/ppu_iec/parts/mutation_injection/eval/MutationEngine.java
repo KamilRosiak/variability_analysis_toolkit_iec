@@ -27,6 +27,7 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.util.ConfigurationSe
 @Creatable
 public class MutationEngine {
 	private static final int RUNS = 0;
+	private static final String POSTFIX = "_mutant_";
 	private ServiceContainer services;
 	private MutationInjection mutationInjection;
 
@@ -46,7 +47,7 @@ public class MutationEngine {
 		MutationResult mutationResult = mutationInjection.generateMutant(seed);
 		Configuration mutant = mutationResult.getMutated();
 		mutant.getResources().get(0).setName(name(seed));
-		ConfigurationSerializer.serializConfiguration(mutant, services);
+		ConfigurationSerializer.serializConfiguration(mutant, services, POSTFIX + run);
 		// find changes
 		ConfigurationResultRoot result = ConfigurationCompareUtil.compare(seed, mutant);
 		List<AbstractContainer> changeList = ConfigurationCompareUtil.findChanges(result);
