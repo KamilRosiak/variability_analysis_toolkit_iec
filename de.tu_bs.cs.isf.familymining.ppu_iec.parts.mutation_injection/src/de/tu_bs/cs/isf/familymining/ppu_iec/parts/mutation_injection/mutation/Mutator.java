@@ -7,4 +7,12 @@ public interface Mutator {
 	final static String MUTATOR_PREF = "de.tu_bs.cs.isf.familymining.ppu_iec_parts.mutation_injection";
 	
 	void mutate(MutationContext ctx);
+	
+	MutatorType getMutatorType();
+	
+	enum MutatorType {
+		MIXED,
+		TYPE_II,
+		TYPE_III
+	}
 }

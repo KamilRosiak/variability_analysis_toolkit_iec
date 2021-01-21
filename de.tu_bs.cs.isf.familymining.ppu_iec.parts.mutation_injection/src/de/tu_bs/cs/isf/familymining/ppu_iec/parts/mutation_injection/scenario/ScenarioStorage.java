@@ -41,13 +41,13 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.rcp_e4.EMFModelLoader.impl.EMFModelL
 public class ScenarioStorage {
 
 	private static final String FILE_EXT = "project";
-	private static final String MUTATION_DIR_NAME = "MutationInjection";
 	
 	@Inject
-	WorkspaceFileSystem fs;
+	private WorkspaceFileSystem fs;
 	
-	Map<String, Configuration> scenarioCache = new HashMap<>(); 
+	private Map<String, Configuration> scenarioCache = new HashMap<>(); 
 	
+	private String mutationDirectory = "MutationInjection";
 	
 	/**
 	 * Searches and loads a scenario by using the resource name. The name is in the .project file at the path "configuration/resources[name]".
@@ -74,14 +74,10 @@ public class ScenarioStorage {
 		
 		// ensure the mutation directory is available
 		Directory root = fs.getWorkspaceDirectory();
-		Optional<FileTreeElement> mutationDirOpt = root.getChildren().stream().filter(dir -> dir.isDirectory() && dir.getAbsolutePath().endsWith(MUTATION_DIR_NAME)).findAny();
-		FileTreeElement mutationDir = mutationDirOpt.orElse(root.create(new CreateSubdirectory(MUTATION_DIR_NAME)));
+		Optional<FileTreeElement> mutationDirOpt = root.getChildren().stream().filter(dir -> dir.isDirectory() && dir.getAbsolutePath().endsWith(getMutationDirectory())).findAny();
+		FileTreeElement mutationDir = mutationDirOpt.orElse(root.create(new CreateSubdirectory(getMutationDirectory())));
 		
 		EMFModelLoader.save(scenario, FILE_EXT, mutationDir.getAbsolutePath()+"/"+name, FILE_EXT);
-	}
-	
-	public String getMutantDirectoryName() {
-		return MUTATION_DIR_NAME;
 	}
 	
 	public String getName(Configuration config) {
@@ -96,6 +92,14 @@ public class ScenarioStorage {
 			it.next().accept(scenarioFinder);
 		}		
 		return scenarioFinder.getScenario();
+	}
+	
+	public String getMutationDirectory() {
+		return mutationDirectory;
+	}
+
+	public void setMutationDirectory(String mutationDirectory) {
+		this.mutationDirectory = mutationDirectory;
 	}
 	
 	private class ScenarioFinder implements TreeVisitor {

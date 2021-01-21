@@ -11,6 +11,12 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.op
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.StatementInserter;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.StatementRemover;
 
+/**
+ * Applies all mutations selected at random.
+ * 
+ * @author Oliver Urbaniak
+ *
+ */
 public class CompoundMutator implements Mutator {
 
 	private RandomMutator randomMutator;
@@ -18,7 +24,7 @@ public class CompoundMutator implements Mutator {
 	private static final int MAX_APPLIED_MUTATIONS = 3;
 
 	@PostConstruct
-	public void postConstruct(NameChanger nameChanger, EnumChanger enumChanger, NumberChanger numberChanger,
+	public void addMutations(NameChanger nameChanger, EnumChanger enumChanger, NumberChanger numberChanger,
 			StatementInserter stmtInserter, StatementRemover stmtRemover) {
 		randomMutator = new RandomMutator(MAX_APPLIED_MUTATIONS,
 				Arrays.asList(nameChanger, enumChanger, numberChanger, stmtInserter, stmtRemover));
@@ -27,6 +33,11 @@ public class CompoundMutator implements Mutator {
 	@Override
 	public void mutate(MutationContext ctx) {
 		randomMutator.mutate(ctx);
+	}
+
+	@Override
+	public MutatorType getMutatorType() {
+		return MutatorType.MIXED;
 	}
 
 }
