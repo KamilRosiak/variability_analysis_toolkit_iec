@@ -82,4 +82,9 @@ public class RandomMutator implements Mutator {
 		}
 		return -1;
 	}
+
+	@Override
+	public MutatorType getMutatorType() {
+		return MutatorType.MIXED;
+	}
 }

@@ -2,7 +2,7 @@ package de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation;
 
 import java.util.Arrays;
 
-import javax.inject.Inject;
+import javax.annotation.PostConstruct;
 
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.MutationContext;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.EnumChanger;
@@ -11,21 +11,24 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.op
 
 public class Type2Mutator implements Mutator {
 
-	@Inject
-	private NameChanger nameChanger;
+	private RandomMutator randomMutator;
 
-	@Inject
-	private EnumChanger enumChanger;
+	private static final int MAX_APPLIED_MUTATIONS = 3;
 
-	@Inject
-	private NumberChanger numberChanger;
-
-	private static final int MAX_APPLIED_MUTATIONS = 1;
+	@PostConstruct
+	public void addMutations(NameChanger nameChanger, EnumChanger enumChanger, NumberChanger numberChanger) {
+		randomMutator = new RandomMutator(MAX_APPLIED_MUTATIONS,
+				Arrays.asList(nameChanger, enumChanger, numberChanger));
+	}
 
 	@Override
 	public void mutate(MutationContext ctx) {
-		new RandomMutator(MAX_APPLIED_MUTATIONS, Arrays.asList(nameChanger, enumChanger, numberChanger)).mutate(ctx);
+		randomMutator.mutate(ctx);
+	}
 
+	@Override
+	public MutatorType getMutatorType() {
+		return MutatorType.TYPE_II;
 	}
 
 }

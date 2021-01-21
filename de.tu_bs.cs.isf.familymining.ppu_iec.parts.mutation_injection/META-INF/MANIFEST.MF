@@ -5,7 +5,10 @@ Bundle-SymbolicName: de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injecti
 Bundle-Version: 1.0.0.qualifier
 Automatic-Module-Name: de.tu.bs.cs.isf.familymining.ppu.iec.parts.mutation.injection
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Require-Bundle: org.mockito;bundle-version="2.23.0",
+Require-Bundle: com.fasterxml.jackson.core.jackson-databind;bundle-version="2.10.3",
+ com.fasterxml.jackson.core.jackson-annotations;bundle-version="2.10.3",
+ com.fasterxml.jackson.core.jackson-core;bundle-version="2.10.3",
+ org.mockito;bundle-version="2.23.0",
  org.junit.jupiter.api,
  org.assertj;bundle-version="3.0.0",
  javax.inject,

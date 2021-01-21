@@ -60,7 +60,7 @@ public class MutationInjectionController {
 			String filename = scenarioStorage.getName(mutatationResult.getMutated()) + "-mutated";
 			scenarioStorage.saveScenario(mutatationResult.getMutated(), filename);
 			System.out.println("Mutated scenario " + filename + " was stored under <workspace>/"
-					+ scenarioStorage.getMutantDirectoryName());
+					+ scenarioStorage.getMutationDirectory());
 
 		} catch (IOException e) {
 			e.printStackTrace();

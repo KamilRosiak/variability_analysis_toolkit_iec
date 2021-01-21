@@ -1,7 +1,6 @@
 package de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection;
 
 import java.io.IOException;
-import java.rmi.UnexpectedException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -144,5 +143,21 @@ public class MutationInjection {
 		}
 		
 		return mapping;
+	}
+
+	public Mutator getMutator() {
+		return mutator;
+	}
+
+	public void setMutator(Mutator mutator) {
+		this.mutator = mutator;
+	}
+
+	public ScenarioObjectClusterFactory getFactory() {
+		return factory;
+	}
+
+	public void setFactory(ScenarioObjectClusterFactory factory) {
+		this.factory = factory;
 	}
 }

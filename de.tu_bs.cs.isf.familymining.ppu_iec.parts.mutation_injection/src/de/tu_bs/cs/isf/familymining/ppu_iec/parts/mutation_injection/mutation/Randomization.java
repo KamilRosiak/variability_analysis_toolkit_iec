@@ -3,6 +3,9 @@ package de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation;
 import java.util.Iterator;
 import java.util.Random;
 
+import org.eclipse.e4.core.di.annotations.Creatable;
+
+@Creatable
 public class Randomization extends Random {
 	
 	/**
