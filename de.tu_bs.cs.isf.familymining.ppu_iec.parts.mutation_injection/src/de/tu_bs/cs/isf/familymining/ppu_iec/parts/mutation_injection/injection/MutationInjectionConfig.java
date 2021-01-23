@@ -65,10 +65,6 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.op
 @Creatable
 public class MutationInjectionConfig {
 	
-	public MutationInjectionConfig() {
-		
-	}
-	
 	@Inject
 	public void prepareContext(IEclipseContext context, @Preference(nodePath = MUTATION_PREF) IEclipsePreferences prefs) {
 		// mutation operators
@@ -109,14 +105,14 @@ public class MutationInjectionConfig {
 		context.set(ScenarioObjectClusterFactory.class, randomizedClusterFactory);
 		
 		// mutator		
-		Type2Mutator compoundMutator = ContextInjectionFactory.make(Type2Mutator.class, context);
-		context.set(Type2Mutator.class, compoundMutator);
+		Type2Mutator type2Mutator = ContextInjectionFactory.make(Type2Mutator.class, context);
+		context.set(Type2Mutator.class, type2Mutator);
 		
-		Type3Mutator renameMutator = ContextInjectionFactory.make(Type3Mutator.class, context);
-		context.set(Type3Mutator.class, renameMutator);
+		Type3Mutator type3Mutator = ContextInjectionFactory.make(Type3Mutator.class, context);
+		context.set(Type3Mutator.class, type3Mutator);
 		
-		CompoundMutator compoundMutator2 = ContextInjectionFactory.make(CompoundMutator.class, context);
-		context.set(Mutator.class, compoundMutator2);
+		CompoundMutator compoundMutator = ContextInjectionFactory.make(CompoundMutator.class, context);
+		context.set(Mutator.class, compoundMutator);
 		
 		try {
 			prefs.flush();

@@ -85,7 +85,8 @@ public class ScenarioStorage {
 			Files.createDirectory(newDir);
 		}
 		
-		EMFModelLoader.save(scenario, FILE_EXT, getMutationDirectory()+"/"+name, FILE_EXT);
+		Path scenarioPath = root.getFile().resolve(getMutationDirectory()).resolve(name);
+		EMFModelLoader.save(scenario, FILE_EXT, scenarioPath.toString(), FILE_EXT);
 	}
 
 	public String getName(Configuration config) {

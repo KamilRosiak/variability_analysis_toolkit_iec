@@ -15,7 +15,7 @@ import static de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.inje
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
+import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
 
@@ -39,9 +39,11 @@ public class RandomizedClusterFactory implements ScenarioObjectClusterFactory {
 
 	private static final float ADD_CONTAINTMENT_CHILD_CHANCE = 0.2f;
 	private static final float RECURSION_WEIGHT = 1.0f / 10.0f;
-	
+
+	private static final Class<?>[] CLASS_BLACKLIST = { Expression.class, Transition.class, AbstractAction.class };
+
 	Randomization randomly = new Randomization();
-	
+
 	private float configChance;
 	private float pouChance;
 	private float actionChance;
@@ -53,9 +55,26 @@ public class RandomizedClusterFactory implements ScenarioObjectClusterFactory {
 	private float sfcStepChance;
 	private float sfcActionChance;
 	private float sfcTransChance;
-	
+
+	/**
+	 * Sets the chances to create a cluster encountering the corresponding object.
+	 * The chances let the factory control the way clusters are generated so that not every 
+	 * invocation of createFrom* will return a cluster.
+	 * 
+	 * @param configChance
+	 * @param pouChance
+	 * @param actionChance
+	 * @param declChance
+	 * @param stChance
+	 * @param statementChance
+	 * @param stExprChance
+	 * @param sfcChance
+	 * @param sfcStepChance
+	 * @param sfcActionChance
+	 * @param sfcTransChance
+	 */
 	@PostConstruct
-	public void postConstruct(
+	public void setAcceptanceChances(
 			@Preference(nodePath = MUTATION_PREF, value = CLUSTER_FACT_CONFIG_CHANCE) float configChance,
 			@Preference(nodePath = MUTATION_PREF, value = CLUSTER_FACT_POU_CHANCE) float pouChance,
 			@Preference(nodePath = MUTATION_PREF, value = CLUSTER_FACT_ACTION_CHANCE) float actionChance,
@@ -67,19 +86,19 @@ public class RandomizedClusterFactory implements ScenarioObjectClusterFactory {
 			@Preference(nodePath = MUTATION_PREF, value = CLUSTER_FACT_SFC_STEP_CHANCE) float sfcStepChance,
 			@Preference(nodePath = MUTATION_PREF, value = CLUSTER_FACT_SFC_ACTION_CHANCE) float sfcActionChance,
 			@Preference(nodePath = MUTATION_PREF, value = CLUSTER_FACT_SFC_TRANS_CHANCE) float sfcTransChance) {
-		this.configChance    = configChance;
-		this.pouChance       = pouChance;
-		this.actionChance    = actionChance;
-		this.declChance      = declChance;
-		this.stChance        = stChance;
+		this.configChance = configChance;
+		this.pouChance = pouChance;
+		this.actionChance = actionChance;
+		this.declChance = declChance;
+		this.stChance = stChance;
 		this.statementChance = statementChance;
-		this.stExprChance    = stExprChance;
-		this.sfcChance       = sfcChance;
-		this.sfcStepChance   = sfcStepChance;
+		this.stExprChance = stExprChance;
+		this.sfcChance = sfcChance;
+		this.sfcStepChance = sfcStepChance;
 		this.sfcActionChance = sfcActionChance;
-		this.sfcTransChance  = sfcTransChance;
+		this.sfcTransChance = sfcTransChance;
 	}
-	
+
 	@Override
 	public List<EObject> createFromConfiguration(Configuration config) {
 		return createClusterByChance(configChance, config);
@@ -134,7 +153,7 @@ public class RandomizedClusterFactory implements ScenarioObjectClusterFactory {
 	public List<EObject> createFromSFCTransition(Transition transition) {
 		return createClusterByChance(sfcTransChance, transition);
 	}
-	
+
 	private List<EObject> createClusterByChance(float pickChance, EObject scenarioObject) {
 		if (randomly.nextFloat() < pickChance) {
 			return cluster(scenarioObject, ADD_CONTAINTMENT_CHILD_CHANCE);
@@ -142,18 +161,36 @@ public class RandomizedClusterFactory implements ScenarioObjectClusterFactory {
 			return Collections.emptyList();
 		}
 	}
-	
+
 	private List<EObject> cluster(EObject scenarioObject, float takeContaintmentChance) {
 		List<EObject> scenarioObjects = new ArrayList<>();
-		scenarioObjects.add(scenarioObject);
-		
-		for (EObject child : scenarioObject.eContents()) {
-			if (randomly.nextFloat() < takeContaintmentChance) {
-				List<EObject> childCluster = cluster(child, takeContaintmentChance * RECURSION_WEIGHT);
-				scenarioObjects.addAll(childCluster);
+
+		if (allowedInCluster(scenarioObject)) {
+			scenarioObjects.add(scenarioObject);
+
+			for (EObject child : scenarioObject.eContents()) {
+				if (randomly.nextFloat() < takeContaintmentChance) {
+					List<EObject> childCluster = cluster(child, takeContaintmentChance * RECURSION_WEIGHT);
+					
+					childCluster.removeIf(obj -> !allowedInCluster(obj));
+					scenarioObjects.addAll(childCluster);
+				}
 			}
-		}
-		
+		} 
+
 		return scenarioObjects;
+	}
+
+	/**
+	 * Filters blacklisted classes that should not be part of the scenario object
+	 * cluster.
+	 * 
+	 * @param scenarioObject
+	 * @return true if the object is allowed to be part of the a cluster, false
+	 *         otherwise
+	 */
+	private boolean allowedInCluster(EObject scenarioObject) {
+		return Stream.of(CLASS_BLACKLIST)
+				.noneMatch(blackListedClass -> blackListedClass.isAssignableFrom(scenarioObject.getClass()));
 	}
 }
