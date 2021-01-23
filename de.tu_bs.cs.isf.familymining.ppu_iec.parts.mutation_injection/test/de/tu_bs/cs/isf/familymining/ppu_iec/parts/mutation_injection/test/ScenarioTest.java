@@ -1,6 +1,9 @@
 package de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.test;
 
-import java.util.Random;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.RandomStringUtils;
 
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.Randomization;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.ConfigurationFactory;
@@ -11,6 +14,8 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Variab
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.VariableLocationType;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.SequentialFunctionChartFactory;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtext.ForLoop;
+import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtext.Statement;
+import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtext.StructuredText;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtext.StructuredTextFactory;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtextexpression.BinaryExpression;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtextexpression.BinaryOperator;
@@ -69,6 +74,15 @@ public abstract class ScenarioTest {
 		var.setInitialValue(expr);
 		
 		return var;
+	}
+	
+	protected StructuredText createSt(String label) {
+		StructuredText st = stFactory.createStructuredText();
+		st.setId(RandomStringUtils.random(5));
+		st.setLabel(label);
+		st.setText("text");
+		
+		return st;	
 	}
 	
 	protected ForLoop createForLoop(int initialValue, int increment, int upperBound) {

@@ -15,6 +15,10 @@ public class MutationPair {
 		setMutant(mutant);
 		setOrigin(origin);
 	}
+	
+	public boolean contains(EObject eobject) {
+		return origin.equals(eobject) || mutant.equals(eobject);
+	}
 
 	public boolean hasOrigin() {
 		return origin != null;

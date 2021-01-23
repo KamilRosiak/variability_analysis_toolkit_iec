@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
@@ -13,8 +14,8 @@ import com.google.common.collect.BiMap;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.MutationPair;
 
 public class MutationContext {
-	
-	private final BiMap<EObject, EObject> originalToMutatedObjectMapping; 
+
+	private final BiMap<EObject, EObject> originalToMutatedObjectMapping;
 
 	private List<EObject> ctxObjects = new ArrayList<>();
 
@@ -46,14 +47,16 @@ public class MutationContext {
 	 */
 	public void logChange(EObject toBeChangedObject) {
 		// to be changed object was inserted before
-		Optional<MutationPair> newlyInsertedPair = mutationPairs.stream().filter(pair -> !pair.hasOrigin() && pair.hasMutant())
+		Optional<MutationPair> newlyInsertedPair = mutationPairs.stream()
+				.filter(pair -> !pair.hasOrigin() && pair.hasMutant())
 				.filter(pair -> pair.getMutant().equals(toBeChangedObject)).findFirst();
 		if (newlyInsertedPair.isPresent()) {
 			return;
 		}
-		
+
 		// to be changed object was changed before
-		boolean isLogged = mutationPairs.stream().anyMatch(pair -> pair.hasMutant() ? pair.getMutant().equals(toBeChangedObject) : false);
+		boolean isLogged = mutationPairs.stream()
+				.anyMatch(pair -> pair.hasMutant() ? pair.getMutant().equals(toBeChangedObject) : false);
 		if (isLogged) {
 			return;
 		}
@@ -65,24 +68,48 @@ public class MutationContext {
 
 	public void logRemoval(EObject toBeRemovedMutObject) {
 		// to be removed object was changed before
-		Optional<MutationPair> changedPair = mutationPairs.stream().filter(pair -> pair.hasOrigin() && pair.hasMutant())
+		Optional<MutationPair> changedPair = mutationPairs.stream()
+				.filter(pair -> pair.hasOrigin() && pair.hasMutant())
 				.filter(pair -> pair.getMutant().equals(toBeRemovedMutObject)).findFirst();
 		if (changedPair.isPresent()) {
 			changedPair.get().setMutant(null);
+			removeLoggedSubtreeElements(toBeRemovedMutObject);
 			return;
 		}
-		
+
 		// to be removed object was inserted before
-		Optional<MutationPair> newlyInsertedPair = mutationPairs.stream().filter(pair -> !pair.hasOrigin() && pair.hasMutant())
+		Optional<MutationPair> newlyInsertedPair = mutationPairs.stream()
+				.filter(pair -> !pair.hasOrigin() && pair.hasMutant())
 				.filter(pair -> pair.getMutant().equals(toBeRemovedMutObject)).findFirst();
 		if (newlyInsertedPair.isPresent()) {
 			mutationPairs.remove(newlyInsertedPair.get());
+			removeLoggedSubtreeElements(toBeRemovedMutObject);
 			return;
 		}
 
 		// not related to known mutation pair, therefore mark as removed
 		EObject originalCounterpart = originalToMutatedObjectMapping.inverse().get(toBeRemovedMutObject);
 		mutationPairs.add(new MutationPair(originalCounterpart, null));
+		removeLoggedSubtreeElements(toBeRemovedMutObject);
+	}
+
+	/**
+	 * Removes the subtree elements from the context if they 
+	 * 
+	 * @param toBeRemovedMutObject
+	 */
+	private void removeLoggedSubtreeElements(EObject toBeRemovedMutObject) {
+		TreeIterator<EObject> it = EcoreUtil.getAllProperContents(toBeRemovedMutObject, true);
+		while (it.hasNext()) {
+			EObject descendant = it.next();
+			
+			List<MutationPair> referencedPairs = mutationPairs.stream()
+					.filter(mp -> mp.getMutant() == descendant)
+					.collect(Collectors.toList());
+			mutationPairs.removeAll(referencedPairs);
+			
+			ctxObjects.remove(descendant);
+		}
 	}
 
 	public void logInsertion(EObject toBeInsertedObject) {
@@ -100,7 +127,8 @@ public class MutationContext {
 	 *                                context.
 	 */
 	public Optional<EObject> getMutated(EObject originalScenarioObject) throws UnknownObjectException {
-		Optional<MutationPair> targetMutationPair = mutationPairs.stream().filter(pair -> pair.hasOrigin() && pair.getOrigin().equals(originalScenarioObject)).findFirst();
+		Optional<MutationPair> targetMutationPair = mutationPairs.stream()
+				.filter(pair -> pair.hasOrigin() && pair.getOrigin().equals(originalScenarioObject)).findFirst();
 		if (!targetMutationPair.isPresent()) {
 			throw new UnknownObjectException(originalScenarioObject, this);
 		} else {
@@ -118,7 +146,8 @@ public class MutationContext {
 	 *                                context.
 	 */
 	public Optional<EObject> getOriginal(EObject mutatedScenarioObject) throws UnknownObjectException {
-		Optional<MutationPair> targetMutationPair = mutationPairs.stream().filter(pair -> pair.hasMutant() && pair.getMutant().equals(mutatedScenarioObject)).findFirst();
+		Optional<MutationPair> targetMutationPair = mutationPairs.stream()
+				.filter(pair -> pair.hasMutant() && pair.getMutant().equals(mutatedScenarioObject)).findFirst();
 		if (!targetMutationPair.isPresent()) {
 			throw new UnknownObjectException(mutatedScenarioObject, this);
 		} else {
@@ -137,7 +166,7 @@ public class MutationContext {
 		}
 		return false;
 	}
-	
+
 	public boolean hasChangedTreeStructure() {
 		return changedTreeStructure;
 	}

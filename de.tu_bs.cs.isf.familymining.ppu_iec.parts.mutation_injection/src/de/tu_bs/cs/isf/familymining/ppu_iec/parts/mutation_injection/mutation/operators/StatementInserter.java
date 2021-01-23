@@ -53,7 +53,7 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtextexpres
 public class StatementInserter extends StatementMutation {
 	private final StructuredTextFactory stFactory = StructuredTextFactory.eINSTANCE;
 	private final StructuredTextExpressionFactory steFactory = StructuredTextExpressionFactory.eINSTANCE;
-	
+
 	private final float REC_CHANCE = 0.3f;
 
 	private int maxMutations;
@@ -92,11 +92,13 @@ public class StatementInserter extends StatementMutation {
 					Statement stmt = (Statement) stmtContainer;
 					assignment.setStructuredText(stmt.getStructuredText());
 				}
-				stmts.add(assignment);
-				
+
 				// log change
 				ctx.logInsertion(assignment);
 				ctx.setChangedTreeStructure(true);
+				
+				// do the insertion
+				stmts.add(assignment);
 			}
 		}
 
@@ -136,7 +138,7 @@ public class StatementInserter extends StatementMutation {
 		stmt.setStartColumnPos(0);
 		stmt.setEndColumnPos(0);
 	}
-	
+
 	private void attachMetaData(Expression expr) {
 		expr.setId(RandomStringUtils.randomAlphanumeric(10));
 	}
@@ -253,7 +255,7 @@ public class StatementInserter extends StatementMutation {
 		Literal lit = steFactory.createLiteral();
 		lit.setExpressionType(ExpressionType.LITERAL);
 		attachMetaData(lit);
-		
+
 		lit.setDataType(returnType);
 		if (isInt(returnType)) {
 			lit.setSymbol(RandomStringUtils.randomNumeric(3));

@@ -83,7 +83,7 @@ public class MutationEngine {
 		mutationInjection = ContextInjectionFactory.make(MutationInjection.class, context);
 
 	}
-	
+
 	public void startMutation() {
 		// prepare result structure
 		EvaluationResult evalResult = new EvaluationResult();
@@ -99,7 +99,8 @@ public class MutationEngine {
 		}
 
 		// export the results
-		evalResult.setName("result_" + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME).replace(":", "_"));
+		evalResult.setName(
+				"result_" + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME).replace(":", "_"));
 		evalResult.setDirectory(resultDirectory);
 		evalResult.setTotalRuns(RUNS);
 
@@ -139,8 +140,8 @@ public class MutationEngine {
 	}
 
 	public Configuration selectSeed() {
-		//String seedName = randomly.pickFrom(SCENARIO_SEEDS);
-		String seedName = randomly.pickFrom("ST_Evolution_1");
+		// String seedName = randomly.pickFrom(SCENARIO_SEEDS);
+		String seedName = randomly.pickFrom("scenario24_small");
 		Optional<Configuration> configuration = scenarioStorage.loadScenario(seedName);
 		if (!configuration.isPresent()) {
 			throw new ScenarioStorageException(String.format("Scenario \"%s\" could not be loaded", seedName));
@@ -208,7 +209,7 @@ public class MutationEngine {
 	private int searchForMutants(List<AbstractContainer> changeList, List<MutationPair> totalMutants) {
 		// TRUE POSITIVE
 		int foundMutants = 0;
-		
+
 		Iterator<AbstractContainer> changeIterator = changeList.iterator();
 		while (changeIterator.hasNext()) {
 			AbstractContainer currentContainer = changeIterator.next();
@@ -216,7 +217,7 @@ public class MutationEngine {
 			while (mutantsIterator.hasNext()) {
 				MutationPair mutantPair = mutantsIterator.next();
 
-				//Added artifact
+				// Added artifact
 				if (mutantPair.getOrigin() == null && mutantPair.getMutant() != null
 						&& currentContainer.getFirst() == null && currentContainer.getSecond() != null
 						&& mutantPair.getMutant().equals(currentContainer.getSecond())) {
