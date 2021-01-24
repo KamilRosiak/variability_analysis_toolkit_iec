@@ -100,6 +100,7 @@ public class MutationContext {
 	 * @param toBeRemovedMutObject
 	 */
 	private void removeLoggedSubtreeElements(EObject toBeRemovedMutObject) {
+		// remove previously changed or inserted mutation pairs
 		TreeIterator<EObject> it = EcoreUtil.getAllProperContents(toBeRemovedMutObject, true);
 		while (it.hasNext()) {
 			EObject descendant = it.next();
@@ -107,10 +108,26 @@ public class MutationContext {
 			List<MutationPair> referencedPairs = mutationPairs.stream()
 					.filter(mp -> mp.getMutant() == descendant)
 					.collect(Collectors.toList());
-			mutationPairs.removeAll(referencedPairs);
+			mutationPairs.removeAll(referencedPairs);			
 			
 			ctxObjects.remove(descendant);
 		}
+		
+		// remove mutations pairs that were created by a removal in the subtree
+		EObject origCounterpart = originalToMutatedObjectMapping.inverse().get(toBeRemovedMutObject);
+		if (origCounterpart != null) {
+			TreeIterator<EObject> origIt = EcoreUtil.getAllProperContents(origCounterpart, true);
+			while (origIt.hasNext()) {
+				EObject origDescendant = origIt.next();
+				
+				List<MutationPair> referencedPairs = mutationPairs.stream()
+						.filter(mp -> mp.getOrigin() == origDescendant)
+						.collect(Collectors.toList());
+				
+				mutationPairs.removeAll(referencedPairs);
+			}
+		}
+		
 	}
 
 	public void logInsertion(EObject toBeInsertedObject) {

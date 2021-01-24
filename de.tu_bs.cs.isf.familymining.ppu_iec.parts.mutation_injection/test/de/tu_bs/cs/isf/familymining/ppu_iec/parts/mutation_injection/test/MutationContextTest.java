@@ -69,7 +69,24 @@ public class MutationContextTest extends ScenarioTest {
 	}
 	
 	@Test 
-	public void testLogRemoval_logInsertion_logRemovalRoot() {
+	public void testLogRemoval_removeSubElementThenRemoveRoot() {
+		StTree original = createStTree();
+		StTree mutated = createStTree();		
+		BiMap<EObject, EObject> mapping = constructOriginalToMutatedTreeMapping(original.root, mutated.root);
+				
+		MutationContext mutCtx = new MutationContext(mapping);
+		mutCtx.logRemoval(mutated.forLoop1);
+		EcoreUtil.remove(mutated.forLoop1);
+		
+		mutCtx.logRemoval(mutated.root);
+		
+		assertThat(mutCtx.getMutationPairs()).hasSize(1);
+		assertThat(mutCtx.getMutationPairs()).allMatch(mp -> mp.hasOrigin() && mp.getOrigin().equals(original.root));
+		assertThat(mutCtx.getCtxObjects()).isEmpty();
+	}
+	
+	@Test 
+	public void testLogRemoval_insertSubElementThenRemoveRoot() {
 		StTree original = createStTree();
 		StTree mutated = createStTree();		
 		BiMap<EObject, EObject> mapping = constructOriginalToMutatedTreeMapping(original.root, mutated.root);
@@ -88,7 +105,7 @@ public class MutationContextTest extends ScenarioTest {
 	}
 	
 	@Test 
-	public void testLogRemoval__logChangeChild_logRemovalRoot() {
+	public void testLogRemoval_changeSubElementThenRemoveRoot() {
 		StTree original = createStTree();
 		StTree mutated = createStTree();
 		BiMap<EObject, EObject> mapping = constructOriginalToMutatedTreeMapping(original.root, mutated.root);

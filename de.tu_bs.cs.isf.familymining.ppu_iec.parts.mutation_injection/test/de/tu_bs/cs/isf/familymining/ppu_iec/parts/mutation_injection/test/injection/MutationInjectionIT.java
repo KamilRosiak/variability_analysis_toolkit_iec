@@ -41,7 +41,7 @@ public class MutationInjectionIT extends VATContextTest {
 	 * @param repetitionInfo
 	 * @throws IOException
 	 */
-	@RepeatedTest(20)
+	@RepeatedTest(30)
 	public void smokeTests(RepetitionInfo repetitionInfo) throws IOException {		
 		String scenario24 = "Scenario24";
 		Optional<Configuration> config = scenarioStorage.loadScenario(scenario24);

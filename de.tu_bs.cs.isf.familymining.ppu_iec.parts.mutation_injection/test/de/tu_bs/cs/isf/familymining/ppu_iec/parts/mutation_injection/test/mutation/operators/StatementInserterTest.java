@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.eclipse.e4.core.contexts.ContextInjectionFactory;
+import org.eclipse.e4.core.contexts.EclipseContextFactory;
+import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +33,8 @@ public class StatementInserterTest extends ScenarioTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
-		stmtInserter = new StatementInserter();
+		IEclipseContext eclipseCtx = EclipseContextFactory.create();
+		stmtInserter = ContextInjectionFactory.make(StatementInserter.class, eclipseCtx);
 		stmtInserter.postConstruct(MAX_MUTATIONS);
 	}
 
