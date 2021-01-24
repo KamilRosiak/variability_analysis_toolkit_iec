@@ -50,7 +50,7 @@ public class MutationContextTest extends ScenarioTest {
 		MutationContext mc2 = new MutationContext(mapping);
 		mc2.getCtxObjects().add(mutated.rightLeft);
 		
-		Assertions.assertThat(mc1.sharesElementsWith(mc2)).isFalse();
+		assertThat(mc1.sharesElementsWith(mc2)).isFalse();
 	}
 	
 	@Test

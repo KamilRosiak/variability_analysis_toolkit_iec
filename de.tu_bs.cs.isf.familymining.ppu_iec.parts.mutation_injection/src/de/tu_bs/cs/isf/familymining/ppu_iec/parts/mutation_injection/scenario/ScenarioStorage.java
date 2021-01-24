@@ -19,6 +19,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.eclipse.e4.core.di.annotations.Creatable;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -61,9 +62,13 @@ public class ScenarioStorage {
 	 */
 	public Optional<Configuration> loadScenario(String name) {
 		Configuration config = scenarioCache.computeIfAbsent(name, this::findScenario);
-		return Optional.ofNullable(config);
+		if (config != null) {
+			return Optional.of(EcoreUtil.copy(config));			
+		} else {			
+			return Optional.empty();
+		}
 	}
-
+	
 	/**
 	 * Saves the scenario under the given name. Scenarios are stored in the workspace at {@value #MUTATION_DIR_NAME}.
 	 * 
