@@ -50,7 +50,7 @@ public class MutationInjectionController {
 
 	public void demo() {
 		try {
-			String scenario24_small = "scenario24_small";
+			String scenario24_small = "ST_Evolution_1";
 			Optional<Configuration> config = scenarioStorage.loadScenario(scenario24_small);
 
 			MutationResult mutatationResult = mutationInjection.generateMutant(config.get());

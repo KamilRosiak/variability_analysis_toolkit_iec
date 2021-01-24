@@ -1,8 +1,5 @@
 package de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.test;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.lang3.RandomStringUtils;
 
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.Randomization;
@@ -13,8 +10,12 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Variab
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.VariableLocationDataType;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.VariableLocationType;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.SequentialFunctionChartFactory;
+import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.SimpleAction;
+import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.Step;
+import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.StepQualifier;
+import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.Transition;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtext.ForLoop;
-import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtext.Statement;
+import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtext.StatementType;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtext.StructuredText;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtext.StructuredTextFactory;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtextexpression.BinaryExpression;
@@ -87,6 +88,7 @@ public abstract class ScenarioTest {
 	
 	protected ForLoop createForLoop(int initialValue, int increment, int upperBound) {
 		ForLoop forLoop = stFactory.createForLoop();
+		forLoop.setStatementType(StatementType.FOR_LOOP);
 		forLoop.setAbsStartLine(randomly.nextInt(20));
 		forLoop.setAbsEndLine(forLoop.getAbsStartLine()+3);
 		forLoop.setStartColumnPos(randomly.nextInt(20));
@@ -99,5 +101,38 @@ public abstract class ScenarioTest {
 		forLoop.setUpperBound(upperBound);
 		
 		return forLoop;
+	}
+	
+	protected Step createStep(int localId, String name, StepQualifier stepQualifier) {
+		return createStep(localId, name, stepQualifier, false, false, 1);
+	}
+	
+	protected Step createStep(int localId, String name, StepQualifier stepQualifier, boolean active, boolean initialStep, int stepLevel) {
+		Step step = sfcFactory.createStep();
+		step.setLocal_ID(localId);
+		step.setQualifier(stepQualifier);
+		step.setName(name);
+		step.setIsActive(active);
+		step.setInitialStep(initialStep);
+		step.setStepLevel(stepLevel);
+		
+		return step;
+	}
+	
+	protected Transition createTransition(int localId, String condition, boolean jump) {
+		Transition transition = sfcFactory.createTransition();
+		transition.setLocal_ID(localId);
+		transition.setCondition(condition);
+		transition.setIsJump(jump);
+		
+		return transition;
+	}
+	
+	protected SimpleAction createSimpleAction(int localId, StepQualifier stepQualifier, Variable variable) {
+		SimpleAction simpleAction = sfcFactory.createSimpleAction();
+		simpleAction.setLocalId(localId);
+		simpleAction.setQualifier(stepQualifier);
+		simpleAction.setActionVariable(variable);
+		return simpleAction;
 	}
 }

@@ -3,17 +3,23 @@ package de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.test.mutat
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.e4.core.contexts.ContextInjectionFactory;
+import org.eclipse.e4.core.contexts.EclipseContextFactory;
+import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
+import org.mockito.Mockito;
 
 import com.google.common.collect.HashBiMap;
 
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.MutationContext;
+import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.AttributeFilter;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.NumberChanger;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.test.ScenarioTest;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtext.ForLoop;
@@ -26,8 +32,15 @@ public class NumberChangerTest extends ScenarioTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
-		numberChanger = new NumberChanger();
+		IEclipseContext eclipseCtx = EclipseContextFactory.create();
+
+		AttributeFilter attrFilter = Mockito.mock(AttributeFilter.class);
+		Mockito.doReturn(true).when(attrFilter).test(Mockito.any(), Mockito.any());
+		eclipseCtx.set(AttributeFilter.class, attrFilter);
+
+		numberChanger = ContextInjectionFactory.make(NumberChanger.class, eclipseCtx);
 		numberChanger.postConstruct(MAX_MUTATIONS, GEN_DIGIT_LENGTH);
+		
 	}
 
 	@RepeatedTest(5)
@@ -35,7 +48,11 @@ public class NumberChangerTest extends ScenarioTest {
 		MutationContext ctx = new MutationContext(HashBiMap.create());
 		ctx.getCtxObjects().addAll(forLoops(5));
 
-		MutationContext mutCtx = numberChanger.apply(ctx.clone());
+		MutationContext clonedCtx = new MutationContext(HashBiMap.create());
+		Collection<EObject> ctxObjectsCopy = EcoreUtil.copyAll(ctx.getCtxObjects());
+		clonedCtx.getCtxObjects().addAll(ctxObjectsCopy);
+
+		MutationContext mutCtx = numberChanger.apply(clonedCtx);
 		assertThat(mutCtx.getCtxObjects()).hasSize(5);
 
 		int totalChangeCount = 0;

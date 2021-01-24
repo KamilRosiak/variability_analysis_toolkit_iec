@@ -11,15 +11,25 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.eclipse.e4.core.di.extensions.Preference;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 
+import com.sun.javafx.image.impl.ByteIndexed.ToByteBgraAnyConverter;
+
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.MutationContext;
+import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.Randomization;
 
 public class NumberChanger implements Mutation {
+
+	@Inject
+	private AttributeFilter attrFilter;
+
+	private Randomization randomly;
+	
 	private int maxSymbolsMutations;
 	private int generatedDigitLength;
 
@@ -29,6 +39,7 @@ public class NumberChanger implements Mutation {
 			@Preference(nodePath = MUTATION_PREF, value = NUMBER_GENERATED_DIGIT_LENGTH) int generatedDigitLength) {
 		this.maxSymbolsMutations = maxSymbolsMutations;
 		this.generatedDigitLength = generatedDigitLength;
+		this.randomly = new Randomization();
 	}
 
 	@Override
@@ -44,17 +55,20 @@ public class NumberChanger implements Mutation {
 			EObject candidate = it.next();
 			List<EAttribute> numberAttrs = scanForNumberAttributes(candidate, exclusionList);
 			if (!numberAttrs.isEmpty()) {
-				EAttribute attr = numberAttrs.get(0);
-				Number oldValue = (Number) candidate.eGet(attr);
-
-				// log change
-				ctx.logChange(candidate);
-
-				Number newValue = generateNumber(oldValue);
-				candidate.eSet(attr, newValue);
-				exclusionList.add(newValue);
-
-				symbolMutationCount++;
+				EAttribute attr = randomly.pickFrom(numberAttrs);
+				
+				if (attrFilter.test(candidate, attr)) {
+					Number oldValue = (Number) candidate.eGet(attr);
+					
+					// log change
+					ctx.logChange(candidate);
+					
+					Number newValue = generateNumber(oldValue);
+					candidate.eSet(attr, newValue);
+					exclusionList.add(newValue);
+					
+					symbolMutationCount++;					
+				}
 			}
 		}
 		return ctx;

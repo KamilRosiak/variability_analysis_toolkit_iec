@@ -49,6 +49,7 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.Co
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.Mutator;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.Type2Mutator;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.Type3Mutator;
+import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.AttributeFilter;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.EnumChanger;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.NameChanger;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.NumberChanger;
@@ -67,6 +68,10 @@ public class MutationInjectionConfig {
 	
 	@Inject
 	public void prepareContext(IEclipseContext context, @Preference(nodePath = MUTATION_PREF) IEclipsePreferences prefs) {
+		// set attribute filter for the mutation operators
+		AttributeFilter attrFilter = ContextInjectionFactory.make(AttributeFilter.class, context);
+		context.set(AttributeFilter.class, attrFilter);
+		
 		// mutation operators
 		setIntPref(prefs, NAME_MAX_MUTATIONS, NAME_MAX_MUTATIONS_DEFAULT);		
 		NameChanger nameChanger = ContextInjectionFactory.make(NameChanger.class, context);
@@ -103,8 +108,8 @@ public class MutationInjectionConfig {
 		setFloatPref(prefs, CLUSTER_FACT_SFC_TRANS_CHANCE, CLUSTER_FACT_SFC_TRANS_CHANCE_DEFAULT);
 		RandomizedClusterFactory randomizedClusterFactory = ContextInjectionFactory.make(RandomizedClusterFactory.class, context);
 		context.set(ScenarioObjectClusterFactory.class, randomizedClusterFactory);
-		
-		// mutator		
+				
+		// set the usable mutators
 		Type2Mutator type2Mutator = ContextInjectionFactory.make(Type2Mutator.class, context);
 		context.set(Type2Mutator.class, type2Mutator);
 		

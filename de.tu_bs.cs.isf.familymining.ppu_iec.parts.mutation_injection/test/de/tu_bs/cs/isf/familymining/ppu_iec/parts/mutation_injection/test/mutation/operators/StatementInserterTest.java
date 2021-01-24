@@ -39,7 +39,10 @@ public class StatementInserterTest extends ScenarioTest {
 		MutationContext ctx = new MutationContext(HashBiMap.create());
 		ctx.getCtxObjects().addAll(structuredText(ST_INSTANCE_SIZE, STMT_SIZE));
 
-		MutationContext mutCtx = stmtInserter.apply(ctx.clone());
+		MutationContext clonedCtx = new MutationContext(HashBiMap.create());
+		clonedCtx.getCtxObjects().addAll(structuredText(ST_INSTANCE_SIZE, STMT_SIZE));
+
+		MutationContext mutCtx = stmtInserter.apply(clonedCtx);
 
 		int totalChangeCount = 0;
 		for (int i = 0; i < ST_INSTANCE_SIZE; i++) {

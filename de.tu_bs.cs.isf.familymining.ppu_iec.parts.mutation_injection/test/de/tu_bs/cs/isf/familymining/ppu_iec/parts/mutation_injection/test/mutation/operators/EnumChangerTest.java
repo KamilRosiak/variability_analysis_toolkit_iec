@@ -3,17 +3,23 @@ package de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.test.mutat
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.e4.core.contexts.ContextInjectionFactory;
+import org.eclipse.e4.core.contexts.EclipseContextFactory;
+import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
+import org.mockito.Mockito;
 
 import com.google.common.collect.HashBiMap;
 
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.MutationContext;
+import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.AttributeFilter;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.EnumChanger;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.test.ScenarioTest;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Variable;
@@ -30,7 +36,13 @@ class EnumChangerTest extends ScenarioTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
-		enumChanger = new EnumChanger();
+		IEclipseContext eclipseCtx = EclipseContextFactory.create();
+
+		AttributeFilter attrFilter = Mockito.mock(AttributeFilter.class);
+		Mockito.doReturn(true).when(attrFilter).test(Mockito.any(), Mockito.any());
+		eclipseCtx.set(AttributeFilter.class, attrFilter);
+		
+		enumChanger = ContextInjectionFactory.make(EnumChanger.class, eclipseCtx);
 		enumChanger.postConstruct(MAX_MUTATIONS);
 	}
 
@@ -38,8 +50,12 @@ class EnumChangerTest extends ScenarioTest {
 	public void testParameter_maxMutations() {
 		MutationContext ctx = new MutationContext(HashBiMap.create());
 		ctx.getCtxObjects().addAll(variables(5));
+		
+		MutationContext clonedCtx = new MutationContext(HashBiMap.create());
+		Collection<EObject> ctxObjectsCopy = EcoreUtil.copyAll(ctx.getCtxObjects());
+		clonedCtx.getCtxObjects().addAll(ctxObjectsCopy);
 
-		MutationContext mutCtx = enumChanger.apply(ctx.clone());
+		MutationContext mutCtx = enumChanger.apply(clonedCtx);
 		assertThat(mutCtx.getCtxObjects()).hasSize(5);
 
 		int totalChangeCount = 0;

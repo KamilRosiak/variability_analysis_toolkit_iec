@@ -38,8 +38,12 @@ public class StatementRemoverTest extends ScenarioTest {
 	public void testParameter_maxMutations() {
 		MutationContext ctx = new MutationContext(HashBiMap.create());
 		ctx.getCtxObjects().addAll(structuredText(ST_INSTANCE_SIZE, STMT_SIZE));
+		
+		MutationContext clonedCtx = new MutationContext(HashBiMap.create());
+		clonedCtx.getCtxObjects().addAll(structuredText(ST_INSTANCE_SIZE, STMT_SIZE));
 
-		MutationContext mutCtx = stmtRemover.apply(ctx.clone());
+
+		MutationContext mutCtx = stmtRemover.apply(clonedCtx);
 
 		int totalChangeCount = 0;
 		for (int i = 0; i < ST_INSTANCE_SIZE; i++) {

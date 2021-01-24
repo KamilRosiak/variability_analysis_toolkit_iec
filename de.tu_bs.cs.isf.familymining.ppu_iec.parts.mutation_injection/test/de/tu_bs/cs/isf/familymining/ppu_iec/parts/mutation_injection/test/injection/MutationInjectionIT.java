@@ -11,6 +11,7 @@ import org.junit.jupiter.api.RepetitionInfo;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.MutationResult;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection.MutationInjection;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection.MutationInjectionConfig;
+import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.AttributeFilter;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.scenario.ScenarioStorage;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.test.VATContextTest;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Configuration;
@@ -28,7 +29,8 @@ public class MutationInjectionIT extends VATContextTest {
 	@BeforeEach
 	public void beforeEach() {
 		scenarioStorage = addToContext(ScenarioStorage.class);
-		
+		addMockToContext(AttributeFilter.class);
+
 		ContextInjectionFactory.inject(new MutationInjectionConfig(), getEclipseCtx());
 		mutationInjection = addToContext(MutationInjection.class);
 	}

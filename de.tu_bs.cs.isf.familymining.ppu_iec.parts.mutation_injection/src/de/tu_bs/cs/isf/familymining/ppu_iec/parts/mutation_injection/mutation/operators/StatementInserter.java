@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.eclipse.e4.core.di.extensions.Preference;
@@ -56,6 +57,9 @@ public class StatementInserter extends StatementMutation {
 
 	private final float REC_CHANCE = 0.3f;
 
+	@Inject
+	private AttributeFilter attrFilter;
+	
 	private int maxMutations;
 
 	private Randomization randomly;

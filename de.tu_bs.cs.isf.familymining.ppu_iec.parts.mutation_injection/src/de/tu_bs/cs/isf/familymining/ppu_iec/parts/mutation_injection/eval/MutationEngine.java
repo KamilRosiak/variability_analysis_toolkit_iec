@@ -68,7 +68,6 @@ public class MutationEngine {
 	@Inject
 	private ServiceContainer services;
 
-	@Inject
 	private Randomization randomly;
 
 	private MutationInjection mutationInjection;
@@ -81,6 +80,7 @@ public class MutationEngine {
 			@Preference(nodePath = MUTATION_PREF) IEclipsePreferences prefs) {
 		ContextInjectionFactory.inject(new MutationInjectionConfig(), context);
 		mutationInjection = ContextInjectionFactory.make(MutationInjection.class, context);
+		this.randomly = new Randomization();
 
 	}
 
@@ -141,7 +141,7 @@ public class MutationEngine {
 
 	public Configuration selectSeed() {
 		// String seedName = randomly.pickFrom(SCENARIO_SEEDS);
-		String seedName = randomly.pickFrom("scenario24_small");
+		String seedName = randomly.pickFrom("ST_Evolution_1");
 		Optional<Configuration> configuration = scenarioStorage.loadScenario(seedName);
 		if (!configuration.isPresent()) {
 			throw new ScenarioStorageException(String.format("Scenario \"%s\" could not be loaded", seedName));

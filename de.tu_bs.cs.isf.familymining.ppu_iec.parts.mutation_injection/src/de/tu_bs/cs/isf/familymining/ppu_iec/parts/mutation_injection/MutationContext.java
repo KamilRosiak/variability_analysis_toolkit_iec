@@ -10,6 +10,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.MutationPair;
 
@@ -194,20 +195,6 @@ public class MutationContext {
 		} else if (!EcoreUtil.equals(ctxObjects, other.ctxObjects))
 			return false;
 		return true;
-	}
-
-	/**
-	 * Deep copy of mutation context.<br>
-	 * <br>
-	 * <b>Note</b>: copies the entire containment tree of eobjects.
-	 */
-	@Override
-	public MutationContext clone() {
-		MutationContext clone = new MutationContext(originalToMutatedObjectMapping);
-		clone.getCtxObjects().clear();
-		clone.getCtxObjects().addAll(ctxObjects.stream().map(EcoreUtil::copy).collect(Collectors.toList()));
-
-		return clone;
 	}
 
 	public List<MutationPair> getMutationPairs() {

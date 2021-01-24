@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.eclipse.e4.core.di.extensions.Preference;
@@ -19,6 +20,9 @@ import org.eclipse.emf.ecore.EObject;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.MutationContext;
 
 public class NameChanger implements Mutation {
+
+	@Inject
+	private AttributeFilter attrFilter;
 
 	private int maxSymbolsMutations;
 
@@ -42,40 +46,20 @@ public class NameChanger implements Mutation {
 			List<EAttribute> stringAttrs = scanForStringAttributes(candidate, exclusionList);
 			if (!stringAttrs.isEmpty()) {
 				EAttribute attr = stringAttrs.get(0);
-				String oldValue = (String) candidate.eGet(attr);
-
-				// log change
-				ctx.logChange(candidate);
-
-				String newValue = generateName(oldValue);
-				candidate.eSet(attr, newValue);
-
-				exclusionList.add(newValue);
-				//replaceOccurrences(oldValue, newValue, ctx);
-				
-
-				symbolMutationCount++;
-			}
-		}
-		return ctx;
-	}
-
-	/**
-	 * Replaces occurrences of <i>oldValue</i> with <i>newValue</i> in the context
-	 * 
-	 * @param oldValue
-	 * @param newValue
-	 * @param ctx
-	 */
-	private void replaceOccurrences(String oldValue, String newValue, MutationContext ctx) {
-		for (EObject ctxObject : ctx.getCtxObjects()) {
-			for (EAttribute attr : scanForStringAttributes(ctxObject, Collections.emptySet())) {
-				String value = (String) ctxObject.eGet(attr);
-				if (value.equals(oldValue)) {
-					ctxObject.eSet(attr, newValue);
+				if (attrFilter.test(candidate, attr)) {
+					String oldValue = (String) candidate.eGet(attr);
+					
+					ctx.logChange(candidate);
+					
+					String newValue = generateName(oldValue);
+					candidate.eSet(attr, newValue);
+					
+					exclusionList.add(newValue);					
+					symbolMutationCount++;
 				}
 			}
 		}
+		return ctx;
 	}
 
 	/**

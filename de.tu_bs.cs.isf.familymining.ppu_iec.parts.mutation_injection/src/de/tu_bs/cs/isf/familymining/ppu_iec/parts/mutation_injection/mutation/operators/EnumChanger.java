@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 
 import org.eclipse.e4.core.di.extensions.Preference;
 import org.eclipse.emf.common.util.Enumerator;
@@ -24,6 +25,9 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.Ra
 
 public class EnumChanger implements Mutation {
 
+	@Inject
+	private AttributeFilter attrFilter;
+	
 	private int maxSymbolsMutations;
 
 	private Randomization randomly; 
@@ -54,7 +58,7 @@ public class EnumChanger implements Mutation {
 				List<? extends Enumerator> valueCandidates = Stream.of(oldValue.getClass().getEnumConstants())
 						.filter(enumLiteral -> !enumLiteral.equals(oldValue)).collect(Collectors.toList());
 
-				if (!valueCandidates.isEmpty()) {
+				if (!valueCandidates.isEmpty() && attrFilter.test(candidate, attr)) {
 					Enumerator newValue = randomly.pickFrom(valueCandidates);
 
 					// log change
