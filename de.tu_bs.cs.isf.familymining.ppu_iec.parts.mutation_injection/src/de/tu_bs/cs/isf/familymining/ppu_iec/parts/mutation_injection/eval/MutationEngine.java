@@ -1,7 +1,5 @@
 package de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.eval;
 
-import static de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.Mutation.MUTATION_PREF;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -15,11 +13,7 @@ import java.util.function.Supplier;
 
 import javax.inject.Inject;
 
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.e4.core.contexts.ContextInjectionFactory;
-import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Creatable;
-import org.eclipse.e4.core.di.extensions.Preference;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,17 +21,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.tu_bs.cs.isf.e4cf.core.compare.templates.AbstractContainer;
 import de.tu_bs.cs.isf.e4cf.core.util.RCPContentProvider;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.solution.ConfigurationResultRoot;
-import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.solution.util.ConfigurationCompareUtil;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.MutationResult;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.eval.data.EvaluationResult;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.eval.data.EvaluationResult.RunResult;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection.MutationInjection;
-import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection.MutationInjectionConfig;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.MutationPair;
-import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.Mutator;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.Randomization;
-import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.Type2Mutator;
-import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.Type3Mutator;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.scenario.ScenarioStorage;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.scenario.ScenarioStorageException;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Configuration;
@@ -51,35 +40,21 @@ public class MutationEngine {
 			"Scenario_11", "Scenario_12", "Scenario_13", "Scenario_14", "Scenario_15", "Scenario_16", "Scenario_17",
 			"Scenario_18", "Scenario_19", "Scenario_20", "Scenario21", "Scenario24" };
 
-	@Preference(nodePath = MUTATION_PREF)
-	private IEclipsePreferences prefs;
-
-	@Inject
-	private Type2Mutator type2Mutator;
-
-	@Inject
-	private Type3Mutator type3Mutator;
-
 	@Inject
 	private ScenarioStorage scenarioStorage;
 
 	@Inject
+	private MutationInjection mutationInjection;
+	
+	@Inject
+	private ScenarioComparator scenarioComparator;
+
+	@Inject
 	private Randomization randomly;
 
-	private MutationInjection mutationInjection;
-
 	/**
-	 * This method initializes the mutationInjection
+	 * Start the mutation cycle with all the PPU IEC Scenarios as seeds.
 	 */
-	@Inject
-	public void initMutationInjection(IEclipseContext context,
-			@Preference(nodePath = MUTATION_PREF) IEclipsePreferences prefs) {
-		ContextInjectionFactory.inject(new MutationInjectionConfig(), context);
-		mutationInjection = ContextInjectionFactory.make(MutationInjection.class, context);
-		this.randomly = new Randomization();
-
-	}
-
 	public void startMutation() {
 		startMutation(this::selectSeed);
 	}
@@ -118,10 +93,6 @@ public class MutationEngine {
 	}
 
 	private RunResult mutationCycle(Configuration seed, int run) {
-		// Select mutator 50/50
-		Mutator mutator = randomly.pickFrom(type2Mutator, type3Mutator);
-		mutationInjection.setMutator(mutator);
-
 		// generate and rename mutant
 		MutationResult mutationResult = mutationInjection.generateMutant(seed);
 		Configuration mutant = mutationResult.getMutated();
@@ -135,8 +106,8 @@ public class MutationEngine {
 		}
 
 		// find changes
-		ConfigurationResultRoot result = ConfigurationCompareUtil.compare(seed, mutant);
-		List<AbstractContainer> changeList = ConfigurationCompareUtil.findChanges(result);
+		ConfigurationResultRoot result = scenarioComparator.compare(seed, mutant);
+		List<AbstractContainer> changeList = scenarioComparator.findChanges(result);
 
 		// search for matches between mutants and found changes
 		List<MutationPair> totalMutants = mutationResult.getMutationRegistry().getMutationPairs();

@@ -145,14 +145,14 @@ public class StatementGenerator {
 		ifStatement.setStatementType(StatementType.IF);
 		attachMetaData(ifStatement);
 		
-		while (randomly.nextFloat() < SUB_STATEMENT_CHANCE) {
+		do {
 			ConditionalBlock conditionalBlock = stFactory.createConditionalBlock();
 			conditionalBlock.setStatementType(StatementType.CONDITIONAL_BLOCK);
 			attachMetaData(conditionalBlock);
 			
 			conditionalBlock.setCondition(generateExpression(BOOL));
 			ifStatement.getConditionalBlocks().add(conditionalBlock);	
-		}
+		} while (randomly.nextFloat() < SUB_STATEMENT_CHANCE);
 		
 		return ifStatement;
 	}
@@ -162,14 +162,14 @@ public class StatementGenerator {
 		caseStatement.setStatementType(StatementType.CASE);
 		attachMetaData(caseStatement);
 		
-		while (randomly.nextFloat() < SUB_STATEMENT_CHANCE) {
+		do {
 			CaseBlock caseBlock = stFactory.createCaseBlock();
 			caseBlock.setStatementType(StatementType.CASE_BLOCK);
 			attachMetaData(caseBlock);
 			
 			caseBlock.getCaseExpressions().add(generateExpression(INT));
 			caseStatement.getCases().add(caseBlock);	
-		}
+		} while (randomly.nextFloat() < SUB_STATEMENT_CHANCE);
 		
 		return caseStatement;
 	}
@@ -181,10 +181,10 @@ public class StatementGenerator {
 
 		whileStatement.setCondition(generateExpression(BOOL));
 		
-		while (randomly.nextFloat() < SUB_STATEMENT_CHANCE) {
+		do {
 			Statement simpleStatement = generateSimpleStatement();
 			whileStatement.getSubstatements().add(simpleStatement);
-		}
+		} while (randomly.nextFloat() < SUB_STATEMENT_CHANCE);
 
 		return whileStatement;	
 	}
@@ -196,10 +196,10 @@ public class StatementGenerator {
 
 		repeatStatement.setCondition(generateExpression(BOOL));
 		
-		while (randomly.nextFloat() < SUB_STATEMENT_CHANCE) {
+		do {
 			Statement simpleStatement = generateSimpleStatement();
 			repeatStatement.getSubstatements().add(simpleStatement);
-		}
+		} while (randomly.nextFloat() < SUB_STATEMENT_CHANCE);
 
 		return repeatStatement;	
 	}
@@ -214,10 +214,10 @@ public class StatementGenerator {
 		forLoop.setIncrement(randomly.nextInt(3));
 		forLoop.setUpperBound(forLoop.getInitialValue() + randomly.nextInt(20) * forLoop.getIncrement());
 
-		while (randomly.nextFloat() < SUB_STATEMENT_CHANCE) {
+		do {
 			Statement simpleStatement = generateSimpleStatement();
 			forLoop.getSubstatements().add(simpleStatement);
-		}
+		} while (randomly.nextFloat() < SUB_STATEMENT_CHANCE);
 
 		return forLoop;
 	}

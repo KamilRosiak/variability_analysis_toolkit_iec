@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="ASCII"?>
+<C:Configuration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:C="http://www.example.org/ppuIECScenario/config" xmlns:ST="http://www.example.org/ppuIECScenario/ST" xmlns:STE="http://www.example.org/ppuIECScenario/STE" identifier="ST_WHILE_FUNCTION_CALL_AND_EXIT_2">
+  <resources name="ST_Evolution_10">
+    <pous controlTasks="//@resources.0/@tasks.0" identifier="MAIN">
+      <declaration>
+        <internalVariables name="Present" scope="VAR" type="INT" typeName="INT">
+          <location/>
+        </internalVariables>
+        <internalVariables name="Open" scope="VAR" type="INT" typeName="INT">
+          <location/>
+        </internalVariables>
+        <internalVariables name="Close" scope="VAR" type="INT" typeName="INT">
+          <location/>
+        </internalVariables>
+        <internalVariables name="Workpiece" scope="VAR" type="BOOL" typeName="BOOL">
+          <location/>
+        </internalVariables>
+        <internalVariables name="SENSOR" scope="VAR" type="BOOL" typeName="BOOL">
+          <location/>
+        </internalVariables>
+        <internalVariables name="Gate" scope="VAR" type="INT" typeName="INT">
+          <location/>
+        </internalVariables>
+      </declaration>
+      <implementations xsi:type="ST:StructuredText" label="MAIN" id="_DGdpcF46EeuW4qZzhIQW4A" text="WHILE counter = A AND counter &lt;> B DO&#xA;&#x9;functionCall(A);&#xA;&#x9;EXIT;&#xA;END_WHILE">
+        <statements xsi:type="ST:UnboundedLoop" id="_DGdpdV46EeuW4qZzhIQW4A" statementType="WHILE" absStartLine="1" absEndLine="4" relStartLine="1" relEndLine="4" endColumnPos="8" structuredText="_DGdpcF46EeuW4qZzhIQW4A">
+          <substatements xsi:type="ST:FunctionCallStatement" id="_DGdpc146EeuW4qZzhIQW4A" statementType="FUNCTION_CALL" absStartLine="2" absEndLine="2" relStartLine="2" relEndLine="2" startColumnPos="1" endColumnPos="16" structuredText="_DGdpcF46EeuW4qZzhIQW4A">
+            <functionCall expressionType="FUNCTION_CALL" symbol="functionCall">
+              <parameters>
+                <assignedValue xsi:type="STE:VariableExpression" id="_DGdpcl46EeuW4qZzhIQW4A" dataType="DERIVED" expressionType="VARIABLE" Symbol="A"/>
+              </parameters>
+            </functionCall>
+          </substatements>
+          <substatements xsi:type="ST:ExitStatement" id="_DGdpdF46EeuW4qZzhIQW4A" statementType="EXIT" absStartLine="3" absEndLine="3" relStartLine="3" relEndLine="3" startColumnPos="1" endColumnPos="5" structuredText="_DGdpcF46EeuW4qZzhIQW4A"/>
+          <condition xsi:type="STE:BinaryExpression" id="_DGdpcV46EeuW4qZzhIQW4A" operator="AND">
+            <left xsi:type="STE:BinaryExpression" operator="EQUAL">
+              <left xsi:type="STE:VariableExpression" dataType="DERIVED" expressionType="VARIABLE" Symbol="counter"/>
+              <right xsi:type="STE:VariableExpression" dataType="DERIVED" expressionType="VARIABLE" Symbol="A"/>
+            </left>
+            <right xsi:type="STE:BinaryExpression" operator="NOT_EQUAL">
+              <left xsi:type="STE:VariableExpression" dataType="DERIVED" expressionType="VARIABLE" Symbol="counter"/>
+              <right xsi:type="STE:VariableExpression" dataType="DERIVED" expressionType="VARIABLE" Symbol="B"/>
+            </right>
+          </condition>
+        </statements>
+      </implementations>
+    </pous>
+    <tasks name="PlcTask" controlledPrograms="//@resources.0/@pous.0"/>
+  </resources>
+</C:Configuration>

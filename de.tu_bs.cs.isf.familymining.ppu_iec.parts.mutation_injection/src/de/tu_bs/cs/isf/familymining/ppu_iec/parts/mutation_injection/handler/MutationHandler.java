@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 
 import javax.inject.Inject;
 
+import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.di.annotations.CanExecute;
 import org.eclipse.e4.core.di.annotations.Evaluate;
 import org.eclipse.e4.core.di.annotations.Execute;
@@ -33,6 +34,16 @@ public class MutationHandler {
 	@Inject
 	private Randomization randomly;
 
+	/**
+	 * Initiate the mutation generation and evaluation cycle.<br>
+	 * <br>
+	 * <b>HINT</b>: The MutationInjectionConfig parameter initializes the mutation
+	 * injection when injected as parameter even if it is not used.
+	 * 
+	 * @param services
+	 * @param config
+	 * @param engine
+	 */
 	@Execute
 	public void executeMutation(ServiceContainer services, MutationInjectionConfig config, MutationEngine engine) {
 		List<FileTreeElement> scenarioSelection = services.rcpSelectionService.getCurrentSelectionsFromExplorer();

@@ -37,6 +37,7 @@ import static de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.muta
 import static de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.MutationParameters.STMT_REM_MAX_MUTATIONS_DEFAULT;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
@@ -47,8 +48,6 @@ import org.osgi.service.prefs.BackingStoreException;
 
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.CompoundMutator;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.Mutator;
-import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.Type2Mutator;
-import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.Type3Mutator;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.AttributeFilter;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.EnumChanger;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.NameChanger;
@@ -110,13 +109,7 @@ public class MutationInjectionConfig {
 		context.set(ScenarioObjectClusterFactory.class, randomizedClusterFactory);
 				
 		// set the usable mutators
-		Type2Mutator type2Mutator = ContextInjectionFactory.make(Type2Mutator.class, context);
-		context.set(Type2Mutator.class, type2Mutator);
-		
-		Type3Mutator type3Mutator = ContextInjectionFactory.make(Type3Mutator.class, context);
-		context.set(Type3Mutator.class, type3Mutator);
-		
-		CompoundMutator compoundMutator = ContextInjectionFactory.make(CompoundMutator.class, context);
+		Mutator compoundMutator = ContextInjectionFactory.make(CompoundMutator.class, context);
 		context.set(Mutator.class, compoundMutator);
 		
 		try {

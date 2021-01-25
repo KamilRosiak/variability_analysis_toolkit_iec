@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="ASCII"?>
+<C:Configuration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:C="http://www.example.org/ppuIECScenario/config" xmlns:ST="http://www.example.org/ppuIECScenario/ST" xmlns:STE="http://www.example.org/ppuIECScenario/STE" identifier="ST_FOR_AND_CASE_2">
+  <resources name="ST_Evolution_2">
+    <pous controlTasks="//@resources.0/@tasks.0" identifier="MAIN">
+      <declaration>
+        <internalVariables name="Present" scope="VAR" type="INT" typeName="INT">
+          <location/>
+        </internalVariables>
+        <internalVariables name="Open" scope="VAR" type="INT" typeName="INT">
+          <location/>
+        </internalVariables>
+        <internalVariables name="Close" scope="VAR" type="INT" typeName="INT">
+          <location/>
+        </internalVariables>
+        <internalVariables name="Workpiece" scope="VAR" type="BOOL" typeName="BOOL">
+          <location/>
+        </internalVariables>
+        <internalVariables name="SENSOR" scope="VAR" type="BOOL" typeName="BOOL">
+          <location/>
+        </internalVariables>
+        <internalVariables name="Gate" scope="VAR" type="INT" typeName="INT">
+          <location/>
+        </internalVariables>
+      </declaration>
+      <implementations xsi:type="ST:StructuredText" label="MAIN" id="_DE2f4F46EeuW4qZzhIQW4A" text="FOR counter:= 2 TO 5 BY 1 DO&#xA;&#x9;CASE counter OF&#xA;&#x9;1, 3:  &#xA;&#x9;&#x9;BOOL1 := TRUE;&#xA;&#x9;2:     &#xA;&#x9;&#x9;BOOL2 := FALSE;&#xA;&#x9;ELSE&#xA;&#x9;&#x9;BOOL1 := NOT BOOL1;&#xA;&#x9;END_CASE;&#xA;END_FOR;">
+        <statements xsi:type="ST:ForLoop" id="_DE3G_l46EeuW4qZzhIQW4A" statementType="FOR_LOOP" absStartLine="1" absEndLine="10" relStartLine="1" relEndLine="10" endColumnPos="7" structuredText="_DE2f4F46EeuW4qZzhIQW4A" initialValue="2" upperBound="5">
+          <substatements xsi:type="ST:Case" id="_DE3G_V46EeuW4qZzhIQW4A" statementType="CASE" absStartLine="2" absEndLine="9" relStartLine="2" relEndLine="9" startColumnPos="1" endColumnPos="9" structuredText="_DE2f4F46EeuW4qZzhIQW4A">
+            <switch xsi:type="STE:VariableExpression" id="_DE3G8V46EeuW4qZzhIQW4A" dataType="DERIVED" expressionType="VARIABLE" Symbol="counter"/>
+            <cases id="_DE3G9l46EeuW4qZzhIQW4A" statementType="CASE_BLOCK" absStartLine="3" absEndLine="4" relStartLine="3" relEndLine="4" startColumnPos="1" endColumnPos="15" structuredText="_DE2f4F46EeuW4qZzhIQW4A">
+              <caseExpressions xsi:type="STE:Literal" id="_DE3G8l46EeuW4qZzhIQW4A" dataType="DINT" expressionType="LITERAL" symbol="1"/>
+              <caseExpressions xsi:type="STE:Literal" id="_DE3G8146EeuW4qZzhIQW4A" dataType="DINT" expressionType="LITERAL" symbol="3"/>
+              <substatements xsi:type="ST:Assignment" id="_DE3G9V46EeuW4qZzhIQW4A" statementType="ASSIGNMENT" absStartLine="4" absEndLine="4" relStartLine="4" relEndLine="4" startColumnPos="2" endColumnPos="15" structuredText="_DE2f4F46EeuW4qZzhIQW4A">
+                <left dataType="DERIVED" expressionType="VARIABLE" Symbol="BOOL1"/>
+                <right xsi:type="STE:Literal" id="_DE3G9F46EeuW4qZzhIQW4A" dataType="BOOL" expressionType="LITERAL" symbol="TRUE"/>
+              </substatements>
+            </cases>
+            <cases id="_DE3G-l46EeuW4qZzhIQW4A" statementType="CASE_BLOCK" absStartLine="5" absEndLine="6" relStartLine="5" relEndLine="6" startColumnPos="1" endColumnPos="16" structuredText="_DE2f4F46EeuW4qZzhIQW4A">
+              <caseExpressions xsi:type="STE:Literal" id="_DE3G9146EeuW4qZzhIQW4A" dataType="DINT" expressionType="LITERAL" symbol="2"/>
+              <substatements xsi:type="ST:Assignment" id="_DE3G-V46EeuW4qZzhIQW4A" statementType="ASSIGNMENT" absStartLine="6" absEndLine="6" relStartLine="6" relEndLine="6" startColumnPos="2" endColumnPos="16" structuredText="_DE2f4F46EeuW4qZzhIQW4A">
+                <left dataType="DERIVED" expressionType="VARIABLE" Symbol="BOOL2"/>
+                <right xsi:type="STE:Literal" id="_DE3G-F46EeuW4qZzhIQW4A" dataType="BOOL" expressionType="LITERAL" symbol="FALSE"/>
+              </substatements>
+            </cases>
+            <elseStatements xsi:type="ST:Assignment" id="_DE3G_F46EeuW4qZzhIQW4A" statementType="ASSIGNMENT" absStartLine="8" absEndLine="8" relStartLine="8" relEndLine="8" startColumnPos="2" endColumnPos="20" structuredText="_DE2f4F46EeuW4qZzhIQW4A">
+              <left dataType="DERIVED" expressionType="VARIABLE" Symbol="BOOL1"/>
+              <right xsi:type="STE:UnaryExpression" id="_DE3G-146EeuW4qZzhIQW4A" dataType="DERIVED" expressionType="UNARY" operator="NOT">
+                <subexpression xsi:type="STE:VariableExpression" dataType="DERIVED" expressionType="VARIABLE" Symbol="BOOL1"/>
+              </right>
+            </elseStatements>
+          </substatements>
+          <counter xsi:type="STE:VariableExpression" id="_DE3G8F46EeuW4qZzhIQW4A" dataType="DERIVED" expressionType="VARIABLE" Symbol="counter"/>
+        </statements>
+      </implementations>
+    </pous>
+    <tasks name="PlcTask" controlledPrograms="//@resources.0/@pous.0"/>
+  </resources>
+</C:Configuration>

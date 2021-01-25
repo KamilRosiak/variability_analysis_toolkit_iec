@@ -1,5 +1,7 @@
 package de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.test;
 
+import java.nio.file.Paths;
+
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.EclipseContextFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
@@ -11,11 +13,17 @@ import de.tu_bs.cs.isf.e4cf.core.util.RCPContentProvider;
 
 public class VATContextTest {
 
-	private IEclipseContext eclipseCtx = EclipseContextFactory.create();
+	private IEclipseContext eclipseCtx;
 
 	private WorkspaceFileSystem fs;
 
 	public VATContextTest() {
+		refreshContext();
+	}
+	
+	public void refreshContext() {
+		eclipseCtx = EclipseContextFactory.create();
+		
 		addMockToContext(IEventBroker.class);
 		
 		fs = addToContext(WorkspaceFileSystem.class);
@@ -81,6 +89,10 @@ public class VATContextTest {
 		S injectableInstance = ContextInjectionFactory.make(injectableClass, eclipseCtx);
 		eclipseCtx.set(asSuper, injectableInstance);
 		return injectableInstance;
+	}
+	
+	public String getResourcePath(String... pathComponents) {
+		return Paths.get("resources", pathComponents).toString();
 	}
 	
 	public IEclipseContext getEclipseCtx() {

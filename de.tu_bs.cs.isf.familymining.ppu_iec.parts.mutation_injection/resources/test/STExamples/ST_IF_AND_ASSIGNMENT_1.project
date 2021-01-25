@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="ASCII"?>
+<C:Configuration xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:C="http://www.example.org/ppuIECScenario/config" xmlns:ST="http://www.example.org/ppuIECScenario/ST" xmlns:STE="http://www.example.org/ppuIECScenario/STE" identifier="ST_IF_AND_ASSIGNMENT_1">
+  <resources name="ST_Evolution_4">
+    <pous controlTasks="//@resources.0/@tasks.0" identifier="MAIN">
+      <declaration>
+        <internalVariables name="Present" scope="VAR" type="INT" typeName="INT">
+          <location/>
+        </internalVariables>
+        <internalVariables name="Open" scope="VAR" type="INT" typeName="INT">
+          <location/>
+        </internalVariables>
+        <internalVariables name="Close" scope="VAR" type="INT" typeName="INT">
+          <location/>
+        </internalVariables>
+        <internalVariables name="Workpiece" scope="VAR" type="BOOL" typeName="BOOL">
+          <location/>
+        </internalVariables>
+        <internalVariables name="SENSOR" scope="VAR" type="BOOL" typeName="BOOL">
+          <location/>
+        </internalVariables>
+        <internalVariables name="Gate" scope="VAR" type="INT" typeName="INT">
+          <location/>
+        </internalVariables>
+      </declaration>
+      <implementations xsi:type="ST:StructuredText" label="MAIN" id="_DFCGEF46EeuW4qZzhIQW4A" text="Gate := Close;&#xA;IF (SENSOR AND Workpiece) THEN&#xA;     Gate := Open;&#xA;    ELSE&#xA;     Gate := Close;&#xA;END_IF;">
+        <statements xsi:type="ST:Assignment" id="_DFCGEl46EeuW4qZzhIQW4A" statementType="ASSIGNMENT" absStartLine="1" absEndLine="1" relStartLine="1" relEndLine="1" endColumnPos="13" structuredText="_DFCGEF46EeuW4qZzhIQW4A">
+          <left dataType="DERIVED" expressionType="VARIABLE" Symbol="Gate"/>
+          <right xsi:type="STE:VariableExpression" id="_DFCGEV46EeuW4qZzhIQW4A" dataType="DERIVED" expressionType="VARIABLE" Symbol="Close"/>
+        </statements>
+        <statements xsi:type="ST:If" id="_DFR9uF46EeuW4qZzhIQW4A" statementType="IF" absStartLine="2" absEndLine="6" relStartLine="2" relEndLine="6" endColumnPos="6" structuredText="_DFCGEF46EeuW4qZzhIQW4A">
+          <conditionalBlocks id="_DFR9tF46EeuW4qZzhIQW4A" statementType="CONDITIONAL_BLOCK" absStartLine="2" absEndLine="3" relStartLine="2" relEndLine="3" endColumnPos="17" structuredText="_DFCGEF46EeuW4qZzhIQW4A" else="false">
+            <condition xsi:type="STE:UnaryExpression" id="_DFR9sV46EeuW4qZzhIQW4A" expressionType="UNARY" operator="PARENTHESIS">
+              <subexpression xsi:type="STE:BinaryExpression" id="_DFR9sF46EeuW4qZzhIQW4A" operator="AND">
+                <left xsi:type="STE:VariableExpression" dataType="DERIVED" expressionType="VARIABLE" Symbol="SENSOR"/>
+                <right xsi:type="STE:VariableExpression" dataType="DERIVED" expressionType="VARIABLE" Symbol="Workpiece"/>
+              </subexpression>
+            </condition>
+            <substatements xsi:type="ST:Assignment" id="_DFR9s146EeuW4qZzhIQW4A" statementType="ASSIGNMENT" absStartLine="3" absEndLine="3" relStartLine="3" relEndLine="3" startColumnPos="5" endColumnPos="17" structuredText="_DFCGEF46EeuW4qZzhIQW4A">
+              <left dataType="DERIVED" expressionType="VARIABLE" Symbol="Gate"/>
+              <right xsi:type="STE:VariableExpression" id="_DFR9sl46EeuW4qZzhIQW4A" dataType="DERIVED" expressionType="VARIABLE" Symbol="Open"/>
+            </substatements>
+          </conditionalBlocks>
+          <conditionalBlocks id="_DFR9t146EeuW4qZzhIQW4A" statementType="CONDITIONAL_BLOCK" absStartLine="4" absEndLine="5" relStartLine="4" relEndLine="5" startColumnPos="4" endColumnPos="18" structuredText="_DFCGEF46EeuW4qZzhIQW4A">
+            <substatements xsi:type="ST:Assignment" id="_DFR9tl46EeuW4qZzhIQW4A" statementType="ASSIGNMENT" absStartLine="5" absEndLine="5" relStartLine="5" relEndLine="5" startColumnPos="5" endColumnPos="18" structuredText="_DFCGEF46EeuW4qZzhIQW4A">
+              <left dataType="DERIVED" expressionType="VARIABLE" Symbol="Gate"/>
+              <right xsi:type="STE:VariableExpression" id="_DFR9tV46EeuW4qZzhIQW4A" dataType="DERIVED" expressionType="VARIABLE" Symbol="Close"/>
+            </substatements>
+          </conditionalBlocks>
+        </statements>
+      </implementations>
+    </pous>
+    <tasks name="PlcTask" controlledPrograms="//@resources.0/@pous.0"/>
+  </resources>
+</C:Configuration>
