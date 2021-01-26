@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.eclipse.e4.core.di.annotations.Creatable;
-import org.mockito.internal.matchers.InstanceOf;
 
 import de.tu_bs.cs.isf.e4cf.core.compare.templates.AbstractContainer;
 import de.tu_bs.cs.isf.e4cf.core.compare.templates.AbstractOption;
@@ -18,7 +17,6 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.core.match.matcher.SortingMatcher;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.util.IECCompareUtil;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Configuration;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.languageelement.LanguageElement;
-import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.languageelement.impl.LanguageElementImpl;
 
 @Creatable
 public class ScenarioComparator {

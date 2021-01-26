@@ -8,7 +8,8 @@ Bundle-ClassPath: .
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Export-Package: de.tu_bs.cs.isf.familymining.ppu_iec.comparisonMetric.comparisonMetric,
+Export-Package: de.tu_bs.cs.isf.familymining.ppu_iec.code_gen.st,
+ de.tu_bs.cs.isf.familymining.ppu_iec.comparisonMetric.comparisonMetric,
  de.tu_bs.cs.isf.familymining.ppu_iec.comparisonMetric.comparisonMetric.impl,
  de.tu_bs.cs.isf.familymining.ppu_iec.comparisonMetric.comparisonMetric.util,
  de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration,
@@ -47,10 +48,9 @@ Export-Package: de.tu_bs.cs.isf.familymining.ppu_iec.comparisonMetric.comparison
  instructionlist.impl,
  instructionlist.util
 Require-Bundle: org.eclipse.emf.ecore.xmi,
- org.eclipse.emf.ecore;visibility:=reexport,
  org.eclipse.core.runtime,
- de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel;visibility:=reexport,
- de.tu_bs.cs.isf.e4cf.core
+ de.tu_bs.cs.isf.e4cf.core,
+ de.tu_bs.cs.isf.e4cf.compare;bundle-version="1.0.0",
+ de.tu_bs.cs.isf.e4cf.core.compare
 Bundle-ActivationPolicy: lazy
-Import-Package: de.tu_bs.cs.isf.e4cf.core.compare.algorithm
 

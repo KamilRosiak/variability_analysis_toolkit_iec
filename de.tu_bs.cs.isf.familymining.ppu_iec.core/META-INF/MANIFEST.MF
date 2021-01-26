@@ -4,7 +4,6 @@ Bundle-Name: CompareEngine
 Bundle-SymbolicName: de.tu_bs.cs.isf.familymining.ppu_iec.core;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Export-Package: de.tu_bs.cs.isf.familymining.ppu_iec.core,
- de.tu_bs.cs.isf.familymining.ppu_iec.core.code_gen.st,
  de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.attributes.action,
  de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.attributes.empty,
  de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.attributes.language.sequential_function_chart,
