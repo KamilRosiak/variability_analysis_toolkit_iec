@@ -25,6 +25,7 @@ public class ST_IFCondition extends AbstractSTImplAttribute{
 		if(source instanceof If && target instanceof If) {
 			If sourceIf = (If)source;
 			If targetIF = (If)target;
+		
 			Expression sourceExp = sourceIf.getConditionalBlocks().get(0).getCondition();
 			Expression targetExp = targetIF.getConditionalBlocks().get(0).getCondition();
 

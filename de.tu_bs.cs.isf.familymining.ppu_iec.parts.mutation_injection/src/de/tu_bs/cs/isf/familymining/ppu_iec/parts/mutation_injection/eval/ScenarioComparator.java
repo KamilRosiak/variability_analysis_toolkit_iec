@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.eclipse.e4.core.di.annotations.Creatable;
+import org.mockito.internal.matchers.InstanceOf;
 
 import de.tu_bs.cs.isf.e4cf.core.compare.templates.AbstractContainer;
 import de.tu_bs.cs.isf.e4cf.core.compare.templates.AbstractOption;
@@ -16,6 +17,8 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.solution.ConfigurationR
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.match.matcher.SortingMatcher;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.util.IECCompareUtil;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Configuration;
+import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.languageelement.LanguageElement;
+import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.languageelement.impl.LanguageElementImpl;
 
 @Creatable
 public class ScenarioComparator {
@@ -69,12 +72,11 @@ public class ScenarioComparator {
 	public List<AbstractContainer> findChanges(List<AbstractContainer> containers,
 			List<AbstractContainer> results) {
 		for (AbstractContainer container : containers) {
-			// adding optional items to results
-			if (container.getFirst() == null || container.getSecond() == null) {
+			if(container.getFirst() != null && container.getFirst() instanceof LanguageElement || container.getSecond() != null && container.getSecond() instanceof LanguageElement ) {
+				//filters LanguageElements
+			} else if (container.getFirst() == null || container.getSecond() == null) {
 				results.add(container);
-			}
-			// adding changed items to results
-			if (checkAttributeSimilarity(container.getResults())) {
+			} else if (checkAttributeSimilarity(container.getResults())) {
 				results.add(container);
 			}
 
