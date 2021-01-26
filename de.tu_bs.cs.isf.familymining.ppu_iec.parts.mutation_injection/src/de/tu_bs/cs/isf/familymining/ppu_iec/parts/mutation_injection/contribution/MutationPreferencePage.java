@@ -6,7 +6,7 @@ import de.tu_bs.cs.isf.e4cf.core.preferences.interfaces.IPreferencePage;
 import de.tu_bs.cs.isf.e4cf.core.util.ServiceContainer;
 
 public class MutationPreferencePage implements IPreferencePage {
-
+	
 	@Override
 	public void createPage(CTabFolder parent, ServiceContainer services) {
 		// TODO Auto-generated method stub
