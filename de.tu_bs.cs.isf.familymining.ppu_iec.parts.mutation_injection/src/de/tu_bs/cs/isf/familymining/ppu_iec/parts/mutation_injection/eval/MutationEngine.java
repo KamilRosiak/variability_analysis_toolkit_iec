@@ -19,6 +19,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.tu_bs.cs.isf.e4cf.core.compare.templates.AbstractContainer;
+import de.tu_bs.cs.isf.e4cf.core.preferences.util.PreferencesUtil;
 import de.tu_bs.cs.isf.e4cf.core.util.RCPContentProvider;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.solution.ConfigurationResultRoot;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.MutationResult;
@@ -29,12 +30,11 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.Mu
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.Randomization;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.scenario.ScenarioStorage;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.scenario.ScenarioStorageException;
+import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.scenarios.MutationST;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Configuration;
 
 @Creatable
 public class MutationEngine {
-	private static final int RUNS = 100;
-
 	private static final String[] IEC_SCENARIO_SEEDS = { "Scenario_1", "Scenario_2", "Scenario_3", "Scenario_4a",
 			"Scenario_4b", "Scenario_5", "Scenario_6", "Scenario_7", "Scenario_8", "Scenario_9", "Scenario_10",
 			"Scenario_11", "Scenario_12", "Scenario_13", "Scenario_14", "Scenario_15", "Scenario_16", "Scenario_17",
@@ -66,9 +66,10 @@ public class MutationEngine {
 
 		// prepare result structure
 		EvaluationResult evalResult = new EvaluationResult();
-
+		int runs = PreferencesUtil.getValueWithDefault(MutationST.BUNDLE_NAME, MutationST.NUMBER_RUNS_PREF, 1)
+				.getIntValue();
 		// run the mutation iteration
-		for (int run = 1; run <= RUNS; run++) {
+		for (int run = 1; run <= runs; run++) {
 			Configuration seed = seedSupplier.get();
 			RunResult runResult = mutationCycle(seed, run);
 			evalResult.getResult().add(runResult);
@@ -78,7 +79,7 @@ public class MutationEngine {
 		evalResult.setName(
 				"result_" + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME).replace(":", "_"));
 		evalResult.setDirectory(resultDirectory);
-		evalResult.setTotalRuns(RUNS);
+		evalResult.setTotalRuns(runs);
 
 		export(evalResult);
 	}
@@ -104,13 +105,13 @@ public class MutationEngine {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		//create result for this run
+
+		// create result for this run
 		RunResult runResult = new RunResult();
 		// export the results to the mutation folder
 		runResult.setRun(run);
 		runResult.setName(mutantName);
-		
+
 		// find changes
 		ConfigurationResultRoot result = scenarioComparator.compare(seed, mutant);
 		List<AbstractContainer> changeList = scenarioComparator.findChanges(result);
@@ -120,12 +121,10 @@ public class MutationEngine {
 
 		// search for matches between mutants and found changes
 		int foundMutants = searchForMutants(changeList, mutantList);
-		//evaluate 
+		// evaluate
 		runResult.setTruePositives(foundMutants);
 		runResult.setFalseNegatives(mutantList.size());
 		runResult.setFalsePositives(changeList.size());
-
-
 		System.out.println(runResult);
 		return runResult;
 	}
