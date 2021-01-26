@@ -33,7 +33,7 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Config
 
 @Creatable
 public class MutationEngine {
-	private static final int RUNS = 10;
+	private static final int RUNS = 100;
 
 	private static final String[] IEC_SCENARIO_SEEDS = { "Scenario_1", "Scenario_2", "Scenario_3", "Scenario_4a",
 			"Scenario_4b", "Scenario_5", "Scenario_6", "Scenario_7", "Scenario_8", "Scenario_9", "Scenario_10",
@@ -45,7 +45,7 @@ public class MutationEngine {
 
 	@Inject
 	private MutationInjection mutationInjection;
-	
+
 	@Inject
 	private ScenarioComparator scenarioComparator;
 
@@ -58,7 +58,7 @@ public class MutationEngine {
 	public void startMutation() {
 		startMutation(this::selectSeed);
 	}
-	
+
 	public void startMutation(Supplier<Configuration> seedSupplier) {
 		// prepare scenarios for eval cycles
 		String resultDirectory = "paper-eval";
@@ -66,7 +66,7 @@ public class MutationEngine {
 
 		// prepare result structure
 		EvaluationResult evalResult = new EvaluationResult();
-		
+
 		// run the mutation iteration
 		for (int run = 1; run <= RUNS; run++) {
 			Configuration seed = seedSupplier.get();
@@ -104,40 +104,29 @@ public class MutationEngine {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+		
+		//create result for this run
+		RunResult runResult = new RunResult();
+		// export the results to the mutation folder
+		runResult.setRun(run);
+		runResult.setName(mutantName);
+		
 		// find changes
 		ConfigurationResultRoot result = scenarioComparator.compare(seed, mutant);
 		List<AbstractContainer> changeList = scenarioComparator.findChanges(result);
+		List<MutationPair> mutantList = mutationResult.getMutationRegistry().getMutationPairs();
+		runResult.setNumberMutations(mutantList.size());
+		runResult.setNumberChangesFound(changeList.size());
 
 		// search for matches between mutants and found changes
-		List<MutationPair> totalMutants = mutationResult.getMutationRegistry().getMutationPairs();
+		int foundMutants = searchForMutants(changeList, mutantList);
+		//evaluate 
+		runResult.setTruePositives(foundMutants);
+		runResult.setFalseNegatives(mutantList.size());
+		runResult.setFalsePositives(changeList.size());
 
-		System.out.println(
-				"RUN: " + run + " NumberMutants: " + totalMutants.size() + " ChangesFound: " + changeList.size());
-		System.out.println("MUTANTS__________________________");
-		for (MutationPair pair : totalMutants) {
-			System.out.println("Original: " + pair.getOrigin());
-			System.out.println("Mutant: " + pair.getMutant());
-			System.out.println("-------------------------------------------");
-		}
-		System.out.println("Changes__________________________");
-		for (AbstractContainer pair : changeList) {
-			System.out.println("First: " + pair.getFirst());
-			System.out.println("Second: " + pair.getSecond());
-			System.out.println("-------------------------------------------");
-		}
 
-		int foundMutants = searchForMutants(changeList, totalMutants);
-		System.out.println("KILLED: " + foundMutants);
-
-		// export the results to the mutation folder
-		RunResult runResult = new RunResult();
-		runResult.setRun(run);
-		runResult.setName(mutantName);
-		runResult.setCompareContainersFound(changeList.size());
-		runResult.setTotalMutations(totalMutants.size());
-		runResult.setMutationsFound(foundMutants);
-
+		System.out.println(runResult);
 		return runResult;
 	}
 
@@ -222,7 +211,7 @@ public class MutationEngine {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private String name(Configuration scenario) {
 		return scenario.getResources().get(0).getName();
 	}

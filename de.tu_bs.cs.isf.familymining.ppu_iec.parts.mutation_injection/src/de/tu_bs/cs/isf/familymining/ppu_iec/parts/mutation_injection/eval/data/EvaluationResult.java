@@ -3,8 +3,6 @@ package de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.eval.data;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.eval.MutationEngine;
-
 public class EvaluationResult {
 
 	private String name;
@@ -48,19 +46,27 @@ public class EvaluationResult {
 	}
 
 	public static class RunResult {
-
 		private int run;
-
 		private String name;
-
+		
 		// debug
-		private int totalMutations;
-		private int compareContainersFound;
-		private int mutationsFound;
+		private int numberMutations;
+		private int numberChangesFound;
+		
+		// mutants that are killed by the compare engine
+		private float truePositives;
+		// in mutants but not in changes
+		private float falseNegatives;
+		// changed artifacts in changes not in mutants
+		private float falsePositives;
 
-		private float recall;
+		public float getFalsePositives() {
+			return falsePositives;
+		}
 
-		private float precision;
+		public void setFalsePositives(float falsePositives) {
+			this.falsePositives = falsePositives;
+		}
 
 		public int getRun() {
 			return run;
@@ -78,44 +84,49 @@ public class EvaluationResult {
 			this.name = name;
 		}
 
-		public int getTotalMutations() {
-			return totalMutations;
-		}
-
-		public void setTotalMutations(int totalMutations) {
-			this.totalMutations = totalMutations;
-		}
-
-		public int getCompareContainersFound() {
-			return compareContainersFound;
-		}
-
-		public void setCompareContainersFound(int compareContainersFound) {
-			this.compareContainersFound = compareContainersFound;
-		}
-
-		public int getMutationsFound() {
-			return mutationsFound;
-		}
-
-		public void setMutationsFound(int mutationsFound) {
-			this.mutationsFound = mutationsFound;
-		}
-
 		public float getRecall() {
-			return recall;
-		}
-
-		public void setRecall(float recall) {
-			this.recall = recall;
+			return truePositives / (truePositives + falseNegatives);
 		}
 
 		public float getPrecision() {
-			return precision;
+			return truePositives / (truePositives + falsePositives);
 		}
 
-		public void setPrecision(float precision) {
-			this.precision = precision;
+		public float getTruePositives() {
+			return truePositives;
+		}
+
+		public void setTruePositives(int truePositives) {
+			this.truePositives = truePositives;
+		}
+
+		public float getFalseNegatives() {
+			return falseNegatives;
+		}
+
+		public void setFalseNegatives(int falseNegatives) {
+			this.falseNegatives = falseNegatives;
+		}
+
+		public int getNumberMutations() {
+			return numberMutations;
+		}
+
+		public void setNumberMutations(int numberMutations) {
+			this.numberMutations = numberMutations;
+		}
+
+		public int getNumberChangesFound() {
+			return numberChangesFound;
+		}
+
+		public void setNumberChangesFound(int numberChangesFound) {
+			this.numberChangesFound = numberChangesFound;
+		}
+		
+		@Override
+		public String toString() {
+			return "RUN "+run+" Changes: "+  getNumberChangesFound() +" Mutants: "+ getNumberMutations() +" (TP: " + getTruePositives() + " FP: " + getFalsePositives() + " FN: " + getFalseNegatives() + " Precision: " + getPrecision() + " Recall: " +getRecall()+")";
 		}
 	}
 }
