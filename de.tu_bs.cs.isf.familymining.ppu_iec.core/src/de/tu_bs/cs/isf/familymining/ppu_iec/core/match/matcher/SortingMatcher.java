@@ -103,12 +103,15 @@ public class SortingMatcher extends AbstractMatcher {
 	 * This method matches a ActionCompareContainer with his children.
 	 */
 	private void matchActionOption(POUActionOption actionOption) {
+		
 		for (ActionCompareContainer actionContainer : actionOption.getAllContainer()) {
 			ActionImplementationOption actionImplOption = actionContainer.getActionImplOption();
 			if (actionImplOption != null) {
 				List<IECAbstractContainer> list = actionImplOption.getAllContainer().stream()
 						.map(e -> (IECAbstractContainer) e).collect(Collectors.toList());
 				matchContainer(list);
+				
+				actionImplOption.updateSimilarity();
 			}
 		}
 
@@ -197,6 +200,7 @@ public class SortingMatcher extends AbstractMatcher {
 					containers.add(container);
 					markedElements.add(first);
 					markedElements.add(second);
+					
 				} else if (!markedElements.contains(first)) {
 					markedElements.add(first);
 					container.setSecond(null);
@@ -208,6 +212,7 @@ public class SortingMatcher extends AbstractMatcher {
 					container.reset();
 					containers.add(container);
 				}
+				
 			} else if (container.getFirst() != null || container.getSecond() != null) {
 				// that are all containers that was added as optional by the compare-engine.
 				containers.add(container);

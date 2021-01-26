@@ -11,6 +11,7 @@ import org.eclipse.e4.core.di.extensions.Preference;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.MutationContext;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.Randomization;
@@ -50,8 +51,9 @@ public class StatementRemover extends StatementMutation {
 					int randIndex = randomly.nextInt(stmts.size());
 					Statement toBeRemoved = stmts.get(randIndex);
 					ctx.logRemoval(toBeRemoved);
-
-					stmts.remove(randIndex);		
+					stmts.remove(randIndex);
+					
+					EcoreUtil.delete(toBeRemoved);
 					
 					ctx.setChangedTreeStructure(true);
 				}
