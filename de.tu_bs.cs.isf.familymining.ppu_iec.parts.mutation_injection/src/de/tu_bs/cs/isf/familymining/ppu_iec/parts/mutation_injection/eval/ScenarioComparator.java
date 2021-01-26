@@ -70,10 +70,11 @@ public class ScenarioComparator {
 	public List<AbstractContainer> findChanges(List<AbstractContainer> containers,
 			List<AbstractContainer> results) {
 		for (AbstractContainer container : containers) {
-			if(container.getFirst() != null && container.getFirst() instanceof LanguageElement || container.getSecond() != null && container.getSecond() instanceof LanguageElement ) {
-				//filters LanguageElements
+			if(container.getFirst() instanceof LanguageElement|| container.getSecond() instanceof LanguageElement) {
+
 			} else if (container.getFirst() == null || container.getSecond() == null) {
 				results.add(container);
+				continue;
 			} else if (checkAttributeSimilarity(container.getResults())) {
 				results.add(container);
 			}
