@@ -43,12 +43,12 @@ public class StatementRemoverTest extends ScenarioTest {
 		clonedCtx.getCtxObjects().addAll(structuredText(ST_INSTANCE_SIZE, STMT_SIZE));
 
 
-		MutationContext mutCtx = stmtRemover.apply(clonedCtx);
+		stmtRemover.apply(clonedCtx);
 
 		int totalChangeCount = 0;
 		for (int i = 0; i < ST_INSTANCE_SIZE; i++) {
 			List<Statement> ctxVar = ((StructuredText) ctx.getCtxObjects().get(i)).getStatements();
-			List<Statement> mutCtxVar =  ((StructuredText) mutCtx.getCtxObjects().get(i)).getStatements();
+			List<Statement> mutCtxVar =  ((StructuredText) clonedCtx.getCtxObjects().get(i)).getStatements();
 			
 			int sizeDiff = mutCtxVar.size() - ctxVar.size();
 			assertThat(sizeDiff).isNegative();

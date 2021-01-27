@@ -11,6 +11,7 @@ import org.eclipse.e4.core.di.extensions.Preference;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.MutationContext;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.Randomization;
@@ -30,7 +31,7 @@ public class StatementRemover extends StatementMutation {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public MutationContext apply(MutationContext ctx) {
+	public Boolean apply(MutationContext ctx) {
 		int mutationCount = 0;
 
 		List<EObject> randomized = ctx.getCtxObjects().stream().filter(statementContainers())
@@ -38,6 +39,7 @@ public class StatementRemover extends StatementMutation {
 		Collections.shuffle(randomized);
 
 		Iterator<EObject> it = randomized.iterator();
+		boolean changedContext = false;
 		while (it.hasNext() && mutationCount < maxMutations) {
 			EObject stmtContainer = it.next();
 			List<EReference> stmtRefs = stmtContainer.eClass().getEAllContainments().stream()
@@ -51,13 +53,15 @@ public class StatementRemover extends StatementMutation {
 					Statement toBeRemoved = stmts.get(randIndex);
 					ctx.logRemoval(toBeRemoved);
 
-					stmts.remove(randIndex);		
+					stmts.remove(toBeRemoved);
+					EcoreUtil.delete(toBeRemoved);
 					
 					ctx.setChangedTreeStructure(true);
+					changedContext = true;
 				}
 			}
 		}
 
-		return ctx;
+		return changedContext;
 	}
 }

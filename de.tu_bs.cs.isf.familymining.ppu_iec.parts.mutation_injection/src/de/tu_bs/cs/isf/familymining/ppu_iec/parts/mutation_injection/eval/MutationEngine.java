@@ -26,6 +26,7 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.MutationRes
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.eval.data.EvaluationResult;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.eval.data.EvaluationResult.RunResult;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection.MutationInjection;
+import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection.SingleMutationInjection;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.MutationPair;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.Randomization;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.scenario.ScenarioStorage;
@@ -44,7 +45,7 @@ public class MutationEngine {
 	private ScenarioStorage scenarioStorage;
 
 	@Inject
-	private MutationInjection mutationInjection;
+	private SingleMutationInjection mutationInjection;
 
 	@Inject
 	private ScenarioComparator scenarioComparator;
@@ -215,11 +216,11 @@ public class MutationEngine {
 		return scenario.getResources().get(0).getName();
 	}
 
-	public MutationInjection getMutationInjection() {
+	public SingleMutationInjection getMutationInjection() {
 		return mutationInjection;
 	}
 
-	public void setMutationInjection(MutationInjection mutationInjection) {
+	public void setMutationInjection(SingleMutationInjection mutationInjection) {
 		this.mutationInjection = mutationInjection;
 	}
 }

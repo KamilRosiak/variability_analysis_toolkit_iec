@@ -1,8 +1,13 @@
 package de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation;
 
+import static de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.MutatorParameters.MTR_MAX_MUTATIONS;
+import static de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.Mutation.MUTATION_PREF;
+
 import java.util.Arrays;
 
-import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+
+import org.eclipse.e4.core.di.extensions.Preference;
 
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.MutationContext;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.EnumChanger;
@@ -21,12 +26,11 @@ public class CompoundMutator implements Mutator {
 
 	private RandomMutator randomMutator;
 
-	private static final int MAX_APPLIED_MUTATIONS = 3;
-
-	@PostConstruct
-	public void addMutations(NameChanger nameChanger, EnumChanger enumChanger, NumberChanger numberChanger,
+	@Inject
+	public void setMutatorSettings(@Preference(nodePath = MUTATION_PREF, value = MTR_MAX_MUTATIONS) int maxMutations,
+			NameChanger nameChanger, EnumChanger enumChanger, NumberChanger numberChanger,
 			StatementInserter stmtInserter, StatementRemover stmtRemover) {
-		randomMutator = new RandomMutator(MAX_APPLIED_MUTATIONS,
+		randomMutator = new RandomMutator(maxMutations,
 				Arrays.asList(nameChanger, enumChanger, numberChanger, stmtInserter, stmtRemover));
 	}
 
