@@ -52,8 +52,8 @@ public class StatementRemover extends StatementMutation {
 					int randIndex = randomly.nextInt(stmts.size());
 					Statement toBeRemoved = stmts.get(randIndex);
 					ctx.logRemoval(toBeRemoved);
-
-					stmts.remove(toBeRemoved);
+					
+					stmts.remove(randIndex);
 					EcoreUtil.delete(toBeRemoved);
 					
 					ctx.setChangedTreeStructure(true);

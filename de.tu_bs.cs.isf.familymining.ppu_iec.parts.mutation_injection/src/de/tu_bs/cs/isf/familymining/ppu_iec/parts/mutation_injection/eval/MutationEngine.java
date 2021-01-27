@@ -119,7 +119,9 @@ public class MutationEngine {
 		List<MutationPair> mutantList = mutationResult.getMutationRegistry().getMutationPairs();
 		runResult.setNumberMutations(mutantList.size());
 		runResult.setNumberChangesFound(changeList.size());
-
+		
+		printObjects(run, changeList, mutantList);
+		
 		// search for matches between mutants and found changes
 		int foundMutants = searchForMutants(changeList, mutantList);
 		// evaluate
@@ -128,6 +130,20 @@ public class MutationEngine {
 		runResult.setFalsePositives(changeList.size());
 		System.out.println(runResult);
 		return runResult;
+	}
+
+	private void printObjects(int run, List<AbstractContainer> changeList, List<MutationPair> mutantList) {
+		System.out.println("RUN: "+ run);
+		System.out.println("Changes________________");
+		for(AbstractContainer container : changeList) {
+			System.out.println("first: " + container.getFirst());
+			System.out.println("second: " + container.getSecond()+"\n"); 
+		}
+		System.out.println("Mutants________________");
+		for(MutationPair mutantPair : mutantList) {
+			System.out.println("Origin: " + mutantPair.getOrigin());
+			System.out.println("Mutant: " + mutantPair.getMutant()+"\n");
+		}
 	}
 
 	/**

@@ -99,7 +99,6 @@ public class MutationInjection {
 			// remove sub tree since eobjects might have been deleted or inserted, a new iterator can handle these changes
 			if (mutCtx.hasChangedTreeStructure()) {
 				it.prune();
-				
 				TreeIterator<EObject> subtreeIt = EcoreUtil.getAllProperContents(eobject, true);
 				if (subtreeIt.hasNext()) {
 					subtreeIt.next();
@@ -141,6 +140,9 @@ public class MutationInjection {
 		return cluster;
 	}
 	
+	/**
+	 * Method transfers object ids from origin to copy
+	 */
 	private BiMap<EObject, EObject> constructOriginalToMutatedTreeMapping(Configuration original, Configuration mutated) {
 		BiMap<EObject, EObject> mapping = HashBiMap.create();
 		

@@ -71,7 +71,7 @@ public class ScenarioComparator {
 			List<AbstractContainer> results) {
 		for (AbstractContainer container : containers) {
 			if(container.getFirst() instanceof LanguageElement|| container.getSecond() instanceof LanguageElement) {
-
+				//skip language container 
 			} else if (container.getFirst() == null || container.getSecond() == null) {
 				results.add(container);
 				continue;
