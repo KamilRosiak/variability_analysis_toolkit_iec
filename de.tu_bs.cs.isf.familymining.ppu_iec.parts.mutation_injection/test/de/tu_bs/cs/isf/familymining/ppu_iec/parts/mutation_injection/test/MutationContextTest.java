@@ -14,6 +14,7 @@ import com.google.common.collect.HashBiMap;
 
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.MutationContext;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection.InequalTreeException;
+import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtext.Assignment;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtext.ForLoop;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtext.StructuredText;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtextexpression.BinaryExpression;
@@ -94,7 +95,7 @@ public class MutationContextTest extends ScenarioTest {
 		ForLoop inserted = createForLoop(5, 2, 20);
 		
 		MutationContext mutCtx = new MutationContext(mapping);
-		mutCtx.logInsertion(inserted);
+		mutCtx.logInsertion(mutated.forLoop1, inserted);
 		mutated.root.getStatements().add(inserted);
 		mutCtx.logRemoval(mutated.root);
 		
@@ -117,6 +118,27 @@ public class MutationContextTest extends ScenarioTest {
 		
 		assertThat(mutCtx.getMutationPairs()).hasSize(1);
 		assertThat(mutCtx.getMutationPairs()).allMatch(mp -> mp.hasOrigin() && !mp.hasMutant());
+		assertThat(mutCtx.getCtxObjects()).isEmpty();
+	}
+	
+	@Test 
+	public void testLogInsertion_insertElementThenInsertSubElement() {
+		StTree original = createStTree();
+		StTree mutated = createStTree();
+		BiMap<EObject, EObject> mapping = constructOriginalToMutatedTreeMapping(original.root, mutated.root);
+		
+		MutationContext mutCtx = new MutationContext(mapping);
+		
+		ForLoop insertedforLoop = createForLoop(0, 1, 10);
+		mutCtx.logInsertion(mutated.forLoop1, insertedforLoop);
+		mutated.forLoop1.getSubstatements().add(insertedforLoop);
+		
+		Assignment insertedSubAssignment = createAssignment();
+		insertedforLoop.getSubstatements().add(insertedSubAssignment);
+		mutCtx.logInsertion(insertedforLoop, insertedSubAssignment);
+		
+		assertThat(mutCtx.getMutationPairs()).hasSize(1);
+		assertThat(mutCtx.getMutationPairs()).allMatch(mp -> !mp.hasOrigin() && mp.hasMutant());
 		assertThat(mutCtx.getCtxObjects()).isEmpty();
 	}
 	

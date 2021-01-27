@@ -51,7 +51,7 @@ public class StatementInserter extends StatementMutation {
 				Statement generatedStatement = statementGenerator.generateStatement();
 
 				// log change
-				ctx.logInsertion(generatedStatement);
+				ctx.logInsertion(stmtContainer, generatedStatement);
 				ctx.setChangedTreeStructure(true);
 
 				// do the insertion

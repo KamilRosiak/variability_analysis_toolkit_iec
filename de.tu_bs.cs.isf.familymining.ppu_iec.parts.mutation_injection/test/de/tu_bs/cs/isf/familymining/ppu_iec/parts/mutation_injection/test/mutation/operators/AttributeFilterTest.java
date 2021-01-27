@@ -50,7 +50,7 @@ public class AttributeFilterTest extends ScenarioTest {
 		doReturn(Arrays.asList(forLoop)).when(mutCtx).getCtxObjects();
 		doNothing().when(mutCtx).logChange(Mockito.any());
 		doNothing().when(mutCtx).logRemoval(Mockito.any());
-		doNothing().when(mutCtx).logInsertion(Mockito.any());
+		doNothing().when(mutCtx).logInsertion(Mockito.any(), Mockito.any());
 		
 		enumChanger.apply(mutCtx);
 		numberChanger.apply(mutCtx);
@@ -80,7 +80,7 @@ public class AttributeFilterTest extends ScenarioTest {
 		doReturn(Arrays.asList(step)).when(mutCtx).getCtxObjects();
 		doNothing().when(mutCtx).logChange(Mockito.any());
 		doNothing().when(mutCtx).logRemoval(Mockito.any());
-		doNothing().when(mutCtx).logInsertion(Mockito.any());
+		doNothing().when(mutCtx).logInsertion(Mockito.any(), Mockito.any());
 		
 		numberChanger.apply(mutCtx);
 		
@@ -102,7 +102,7 @@ public class AttributeFilterTest extends ScenarioTest {
 		doReturn(Arrays.asList(transition)).when(mutCtx).getCtxObjects();
 		doNothing().when(mutCtx).logChange(Mockito.any());
 		doNothing().when(mutCtx).logRemoval(Mockito.any());
-		doNothing().when(mutCtx).logInsertion(Mockito.any());
+		doNothing().when(mutCtx).logInsertion(Mockito.any(), Mockito.any());
 		
 		numberChanger.apply(mutCtx);
 		
@@ -124,7 +124,7 @@ public class AttributeFilterTest extends ScenarioTest {
 		doReturn(Arrays.asList(simpleAction)).when(mutCtx).getCtxObjects();
 		doNothing().when(mutCtx).logChange(Mockito.any());
 		doNothing().when(mutCtx).logRemoval(Mockito.any());
-		doNothing().when(mutCtx).logInsertion(Mockito.any());
+		doNothing().when(mutCtx).logInsertion(Mockito.any(), Mockito.any());
 		
 		numberChanger.apply(mutCtx);
 		

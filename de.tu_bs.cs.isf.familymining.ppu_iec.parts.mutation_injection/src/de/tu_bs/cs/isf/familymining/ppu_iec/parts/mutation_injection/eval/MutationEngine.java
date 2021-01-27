@@ -26,7 +26,6 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.MutationRes
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.eval.data.EvaluationResult;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.eval.data.EvaluationResult.RunResult;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection.MutationInjection;
-import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection.SingleMutationInjection;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.MutationPair;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.Randomization;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.scenario.ScenarioStorage;
@@ -45,7 +44,7 @@ public class MutationEngine {
 	private ScenarioStorage scenarioStorage;
 
 	@Inject
-	private SingleMutationInjection mutationInjection;
+	private MutationInjection mutationInjection;
 
 	@Inject
 	private ScenarioComparator scenarioComparator;
@@ -69,6 +68,7 @@ public class MutationEngine {
 		EvaluationResult evalResult = new EvaluationResult();
 		int runs = PreferencesUtil.getValueWithDefault(MutationST.BUNDLE_NAME, MutationST.NUMBER_RUNS_PREF, 1)
 				.getIntValue();
+		
 		// run the mutation iteration
 		for (int run = 1; run <= runs; run++) {
 			Configuration seed = seedSupplier.get();
@@ -119,9 +119,9 @@ public class MutationEngine {
 		List<MutationPair> mutantList = mutationResult.getMutationRegistry().getMutationPairs();
 		runResult.setNumberMutations(mutantList.size());
 		runResult.setNumberChangesFound(changeList.size());
-		
+
 		printObjects(run, changeList, mutantList);
-		
+
 		// search for matches between mutants and found changes
 		int foundMutants = searchForMutants(changeList, mutantList);
 		// evaluate
@@ -133,16 +133,16 @@ public class MutationEngine {
 	}
 
 	private void printObjects(int run, List<AbstractContainer> changeList, List<MutationPair> mutantList) {
-		System.out.println("RUN: "+ run);
+		System.out.println("RUN: " + run);
 		System.out.println("Changes________________");
-		for(AbstractContainer container : changeList) {
+		for (AbstractContainer container : changeList) {
 			System.out.println("first: " + container.getFirst());
-			System.out.println("second: " + container.getSecond()+"\n"); 
+			System.out.println("second: " + container.getSecond() + "\n");
 		}
 		System.out.println("Mutants________________");
-		for(MutationPair mutantPair : mutantList) {
+		for (MutationPair mutantPair : mutantList) {
 			System.out.println("Origin: " + mutantPair.getOrigin());
-			System.out.println("Mutant: " + mutantPair.getMutant()+"\n");
+			System.out.println("Mutant: " + mutantPair.getMutant() + "\n");
 		}
 	}
 
@@ -232,11 +232,11 @@ public class MutationEngine {
 		return scenario.getResources().get(0).getName();
 	}
 
-	public SingleMutationInjection getMutationInjection() {
+	public MutationInjection getMutationInjection() {
 		return mutationInjection;
 	}
 
-	public void setMutationInjection(SingleMutationInjection mutationInjection) {
+	public void setMutationInjection(MutationInjection mutationInjection) {
 		this.mutationInjection = mutationInjection;
 	}
 }

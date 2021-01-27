@@ -49,7 +49,6 @@ import org.osgi.service.prefs.BackingStoreException;
 
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.CompoundMutator;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.Mutator;
-import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.MutatorParameters;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.AttributeFilter;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.EnumChanger;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.NameChanger;
@@ -62,7 +61,7 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.op
  * 
  * @author Oliver Urbaniak
  * 
- * @see MutationInjection
+ * @see CompleteMutationInjection
  */
 @Creatable
 public class MutationInjectionConfig {
@@ -114,6 +113,9 @@ public class MutationInjectionConfig {
 		setIntPref(prefs, MTR_MAX_MUTATIONS, MTR_MAX_MUTATIONS_DEFAULT);
 		Mutator compoundMutator = ContextInjectionFactory.make(CompoundMutator.class, context);
 		context.set(Mutator.class, compoundMutator);
+		
+		MutationInjection mutationInjection = ContextInjectionFactory.make(CompleteMutationInjection.class, context);
+		context.set(MutationInjection.class, mutationInjection);
 		
 		try {
 			prefs.flush();
