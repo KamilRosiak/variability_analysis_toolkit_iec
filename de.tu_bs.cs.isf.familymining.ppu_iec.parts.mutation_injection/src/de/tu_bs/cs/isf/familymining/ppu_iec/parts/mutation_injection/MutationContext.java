@@ -10,7 +10,6 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.MutationPair;
 
@@ -128,9 +127,18 @@ public class MutationContext {
 			}
 		}
 		
+		ctxObjects.remove(toBeRemovedMutObject);
 	}
 
-	public void logInsertion(EObject toBeInsertedObject) {
+	public void logInsertion(EObject container, EObject toBeInsertedObject) {
+		// if the container object was previously generated, do not log as new insertion 
+		boolean containerWasGenerated = mutationPairs.stream()
+				.filter(pair -> !pair.hasOrigin() && pair.hasMutant())
+				.anyMatch(pair -> EcoreUtil.isAncestor(pair.getMutant(), container));
+		if (containerWasGenerated) {
+			return;
+		}
+		
 		// newly generated object should just make a new mutation pair
 		mutationPairs.add(new MutationPair(null, toBeInsertedObject));
 	}

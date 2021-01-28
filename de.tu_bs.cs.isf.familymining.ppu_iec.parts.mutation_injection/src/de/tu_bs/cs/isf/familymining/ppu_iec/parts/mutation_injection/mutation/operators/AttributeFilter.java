@@ -7,6 +7,7 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.AbstractAction;
+import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.SequentialFunctionChart;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.Step;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.Transition;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtext.Statement;
@@ -25,7 +26,8 @@ public class AttributeFilter implements BiPredicate<EObject, EAttribute> {
 			entry(Statement.class, "absEndLine"), entry(Statement.class, "relStartLine"),
 			entry(Statement.class, "relEndLine"), entry(Statement.class, "startColumnPos"),
 			entry(Statement.class, "endColumnPos"), entry(Statement.class, "statementType"),
-			entry(StructuredText.class, "label"), entry(Transition.class, "local_ID"), entry(Step.class, "local_ID"),
+			entry(StructuredText.class, "label"), entry(SequentialFunctionChart.class, "label"), 
+			entry(Transition.class, "local_ID"), entry(Step.class, "local_ID"),
 			entry(AbstractAction.class, "localId") };
 
 	/**

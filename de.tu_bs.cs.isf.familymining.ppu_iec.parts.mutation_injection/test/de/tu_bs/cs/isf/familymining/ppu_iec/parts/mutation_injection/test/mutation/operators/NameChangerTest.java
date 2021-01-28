@@ -54,13 +54,13 @@ public class NameChangerTest extends ScenarioTest {
 		Collection<EObject> ctxObjectsCopy = EcoreUtil.copyAll(ctx.getCtxObjects());
 		clonedCtx.getCtxObjects().addAll(ctxObjectsCopy);
 
-		MutationContext mutCtx = nameChanger.apply(clonedCtx);
-		assertThat(mutCtx.getCtxObjects()).hasSize(5);
+		nameChanger.apply(clonedCtx);
+		assertThat(clonedCtx.getCtxObjects()).hasSize(5);
 
 		int totalChangeCount = 0;
 		for (int i = 0; i < 5; i++) {
 			EObject ctxVar = ctx.getCtxObjects().get(i);
-			EObject mutCtxVar = mutCtx.getCtxObjects().get(i);
+			EObject mutCtxVar = clonedCtx.getCtxObjects().get(i);
 
 			long changedEnumCount = mutCtxVar.eClass().getEAllAttributes().stream()
 					.filter(attr -> attr.getEAttributeType() == EcorePackage.Literals.ESTRING)

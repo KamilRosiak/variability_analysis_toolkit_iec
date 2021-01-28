@@ -18,14 +18,14 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
-import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection.MutationInjection;
+import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection.CompleteMutationInjection;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection.MutationInjectionConfig;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.scenario.ScenarioStorage;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Configuration;
 
 public class MutationInjectionController {
 
-	private MutationInjection mutationInjection;
+	private CompleteMutationInjection mutationInjection;
 
 	private ScenarioStorage scenarioStorage;
 
@@ -36,7 +36,7 @@ public class MutationInjectionController {
 		scenarioStorage = ContextInjectionFactory.make(ScenarioStorage.class, context);
 
 		ContextInjectionFactory.inject(new MutationInjectionConfig(), context);
-		mutationInjection = ContextInjectionFactory.make(MutationInjection.class, context);
+		mutationInjection = ContextInjectionFactory.make(CompleteMutationInjection.class, context);
 	}
 
 	@PostConstruct

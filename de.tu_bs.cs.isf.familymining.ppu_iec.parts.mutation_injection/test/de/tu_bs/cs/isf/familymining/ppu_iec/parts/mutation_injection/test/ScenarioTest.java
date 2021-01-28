@@ -14,6 +14,7 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionch
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.Step;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.StepQualifier;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.Transition;
+import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtext.Assignment;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtext.ForLoop;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtext.StatementType;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtext.StructuredText;
@@ -101,6 +102,21 @@ public abstract class ScenarioTest {
 		forLoop.setUpperBound(upperBound);
 		
 		return forLoop;
+	}
+	
+	protected Assignment createAssignment() {
+		Assignment assignment = stFactory.createAssignment();
+		assignment.setStatementType(StatementType.ASSIGNMENT);
+		assignment.setAbsStartLine(randomly.nextInt(20));
+		assignment.setAbsEndLine(assignment.getAbsStartLine()+3);
+		assignment.setStartColumnPos(randomly.nextInt(20));
+		assignment.setEndColumnPos(assignment.getStartColumnPos()+5);
+		assignment.setRelStartLine(randomly.nextInt(5));
+		assignment.setRelEndLine(assignment.getRelStartLine()+ 10);
+		assignment.setLeft(createVariableExpression(RandomStringUtils.random(4), ElementaryDataType.DERIVED));
+		assignment.setRight(createVariableExpression(RandomStringUtils.random(4), ElementaryDataType.DERIVED));
+		
+		return assignment;
 	}
 	
 	protected Step createStep(int localId, String name, StepQualifier stepQualifier) {

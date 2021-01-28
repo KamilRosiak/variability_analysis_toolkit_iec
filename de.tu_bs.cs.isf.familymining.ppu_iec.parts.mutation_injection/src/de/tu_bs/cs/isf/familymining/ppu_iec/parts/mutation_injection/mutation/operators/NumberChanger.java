@@ -18,8 +18,6 @@ import org.eclipse.e4.core.di.extensions.Preference;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 
-import com.sun.javafx.image.impl.ByteIndexed.ToByteBgraAnyConverter;
-
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.MutationContext;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.Randomization;
 
@@ -43,7 +41,7 @@ public class NumberChanger implements Mutation {
 	}
 
 	@Override
-	public MutationContext apply(MutationContext ctx) {
+	public Boolean apply(MutationContext ctx) {
 		int symbolMutationCount = 0;
 		Set<Number> exclusionList = new TreeSet<>();
 
@@ -51,6 +49,7 @@ public class NumberChanger implements Mutation {
 		Collections.shuffle(randomized);
 
 		Iterator<EObject> it = randomized.iterator();
+		boolean changedContext = false;
 		while (it.hasNext() && symbolMutationCount < maxSymbolsMutations) {
 			EObject candidate = it.next();
 			List<EAttribute> numberAttrs = scanForNumberAttributes(candidate, exclusionList);
@@ -67,11 +66,12 @@ public class NumberChanger implements Mutation {
 					candidate.eSet(attr, newValue);
 					exclusionList.add(newValue);
 					
-					symbolMutationCount++;					
+					symbolMutationCount++;		
+					changedContext = true;
 				}
 			}
 		}
-		return ctx;
+		return changedContext;
 	}
 
 	/**

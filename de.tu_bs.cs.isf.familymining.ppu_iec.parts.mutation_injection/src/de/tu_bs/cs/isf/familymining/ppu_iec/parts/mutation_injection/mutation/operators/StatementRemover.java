@@ -31,7 +31,7 @@ public class StatementRemover extends StatementMutation {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public MutationContext apply(MutationContext ctx) {
+	public Boolean apply(MutationContext ctx) {
 		int mutationCount = 0;
 
 		List<EObject> randomized = ctx.getCtxObjects().stream().filter(statementContainers())
@@ -39,6 +39,7 @@ public class StatementRemover extends StatementMutation {
 		Collections.shuffle(randomized);
 
 		Iterator<EObject> it = randomized.iterator();
+		boolean changedContext = false;
 		while (it.hasNext() && mutationCount < maxMutations) {
 			EObject stmtContainer = it.next();
 			List<EReference> stmtRefs = stmtContainer.eClass().getEAllContainments().stream()
@@ -51,15 +52,16 @@ public class StatementRemover extends StatementMutation {
 					int randIndex = randomly.nextInt(stmts.size());
 					Statement toBeRemoved = stmts.get(randIndex);
 					ctx.logRemoval(toBeRemoved);
-					stmts.remove(randIndex);
 					
+					stmts.remove(randIndex);
 					EcoreUtil.delete(toBeRemoved);
 					
 					ctx.setChangedTreeStructure(true);
+					changedContext = true;
 				}
 			}
 		}
 
-		return ctx;
+		return changedContext;
 	}
 }

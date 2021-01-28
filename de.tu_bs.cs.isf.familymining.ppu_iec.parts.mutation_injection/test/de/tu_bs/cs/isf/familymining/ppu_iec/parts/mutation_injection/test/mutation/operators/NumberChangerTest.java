@@ -52,13 +52,13 @@ public class NumberChangerTest extends ScenarioTest {
 		Collection<EObject> ctxObjectsCopy = EcoreUtil.copyAll(ctx.getCtxObjects());
 		clonedCtx.getCtxObjects().addAll(ctxObjectsCopy);
 
-		MutationContext mutCtx = numberChanger.apply(clonedCtx);
-		assertThat(mutCtx.getCtxObjects()).hasSize(5);
+		numberChanger.apply(clonedCtx);
+		assertThat(clonedCtx.getCtxObjects()).hasSize(5);
 
 		int totalChangeCount = 0;
 		for (int i = 0; i < 5; i++) {
 			EObject ctxFor = ctx.getCtxObjects().get(i);
-			EObject mutCtxFor = mutCtx.getCtxObjects().get(i);
+			EObject mutCtxFor = clonedCtx.getCtxObjects().get(i);
 
 			long changedEnumCount = mutCtxFor.eClass().getEAllAttributes().stream()
 					.filter(attr -> attr.getEAttributeType() == EcorePackage.Literals.EINT)

@@ -32,7 +32,7 @@ public class StatementInserter extends StatementMutation {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public MutationContext apply(MutationContext ctx) {
+	public Boolean apply(MutationContext ctx) {
 		int mutationCount = 0;
 
 		List<EObject> randomizedStatementContainers = ctx.getCtxObjects().stream().filter(statementContainers())
@@ -40,6 +40,7 @@ public class StatementInserter extends StatementMutation {
 		Collections.shuffle(randomizedStatementContainers);
 
 		Iterator<EObject> it = randomizedStatementContainers.iterator();
+		boolean changedContext = false;
 		while (it.hasNext() && mutationCount < maxMutations) {
 			EObject stmtContainer = it.next();
 			List<EReference> stmtRefs = stmtContainer.eClass().getEAllContainments().stream()
@@ -50,14 +51,15 @@ public class StatementInserter extends StatementMutation {
 				Statement generatedStatement = statementGenerator.generateStatement();
 
 				// log change
-				ctx.logInsertion(generatedStatement);
+				ctx.logInsertion(stmtContainer, generatedStatement);
 				ctx.setChangedTreeStructure(true);
 
 				// do the insertion
 				stmts.add(generatedStatement);
+				changedContext = true;
 			}
 		}
 
-		return ctx;
+		return changedContext;
 	}
 }

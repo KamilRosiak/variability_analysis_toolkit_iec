@@ -33,7 +33,7 @@ public class NameChanger implements Mutation {
 	}
 
 	@Override
-	public MutationContext apply(MutationContext ctx) {
+	public Boolean apply(MutationContext ctx) {
 		int symbolMutationCount = 0;
 		Set<String> exclusionList = new TreeSet<>();
 
@@ -41,6 +41,7 @@ public class NameChanger implements Mutation {
 		Collections.shuffle(randomized);
 
 		Iterator<EObject> it = randomized.iterator();
+		boolean changedContext = false;
 		while (it.hasNext() && symbolMutationCount < maxSymbolsMutations) {
 			EObject candidate = it.next();
 			List<EAttribute> stringAttrs = scanForStringAttributes(candidate, exclusionList);
@@ -56,10 +57,11 @@ public class NameChanger implements Mutation {
 					
 					exclusionList.add(newValue);					
 					symbolMutationCount++;
+					changedContext = true;
 				}
 			}
 		}
-		return ctx;
+		return changedContext;
 	}
 
 	/**

@@ -40,7 +40,7 @@ public class EnumChanger implements Mutation {
 	}
 
 	@Override
-	public MutationContext apply(MutationContext ctx) {
+	public Boolean apply(MutationContext ctx) {
 		int symbolMutationCount = 0;
 		Set<String> exclusionList = new TreeSet<>();
 
@@ -48,6 +48,7 @@ public class EnumChanger implements Mutation {
 		Collections.shuffle(randomized);
 
 		Iterator<EObject> it = randomized.iterator();
+		boolean changedContext = false;
 		while (it.hasNext() && symbolMutationCount < maxSymbolsMutations) {
 			EObject candidate = it.next();
 			List<EAttribute> stringAttrs = scanForEnumAttributes(candidate, exclusionList);
@@ -68,10 +69,11 @@ public class EnumChanger implements Mutation {
 					exclusionList.add(newValue.getLiteral());
 					
 					symbolMutationCount++;
+					changedContext = true;
 				}
 			}
 		}
-		return ctx;
+		return changedContext;
 	}
 
 	/**

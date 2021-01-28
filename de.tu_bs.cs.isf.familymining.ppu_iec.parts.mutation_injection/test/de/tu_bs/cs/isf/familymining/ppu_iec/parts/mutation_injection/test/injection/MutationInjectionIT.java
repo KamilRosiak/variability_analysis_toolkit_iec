@@ -9,7 +9,7 @@ import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.RepetitionInfo;
 
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.MutationResult;
-import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection.MutationInjection;
+import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection.CompleteMutationInjection;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection.MutationInjectionConfig;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.AttributeFilter;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.scenario.ScenarioStorage;
@@ -20,7 +20,7 @@ public class MutationInjectionIT extends VATContextTest {
 
 	private ScenarioStorage scenarioStorage;
 
-	private MutationInjection mutationInjection;	
+	private CompleteMutationInjection mutationInjection;	
 	
 	public MutationInjectionIT() {
 		super();	
@@ -32,7 +32,7 @@ public class MutationInjectionIT extends VATContextTest {
 		addMockToContext(AttributeFilter.class);
 
 		ContextInjectionFactory.inject(new MutationInjectionConfig(), getEclipseCtx());
-		mutationInjection = addToContext(MutationInjection.class);
+		mutationInjection = addToContext(CompleteMutationInjection.class);
 	}
 	
 	/**

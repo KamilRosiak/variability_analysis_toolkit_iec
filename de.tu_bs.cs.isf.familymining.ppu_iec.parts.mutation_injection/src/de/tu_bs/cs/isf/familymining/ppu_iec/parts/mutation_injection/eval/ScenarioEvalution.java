@@ -9,14 +9,14 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.core.CompareEngine;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.metric.MetricContainer;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.solution.model.ModelCompareContainer;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.MutationResult;
-import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection.MutationInjection;
+import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection.CompleteMutationInjection;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.scenario.ScenarioStorage;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Configuration;
 
 public class ScenarioEvalution implements Runnable {
 
 	@Inject
-	private MutationInjection mutationInjection;
+	private CompleteMutationInjection mutationInjection;
 	
 	@Inject
 	private Supplier<Configuration> scenarioSupplier;

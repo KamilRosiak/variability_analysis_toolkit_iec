@@ -22,6 +22,8 @@ import static de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.inje
 import static de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection.InjectionParameters.CLUSTER_FACT_STATEMENT_CHANCE_DEFAULT;
 import static de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection.InjectionParameters.CLUSTER_FACT_ST_CHANCE;
 import static de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection.InjectionParameters.CLUSTER_FACT_ST_CHANCE_DEFAULT;
+import static de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.MutatorParameters.MTR_MAX_MUTATIONS;
+import static de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.MutatorParameters.MTR_MAX_MUTATIONS_DEFAULT;
 import static de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.Mutation.MUTATION_PREF;
 import static de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.MutationParameters.ENUM_MAX_MUTATIONS;
 import static de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.MutationParameters.ENUM_MAX_MUTATIONS_DEFAULT;
@@ -37,7 +39,6 @@ import static de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.muta
 import static de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.MutationParameters.STMT_REM_MAX_MUTATIONS_DEFAULT;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
@@ -60,7 +61,7 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.op
  * 
  * @author Oliver Urbaniak
  * 
- * @see MutationInjection
+ * @see CompleteMutationInjection
  */
 @Creatable
 public class MutationInjectionConfig {
@@ -92,7 +93,7 @@ public class MutationInjectionConfig {
 		setIntPref(prefs, STMT_REM_MAX_MUTATIONS, STMT_REM_MAX_MUTATIONS_DEFAULT);
 		StatementRemover stmtRemover = ContextInjectionFactory.make(StatementRemover.class, context);
 		context.set(StatementRemover.class, stmtRemover);
-
+		
 		// cluster factory
 		setFloatPref(prefs, CLUSTER_FACT_CONFIG_CHANCE, CLUSTER_FACT_CONFIG_CHANCE_DEFAULT);
 		setFloatPref(prefs, CLUSTER_FACT_POU_CHANCE, CLUSTER_FACT_POU_CHANCE_DEFAULT);
@@ -108,9 +109,13 @@ public class MutationInjectionConfig {
 		RandomizedClusterFactory randomizedClusterFactory = ContextInjectionFactory.make(RandomizedClusterFactory.class, context);
 		context.set(ScenarioObjectClusterFactory.class, randomizedClusterFactory);
 				
-		// set the usable mutators
+		// mutators
+		setIntPref(prefs, MTR_MAX_MUTATIONS, MTR_MAX_MUTATIONS_DEFAULT);
 		Mutator compoundMutator = ContextInjectionFactory.make(CompoundMutator.class, context);
 		context.set(Mutator.class, compoundMutator);
+		
+		MutationInjection mutationInjection = ContextInjectionFactory.make(CompleteMutationInjection.class, context);
+		context.set(MutationInjection.class, mutationInjection);
 		
 		try {
 			prefs.flush();

@@ -119,7 +119,7 @@ public class MutationEngine {
 		runResult.setNumberMutations(mutantList.size());
 		runResult.setNumberChangesFound(changeList.size());
 		
-		//printObjects(run, changeList, mutantList);
+		printObjects(run, changeList, mutantList);
 		
 		// search for matches between mutants and found changes
 		int foundMutants = searchForMutants(changeList, mutantList);
