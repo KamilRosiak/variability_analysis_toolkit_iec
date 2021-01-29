@@ -11,8 +11,9 @@ public class EvaluationResult {
 
 	private int totalRuns;
 
-	private List<RunResult> result = new ArrayList<>();
-
+	private List<RunResult> resultFirstMetric= new ArrayList<>();
+	private List<RunResult> resultSecondMetric= new ArrayList<>();
+	
 	public String getName() {
 		return name;
 	}
@@ -37,13 +38,24 @@ public class EvaluationResult {
 		this.totalRuns = totalRuns;
 	}
 
-	public List<RunResult> getResult() {
-		return result;
+
+	public List<RunResult> getResultFirstMetric() {
+		return resultFirstMetric;
 	}
 
-	public void setResult(List<RunResult> result) {
-		this.result = result;
+	public void setResultFirstMetric(List<RunResult> resultFirstMetric) {
+		this.resultFirstMetric = resultFirstMetric;
 	}
+
+
+	public List<RunResult> getResultSecondMetric() {
+		return resultSecondMetric;
+	}
+
+	public void setResultSecondMetric(List<RunResult> resultSecondMetric) {
+		this.resultSecondMetric = resultSecondMetric;
+	}
+
 
 	public static class RunResult {
 		private int run;
@@ -126,7 +138,7 @@ public class EvaluationResult {
 		
 		@Override
 		public String toString() {
-			return "RUN "+run+" Changes: "+  getNumberChangesFound() +" Mutants: "+ getNumberMutations() +" (TP: " + getTruePositives() + " FP: " + getFalsePositives() + " FN: " + getFalseNegatives() + " Precision: " + getPrecision() + " Recall: " +getRecall()+")";
+			return getName()+ " Changes: "+  getNumberChangesFound() +" Mutants: "+ getNumberMutations() +" (TP: " + getTruePositives() + " FP: " + getFalsePositives() + " FN: " + getFalseNegatives() + " Precision: " + getPrecision() + " Recall: " +getRecall()+")";
 		}
 	}
 }

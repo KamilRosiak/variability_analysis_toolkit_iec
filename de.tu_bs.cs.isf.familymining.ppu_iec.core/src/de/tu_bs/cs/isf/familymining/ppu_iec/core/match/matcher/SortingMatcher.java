@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.SerializationUtils;
 import org.eclipse.emf.ecore.EObject;
 
+import de.tu_bs.cs.isf.e4cf.core.compare.templates.AbstractOption;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.solution.ConfigurationResultRoot;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.solution.action.ActionCompareContainer;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.solution.action.ActionImplementationOption;
@@ -195,7 +196,12 @@ public class SortingMatcher extends AbstractMatcher {
 					T containerClone = SerializationUtils.clone(container);
 					containerClone.setFirst(null);
 					containerClone.setSecond(container.getSecond());
+					//TODO: Remove all container that have elements on the opposite side
+					//removeOptionals(true, containerClone);
+					
 					container.setSecond(null);
+					//removeOptionals(false, container);
+					
 					containers.add(containerClone);
 					containers.add(container);
 					markedElements.add(first);
@@ -216,6 +222,38 @@ public class SortingMatcher extends AbstractMatcher {
 			} else if (container.getFirst() != null || container.getSecond() != null) {
 				// that are all containers that was added as optional by the compare-engine.
 				containers.add(container);
+			}
+		}
+	}
+	
+	/**
+	 * Removes all container that have elements of the left side if true else right side
+	 */
+	private void removeOptionals(boolean leftSide,  IECAbstractContainer container) {
+		for(Object object : container.getOptions()) {
+			if(object instanceof AbstractOption) {
+				//get all container of an option
+				Iterator<Object> contIt = ((AbstractOption)object).getAllContainer().iterator();
+				while(contIt.hasNext()) {
+					Object nextCont = contIt.next();
+					if(nextCont instanceof IECAbstractContainer) {
+						IECAbstractContainer iecCont = (IECAbstractContainer)nextCont;
+						
+						if(leftSide) {
+							if(iecCont.getFirst() != null) {
+								contIt.remove();
+							}
+						} else {
+							if(iecCont.getSecond() != null) {
+								contIt.remove();
+							}
+						}
+						
+						removeOptionals(leftSide, iecCont);	
+						}	
+				}
+				
+					
 			}
 		}
 	}

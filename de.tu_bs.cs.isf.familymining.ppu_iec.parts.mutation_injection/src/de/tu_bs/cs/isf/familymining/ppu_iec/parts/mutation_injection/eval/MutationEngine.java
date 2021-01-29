@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -20,8 +21,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.tu_bs.cs.isf.e4cf.core.compare.templates.AbstractContainer;
 import de.tu_bs.cs.isf.e4cf.core.preferences.util.PreferencesUtil;
+import de.tu_bs.cs.isf.e4cf.core.preferences.util.key_value.KeyValueNode;
 import de.tu_bs.cs.isf.e4cf.core.util.RCPContentProvider;
+import de.tu_bs.cs.isf.familymining.ppu_iec.comparisonMetric.comparisonMetric.Metric;
+import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.metric.MetricContainer;
+import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.metric.util.MetricContainerSerializer;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.solution.ConfigurationResultRoot;
+import de.tu_bs.cs.isf.familymining.ppu_iec.core.util.IECCompareUtil;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.MutationResult;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.eval.data.EvaluationResult;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.eval.data.EvaluationResult.RunResult;
@@ -30,7 +36,7 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.Mu
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.Randomization;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.scenario.ScenarioStorage;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.scenario.ScenarioStorageException;
-import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.scenarios.MutationST;
+import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.stringtable.MutationST;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Configuration;
 
 @Creatable
@@ -68,11 +74,16 @@ public class MutationEngine {
 		EvaluationResult evalResult = new EvaluationResult();
 		int runs = PreferencesUtil.getValueWithDefault(MutationST.BUNDLE_NAME, MutationST.NUMBER_RUNS_PREF, 1)
 				.getIntValue();
+
+		// load metric container 
+		List<MetricContainer> metrics = loadMetrics();
+		
+		
 		// run the mutation iteration
 		for (int run = 1; run <= runs; run++) {
 			Configuration seed = seedSupplier.get();
-			RunResult runResult = mutationCycle(seed, run);
-			evalResult.getResult().add(runResult);
+			System.out.println("RUN__"+run +"____________________________");
+			mutationCycle(seed, run,metrics,evalResult);
 		}
 
 		// export the results
@@ -82,6 +93,21 @@ public class MutationEngine {
 		evalResult.setTotalRuns(runs);
 
 		export(evalResult);
+	}
+	
+	
+	/**
+	 * This method loads metrics that are selected in the preferences
+	 * @return
+	 */
+	private List<MetricContainer> loadMetrics() {
+		List<MetricContainer> metric = new ArrayList<MetricContainer>();
+		KeyValueNode firstMetric = PreferencesUtil.getValueWithDefault(MutationST.BUNDLE_NAME, MutationST.FIRST_METRIC_KEY, "");
+		KeyValueNode secondMetric = PreferencesUtil.getValueWithDefault(MutationST.BUNDLE_NAME, MutationST.SECOND_METRIC_KEY, "");
+		
+		metric.add(MetricContainerSerializer.decode(firstMetric.getStringValue()));
+		metric.add(MetricContainerSerializer.decode(secondMetric.getStringValue()));
+		return metric;
 	}
 
 	public Configuration selectSeed() {
@@ -93,55 +119,61 @@ public class MutationEngine {
 		return configuration.get();
 	}
 
-	private RunResult mutationCycle(Configuration seed, int run) {
-		// generate and rename mutant
+	private void mutationCycle(Configuration seed, int run,List<MetricContainer> metrics,EvaluationResult evalResult ) {
+		//generate, rename and store mutant
 		MutationResult mutationResult = mutationInjection.generateMutant(seed);
 		Configuration mutant = mutationResult.getMutated();
-
-		// save the mutant
 		String mutantName = name(seed) + "_run-" + run;
 		try {
 			scenarioStorage.saveScenario(mutant, name(seed) + "_run-" + run);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		// create result for this run
-		RunResult runResult = new RunResult();
-		// export the results to the mutation folder
-		runResult.setRun(run);
-		runResult.setName(mutantName);
-
-		// find changes
-		ConfigurationResultRoot result = scenarioComparator.compare(seed, mutant);
-		List<AbstractContainer> changeList = scenarioComparator.findChanges(result);
-		List<MutationPair> mutantList = mutationResult.getMutationRegistry().getMutationPairs();
-		runResult.setNumberMutations(mutantList.size());
-		runResult.setNumberChangesFound(changeList.size());
 		
-		printObjects(run, changeList, mutantList);
 		
-		// search for matches between mutants and found changes
-		int foundMutants = searchForMutants(changeList, mutantList);
-		// evaluate
-		runResult.setTruePositives(foundMutants);
-		runResult.setFalseNegatives(mutantList.size());
-		runResult.setFalsePositives(changeList.size());
-		System.out.println(runResult);
-		return runResult;
+		int counter = 0;
+		for(MetricContainer metric : metrics) {
+			// create result for this run
+			RunResult runResult = new RunResult();
+			// export the results to the mutation folder
+			runResult.setRun(run);
+			runResult.setName(mutantName +"_"+ metric.getName());
+			// find changes
+			ConfigurationResultRoot result = scenarioComparator.compare(seed, mutant,metric);
+			List<AbstractContainer> changeList = scenarioComparator.findChanges(result);
+			List<MutationPair> mutantList = mutationResult.getMutationRegistry().getMutationPairs();
+			runResult.setNumberMutations(mutantList.size());
+			runResult.setNumberChangesFound(changeList.size());
+			//printObjects(run, changeList, mutantList);
+
+			// search for matches between mutants and found changes
+			int foundMutants = searchForMutants(changeList, mutantList);
+			// evaluate
+			runResult.setTruePositives(foundMutants);
+			runResult.setFalseNegatives(mutantList.size());
+			runResult.setFalsePositives(changeList.size());
+			if(counter == 0) {
+				evalResult.getResultFirstMetric().add(runResult);
+			} else {
+				evalResult.getResultSecondMetric().add(runResult);
+			}
+
+			System.out.println(runResult);
+
+		}
 	}
 
 	private void printObjects(int run, List<AbstractContainer> changeList, List<MutationPair> mutantList) {
-		System.out.println("RUN: "+ run);
+		System.out.println("RUN: " + run);
 		System.out.println("Changes________________");
-		for(AbstractContainer container : changeList) {
+		for (AbstractContainer container : changeList) {
 			System.out.println("first: " + container.getFirst());
-			System.out.println("second: " + container.getSecond()+"\n"); 
+			System.out.println("second: " + container.getSecond() + "\n");
 		}
 		System.out.println("Mutants________________");
-		for(MutationPair mutantPair : mutantList) {
+		for (MutationPair mutantPair : mutantList) {
 			System.out.println("Origin: " + mutantPair.getOrigin());
-			System.out.println("Mutant: " + mutantPair.getMutant()+"\n");
+			System.out.println("Mutant: " + mutantPair.getMutant() + "\n");
 		}
 	}
 

@@ -42,10 +42,15 @@ public class ScenarioComparator {
 		return resultRoot;
 	}
 	
+	/**
+	 * This method compares two IEC61131-3 models using the given metric and
+	 * returns the ConfigurationResultRoot which contains all detailed information
+	 * of the comparison.
+	 */
 	public ConfigurationResultRoot compare(Configuration first, Configuration second, MetricContainer metricContainer) {
 		CompareEngine compareEngine = new CompareEngine(metricContainer);
 		ConfigurationResultRoot resultRoot = compareEngine.compareModelList(Arrays.asList(first), Arrays.asList(second),
-				IECCompareUtil.getDefaultMetric());
+				metricContainer);
 		// Update of the similarity before and after the matching
 		resultRoot.updateSimilarity();
 
