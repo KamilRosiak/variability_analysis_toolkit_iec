@@ -23,11 +23,9 @@ import de.tu_bs.cs.isf.e4cf.core.compare.templates.AbstractContainer;
 import de.tu_bs.cs.isf.e4cf.core.preferences.util.PreferencesUtil;
 import de.tu_bs.cs.isf.e4cf.core.preferences.util.key_value.KeyValueNode;
 import de.tu_bs.cs.isf.e4cf.core.util.RCPContentProvider;
-import de.tu_bs.cs.isf.familymining.ppu_iec.comparisonMetric.comparisonMetric.Metric;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.metric.MetricContainer;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.metric.util.MetricContainerSerializer;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.solution.ConfigurationResultRoot;
-import de.tu_bs.cs.isf.familymining.ppu_iec.core.util.IECCompareUtil;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.MutationResult;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.eval.data.EvaluationResult;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.eval.data.EvaluationResult.RunResult;
@@ -75,16 +73,16 @@ public class MutationEngine {
 		int runs = PreferencesUtil.getValueWithDefault(MutationST.BUNDLE_NAME, MutationST.NUMBER_RUNS_PREF, 1)
 				.getIntValue();
 
-		// load metric container 
+		// load metric container
 		List<MetricContainer> metrics = loadMetrics();
-		
-		
+
 		// run the mutation iteration
 		for (int run = 1; run <= runs; run++) {
 			Configuration seed = seedSupplier.get();
-			System.out.println("RUN__"+run +"____________________________");
-			mutationCycle(seed, run,metrics,evalResult);
+			//System.out.println("RUN__" + run + "____________________________");
+			mutationCycle(seed, run, metrics, evalResult);
 		}
+		System.out.println(evalResult);	
 
 		// export the results
 		evalResult.setName(
@@ -94,17 +92,19 @@ public class MutationEngine {
 
 		export(evalResult);
 	}
-	
-	
+
 	/**
 	 * This method loads metrics that are selected in the preferences
+	 * 
 	 * @return
 	 */
 	private List<MetricContainer> loadMetrics() {
 		List<MetricContainer> metric = new ArrayList<MetricContainer>();
-		KeyValueNode firstMetric = PreferencesUtil.getValueWithDefault(MutationST.BUNDLE_NAME, MutationST.FIRST_METRIC_KEY, "");
-		KeyValueNode secondMetric = PreferencesUtil.getValueWithDefault(MutationST.BUNDLE_NAME, MutationST.SECOND_METRIC_KEY, "");
-		
+		KeyValueNode firstMetric = PreferencesUtil.getValueWithDefault(MutationST.BUNDLE_NAME,
+				MutationST.FIRST_METRIC_KEY, "");
+		KeyValueNode secondMetric = PreferencesUtil.getValueWithDefault(MutationST.BUNDLE_NAME,
+				MutationST.SECOND_METRIC_KEY, "");
+
 		metric.add(MetricContainerSerializer.decode(firstMetric.getStringValue()));
 		metric.add(MetricContainerSerializer.decode(secondMetric.getStringValue()));
 		return metric;
@@ -119,8 +119,9 @@ public class MutationEngine {
 		return configuration.get();
 	}
 
-	private void mutationCycle(Configuration seed, int run,List<MetricContainer> metrics,EvaluationResult evalResult ) {
-		//generate, rename and store mutant
+	private void mutationCycle(Configuration seed, int run, List<MetricContainer> metrics,
+			EvaluationResult evalResult) {
+		// generate, rename and store mutant
 		MutationResult mutationResult = mutationInjection.generateMutant(seed);
 		Configuration mutant = mutationResult.getMutated();
 		String mutantName = name(seed) + "_run-" + run;
@@ -129,19 +130,18 @@ public class MutationEngine {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		
+
 		int counter = 0;
-		for(MetricContainer metric : metrics) {
+		for (MetricContainer metric : metrics) {
 			// create result for this run
 			RunResult runResult = new RunResult();
 			// export the results to the mutation folder
 			runResult.setRun(run);
-			runResult.setName(mutantName +"_"+ metric.getName());
+			runResult.setName(mutantName + "_" + metric.getName());
 			// find changes
-			ConfigurationResultRoot result = scenarioComparator.compare(seed, mutant,metric);
+			ConfigurationResultRoot result = scenarioComparator.compare(seed, mutant, metric);
 			List<AbstractContainer> changeList = scenarioComparator.findChanges(result);
-			List<MutationPair> mutantList = mutationResult.getMutationRegistry().getMutationPairs();
+			List<MutationPair> mutantList = new ArrayList<MutationPair>(mutationResult.getMutationRegistry().getMutationPairs());
 			runResult.setNumberMutations(mutantList.size());
 			runResult.setNumberChangesFound(changeList.size());
 			//printObjects(run, changeList, mutantList);
@@ -149,17 +149,16 @@ public class MutationEngine {
 			// search for matches between mutants and found changes
 			int foundMutants = searchForMutants(changeList, mutantList);
 			// evaluate
-			runResult.setTruePositives(foundMutants);
-			runResult.setFalseNegatives(mutantList.size());
-			runResult.setFalsePositives(changeList.size());
-			if(counter == 0) {
+			runResult.getClassisfication().setTruePositives(foundMutants);
+			runResult.getClassisfication().setFalseNegatives(mutantList.size());
+			runResult.getClassisfication().setFalsePositives(changeList.size());
+			if (counter == 0) {
 				evalResult.getResultFirstMetric().add(runResult);
 			} else {
 				evalResult.getResultSecondMetric().add(runResult);
 			}
-
+			counter++;
 			System.out.println(runResult);
-
 		}
 	}
 
@@ -192,7 +191,7 @@ public class MutationEngine {
 			while (mutantsIterator.hasNext()) {
 				MutationPair mutantPair = mutantsIterator.next();
 
-				// Added artifact
+				// Added artifact //type III
 				if (mutantPair.getOrigin() == null && mutantPair.getMutant() != null
 						&& currentContainer.getFirst() == null && currentContainer.getSecond() != null
 						&& mutantPair.getMutant().equals(currentContainer.getSecond())) {
@@ -202,7 +201,7 @@ public class MutationEngine {
 					break;
 				}
 
-				// Removed artifact
+				// Removed artifact //type III
 				if (mutantPair.getOrigin() != null && mutantPair.getMutant() == null
 						&& currentContainer.getFirst() != null && currentContainer.getSecond() == null
 						&& mutantPair.getOrigin().equals(currentContainer.getFirst())) {
@@ -212,7 +211,7 @@ public class MutationEngine {
 					break;
 				}
 
-				// Changed artifact
+				// Changed artifact //type II
 				if (mutantPair.getOrigin() != null && mutantPair.getMutant() != null
 						&& currentContainer.getFirst() != null && currentContainer.getSecond() != null
 						&& mutantPair.getOrigin().equals(currentContainer.getFirst())
@@ -221,7 +220,6 @@ public class MutationEngine {
 					changeIterator.remove();
 					foundMutants++;
 					break;
-					// TODO: Create an evaluation of all runs with detailed information
 				}
 			}
 		}
