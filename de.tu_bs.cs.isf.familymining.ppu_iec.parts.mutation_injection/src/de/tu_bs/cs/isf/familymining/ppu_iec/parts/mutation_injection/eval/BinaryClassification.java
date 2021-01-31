@@ -63,11 +63,11 @@ public class BinaryClassification {
 	}
 
 	public float getRecall() {
-		return truePositives / (truePositives + falseNegatives);
+		return truePositives != 0 ? truePositives / (truePositives + falseNegatives) : 0;
 	}
 
 	public float getPrecision() {
-		return truePositives / (truePositives + falsePositives);
+		return truePositives != 0 ? truePositives / (truePositives + falsePositives) : 0;
 	}
 
 	public int getNumberChanges() {
