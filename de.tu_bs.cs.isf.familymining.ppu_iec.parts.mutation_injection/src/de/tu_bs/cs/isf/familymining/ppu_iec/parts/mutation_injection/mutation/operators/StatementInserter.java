@@ -18,10 +18,10 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.ge
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtext.Statement;
 
 public class StatementInserter extends StatementMutation {
-	
+
 	@Inject
-	private StatementGenerator statementGenerator; 
-	
+	private StatementGenerator statementGenerator;
+
 	private int maxMutations;
 
 	@PostConstruct
@@ -57,6 +57,8 @@ public class StatementInserter extends StatementMutation {
 				// do the insertion
 				stmts.add(generatedStatement);
 				changedContext = true;
+
+				mutationCount++;
 			}
 		}
 

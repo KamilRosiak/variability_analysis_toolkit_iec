@@ -58,6 +58,8 @@ public class StatementRemover extends StatementMutation {
 					
 					ctx.setChangedTreeStructure(true);
 					changedContext = true;
+					
+					mutationCount++;
 				}
 			}
 		}

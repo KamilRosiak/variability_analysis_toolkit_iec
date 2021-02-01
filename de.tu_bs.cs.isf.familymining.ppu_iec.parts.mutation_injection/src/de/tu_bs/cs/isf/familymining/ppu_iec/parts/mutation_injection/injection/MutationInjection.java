@@ -4,6 +4,6 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.MutationRes
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Configuration;
 
 public interface MutationInjection {
-	
+
 	MutationResult generateMutant(final Configuration scenario);
 }

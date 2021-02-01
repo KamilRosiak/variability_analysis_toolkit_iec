@@ -6,14 +6,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
+import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.MutationContext;
+import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection.InequalTreeException;
+import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.MutationPair;
+import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.generators.StatementGenerator;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.operators.StatementRemover;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.test.ScenarioTest;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtext.ForLoop;
@@ -27,6 +33,7 @@ public class StatementRemoverTest extends ScenarioTest {
 	private static final int STMT_SIZE = 5;
 	
 	private StatementRemover stmtRemover;
+	private StatementGenerator stmtGen = new StatementGenerator();
 
 	@BeforeEach
 	void setUp() throws Exception {
@@ -36,12 +43,13 @@ public class StatementRemoverTest extends ScenarioTest {
 
 	@Test
 	public void testParameter_maxMutations() {
+		List<EObject> objects = structuredText(ST_INSTANCE_SIZE, STMT_SIZE);
+		
 		MutationContext ctx = new MutationContext(HashBiMap.create());
-		ctx.getCtxObjects().addAll(structuredText(ST_INSTANCE_SIZE, STMT_SIZE));
+		ctx.getCtxObjects().addAll(objects);
 		
 		MutationContext clonedCtx = new MutationContext(HashBiMap.create());
-		clonedCtx.getCtxObjects().addAll(structuredText(ST_INSTANCE_SIZE, STMT_SIZE));
-
+		clonedCtx.getCtxObjects().addAll(EcoreUtil.copyAll(objects));
 
 		stmtRemover.apply(clonedCtx);
 
@@ -51,11 +59,35 @@ public class StatementRemoverTest extends ScenarioTest {
 			List<Statement> mutCtxVar =  ((StructuredText) clonedCtx.getCtxObjects().get(i)).getStatements();
 			
 			int sizeDiff = mutCtxVar.size() - ctxVar.size();
-			assertThat(sizeDiff).isNegative();
+			assertThat(sizeDiff).isLessThanOrEqualTo(0);
 			totalChangeCount += Math.abs(sizeDiff);
 		}
 		
-		assertThat(totalChangeCount).isEqualTo(3);
+		assertThat(totalChangeCount).isEqualTo(MAX_MUTATIONS);
+	}
+	
+	@RepeatedTest(50)
+	public void testMultipleMutations() {
+		List<Statement> stmts = statements(STMT_SIZE);
+		List<Statement> stmtsCopy = (List<Statement>) EcoreUtil.copyAll(stmts);
+		
+		BiMap<EObject, EObject> mapping = HashBiMap.create();
+		for (int i = 0; i < stmts.size(); i++) {
+			mapping.putAll(constructOriginalToMutatedTreeMapping(stmts.get(i), stmtsCopy.get(i)));
+		}
+		
+		MutationContext ctx = new MutationContext(mapping);
+		ctx.getCtxObjects().addAll(stmtsCopy);
+		
+		int mutations = 3;
+		stmtRemover.postConstruct(mutations);
+		stmtRemover.apply(ctx);
+		
+		for (MutationPair mp : ctx.getMutationPairs()) {
+			System.out.println("mutation pair: ("+mp.getOrigin()+", "+mp.getMutant()+")");			
+		}
+		assertThat(ctx.getMutationPairs()).allMatch(pair -> pair.hasOrigin());
+		assertThat(ctx.getMutationPairs()).hasSizeLessThanOrEqualTo(mutations);
 	}
 
 	private List<EObject> structuredText(int instances, int stmtCount) {
@@ -74,5 +106,34 @@ public class StatementRemoverTest extends ScenarioTest {
 		}
 		stList.add(stPrototype);
 		return stList;
+	}
+	
+	private List<Statement> statements(int stmtCount) {
+		List<Statement> stmts = new ArrayList<>();
+		for (int j = 0; j < stmtCount; j++) {
+			stmts.add(stmtGen.generateStatement());
+		}
+	
+		return stmts;
+	}
+	
+	private BiMap<EObject, EObject> constructOriginalToMutatedTreeMapping(EObject original, EObject mutated) {
+		BiMap<EObject, EObject> mapping = HashBiMap.create();
+		
+		mapping.put(original, mutated);
+		
+		TreeIterator<EObject> origIt = EcoreUtil.getAllProperContents(original, true);
+		TreeIterator<EObject> mutatedIt = EcoreUtil.getAllProperContents(mutated, true);
+		while (origIt.hasNext() && mutatedIt.hasNext()) {
+			EObject origObject = origIt.next();
+			EObject mutatedObject = mutatedIt.next();
+			mapping.put(origObject, mutatedObject);
+		}
+		
+		if (origIt.hasNext() || mutatedIt.hasNext()) {
+			throw new InequalTreeException("Trees do not have the same structure.");
+		}
+		
+		return mapping;
 	}
 }

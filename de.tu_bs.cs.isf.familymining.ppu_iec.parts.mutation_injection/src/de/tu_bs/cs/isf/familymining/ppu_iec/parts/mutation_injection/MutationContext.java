@@ -13,6 +13,15 @@ import com.google.common.collect.BiMap;
 
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.MutationPair;
 
+/**
+ * Aggregates change information for a set of context objects. Through different
+ * <i>log</i> functions, the client can track the mutations executed within the
+ * context. The mutation context defines the boundaries for mutations to occur
+ * because only the context objects are supposed to be mutated and logged.
+ * 
+ * @author Oliver Urbaniak
+ *
+ */
 public class MutationContext {
 
 	private final BiMap<EObject, EObject> originalToMutatedObjectMapping;
@@ -31,6 +40,8 @@ public class MutationContext {
 	 */
 	private List<MutationPair> mutationPairs = new ArrayList<>();
 
+	private List<String> mutationEvents = new ArrayList<>();
+
 	public MutationContext(BiMap<EObject, EObject> originalToMutatedObjectMapping) {
 		this.originalToMutatedObjectMapping = originalToMutatedObjectMapping;
 	}
@@ -43,9 +54,12 @@ public class MutationContext {
 	 * Logs the mutated object. Creates the connection between original and mutated
 	 * scenario object.
 	 * 
-	 * @param toBeChangedObject
+	 * @param toBeChangedObject object which is changed thereafter
 	 */
 	public void logChange(EObject toBeChangedObject) {
+		// track event
+		mutationEvents.add("Change logged for: " + toBeChangedObject.toString());
+
 		// to be changed object was inserted before
 		Optional<MutationPair> newlyInsertedPair = mutationPairs.stream()
 				.filter(pair -> !pair.hasOrigin() && pair.hasMutant())
@@ -66,10 +80,18 @@ public class MutationContext {
 		mutationPairs.add(new MutationPair(originalCounterpart, toBeChangedObject));
 	}
 
+	/**
+	 * Logs the removal of the object from its container.
+	 * 
+	 * @param toBeRemovedMutObject object which is removed from its container
+	 *                             thereafter
+	 */
 	public void logRemoval(EObject toBeRemovedMutObject) {
+		// track event
+		mutationEvents.add("Removal logged for: " + toBeRemovedMutObject.toString());
+
 		// to be removed object was changed before
-		Optional<MutationPair> changedPair = mutationPairs.stream()
-				.filter(pair -> pair.hasOrigin() && pair.hasMutant())
+		Optional<MutationPair> changedPair = mutationPairs.stream().filter(pair -> pair.hasOrigin() && pair.hasMutant())
 				.filter(pair -> pair.getMutant().equals(toBeRemovedMutObject)).findFirst();
 		if (changedPair.isPresent()) {
 			changedPair.get().setMutant(null);
@@ -77,13 +99,20 @@ public class MutationContext {
 			return;
 		}
 
-		// to be removed object was inserted before
+		// to be removed object was inserted before or is part of an inserted object
 		Optional<MutationPair> newlyInsertedPair = mutationPairs.stream()
 				.filter(pair -> !pair.hasOrigin() && pair.hasMutant())
-				.filter(pair -> pair.getMutant().equals(toBeRemovedMutObject)).findFirst();
+				.filter(pair -> EcoreUtil.isAncestor(pair.getMutant(), toBeRemovedMutObject)).findFirst();
 		if (newlyInsertedPair.isPresent()) {
-			mutationPairs.remove(newlyInsertedPair.get());
-			removeLoggedSubtreeElements(toBeRemovedMutObject);
+
+			// IF the object which will be removed is in fact a previously inserted object,
+			// it's not a mutation anymore
+			// ELSE the object which will be removed is contained in the tree of a
+			// previously inserted object, ignore it
+			if (newlyInsertedPair.get().equals(toBeRemovedMutObject)) {
+				mutationPairs.remove(newlyInsertedPair.get());
+				removeLoggedSubtreeElements(toBeRemovedMutObject);
+			}
 			return;
 		}
 
@@ -94,7 +123,7 @@ public class MutationContext {
 	}
 
 	/**
-	 * Removes the subtree elements from the context if they 
+	 * Removes the subtree elements from the context if they
 	 * 
 	 * @param toBeRemovedMutObject
 	 */
@@ -103,44 +132,58 @@ public class MutationContext {
 		TreeIterator<EObject> it = EcoreUtil.getAllProperContents(toBeRemovedMutObject, true);
 		while (it.hasNext()) {
 			EObject descendant = it.next();
-			
-			List<MutationPair> referencedPairs = mutationPairs.stream()
-					.filter(mp -> mp.getMutant() == descendant)
+
+			List<MutationPair> referencedPairs = mutationPairs.stream().filter(mp -> mp.getMutant() == descendant)
 					.collect(Collectors.toList());
-			mutationPairs.removeAll(referencedPairs);			
-			
+			mutationPairs.removeAll(referencedPairs);
+
 			ctxObjects.remove(descendant);
 		}
-		
+
 		// remove mutations pairs that were created by a removal in the subtree
 		EObject origCounterpart = originalToMutatedObjectMapping.inverse().get(toBeRemovedMutObject);
 		if (origCounterpart != null) {
 			TreeIterator<EObject> origIt = EcoreUtil.getAllProperContents(origCounterpart, true);
 			while (origIt.hasNext()) {
 				EObject origDescendant = origIt.next();
-				
+
 				List<MutationPair> referencedPairs = mutationPairs.stream()
-						.filter(mp -> mp.getOrigin() == origDescendant)
-						.collect(Collectors.toList());
-				
+						.filter(mp -> mp.getOrigin() == origDescendant).collect(Collectors.toList());
+
 				mutationPairs.removeAll(referencedPairs);
 			}
 		}
-		
+
 		ctxObjects.remove(toBeRemovedMutObject);
 	}
 
+	/**
+	 * Logs the insertion of the object into the container.
+	 * 
+	 * @param container          parent container for the inserted object
+	 * @param toBeInsertedObject object which is inserted into the container
+	 *                           thereafter
+	 */
 	public void logInsertion(EObject container, EObject toBeInsertedObject) {
-		// if the container object was previously generated, do not log as new insertion 
-		boolean containerWasGenerated = mutationPairs.stream()
-				.filter(pair -> !pair.hasOrigin() && pair.hasMutant())
+		// track event
+		mutationEvents.add("Insertion logged for: " + toBeInsertedObject.toString() + " into container " + container);
+
+		// if the container object was previously generated, do not log as new insertion
+		boolean containerWasGenerated = mutationPairs.stream().filter(pair -> !pair.hasOrigin() && pair.hasMutant())
 				.anyMatch(pair -> EcoreUtil.isAncestor(pair.getMutant(), container));
 		if (containerWasGenerated) {
 			return;
 		}
-		
+
 		// newly generated object should just make a new mutation pair
 		mutationPairs.add(new MutationPair(null, toBeInsertedObject));
+
+		// add the new object(s) to this mutation context
+		getCtxObjects().add(toBeInsertedObject);
+		TreeIterator<EObject> insertIt = EcoreUtil.getAllProperContents(toBeInsertedObject, true);
+		while (insertIt.hasNext()) {
+			getCtxObjects().add(insertIt.next());
+		}
 	}
 
 	/**
@@ -226,4 +269,11 @@ public class MutationContext {
 		return mutationPairs;
 	}
 
+	public List<String> getMutationEvents() {
+		return mutationEvents;
+	}
+
+	public void setMutationEvents(List<String> mutationEvents) {
+		this.mutationEvents = mutationEvents;
+	}
 }

@@ -151,6 +151,7 @@ public class StatementGenerator {
 			attachMetaData(conditionalBlock);
 			
 			conditionalBlock.setCondition(generateExpression(BOOL));
+			conditionalBlock.getSubstatements().add(generateSimpleStatement());
 			ifStatement.getConditionalBlocks().add(conditionalBlock);	
 		} while (randomly.nextFloat() < SUB_STATEMENT_CHANCE);
 		
@@ -168,6 +169,7 @@ public class StatementGenerator {
 			attachMetaData(caseBlock);
 			
 			caseBlock.getCaseExpressions().add(generateExpression(INT));
+			caseBlock.getSubstatements().add(generateSimpleStatement());
 			caseStatement.getCases().add(caseBlock);	
 		} while (randomly.nextFloat() < SUB_STATEMENT_CHANCE);
 		

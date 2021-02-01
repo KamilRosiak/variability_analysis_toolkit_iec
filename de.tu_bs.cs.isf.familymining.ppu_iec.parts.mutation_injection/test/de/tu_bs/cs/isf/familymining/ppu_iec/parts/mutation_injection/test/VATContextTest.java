@@ -92,7 +92,7 @@ public class VATContextTest {
 	}
 	
 	public String getResourcePath(String... pathComponents) {
-		return Paths.get("resources", pathComponents).toString();
+		return Paths.get("resources", pathComponents).toAbsolutePath().toString();
 	}
 	
 	public IEclipseContext getEclipseCtx() {

@@ -94,7 +94,9 @@ public class CompleteMutationInjection implements MutationInjection {
 			
 			// apply mutations
 			mutator.mutate(mutCtx);
-			mutRegistry.getMutCtxs().add(mutCtx);
+			if (!mutCtx.getMutationPairs().isEmpty()) {
+				mutRegistry.getMutCtxs().add(mutCtx);
+			}
 			
 			// remove sub tree since eobjects might have been deleted or inserted, a new iterator can handle these changes
 			if (mutCtx.hasChangedTreeStructure()) {

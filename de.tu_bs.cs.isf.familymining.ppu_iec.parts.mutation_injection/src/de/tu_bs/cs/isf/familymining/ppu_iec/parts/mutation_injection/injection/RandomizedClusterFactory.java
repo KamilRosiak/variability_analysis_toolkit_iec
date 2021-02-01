@@ -31,6 +31,8 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionch
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.SequentialFunctionChart;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.Step;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.Transition;
+import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtext.CaseBlock;
+import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtext.ConditionalBlock;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtext.Statement;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtext.StructuredText;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtextexpression.Expression;
@@ -40,7 +42,12 @@ public class RandomizedClusterFactory implements ScenarioObjectClusterFactory {
 	private static final float ADD_CONTAINTMENT_CHILD_CHANCE = 0.2f;
 	private static final float RECURSION_WEIGHT = 1.0f / 10.0f;
 
-	private static final Class<?>[] CLASS_BLACKLIST = { Expression.class, Transition.class, AbstractAction.class };
+	/**
+	 * The blacklist describes the classes that should not be part of a cluster
+	 * produced by this factory
+	 */
+	private static final Class<?>[] CLASS_BLACKLIST = { Expression.class, Transition.class, AbstractAction.class,
+			ConditionalBlock.class, CaseBlock.class };
 
 	Randomization randomly = new Randomization();
 
@@ -58,8 +65,8 @@ public class RandomizedClusterFactory implements ScenarioObjectClusterFactory {
 
 	/**
 	 * Sets the chances to create a cluster encountering the corresponding object.
-	 * The chances let the factory control the way clusters are generated so that not every 
-	 * invocation of createFrom* will return a cluster.
+	 * The chances let the factory control the way clusters are generated so that
+	 * not every invocation of createFrom* will return a cluster.
 	 * 
 	 * @param configChance
 	 * @param pouChance
@@ -171,12 +178,12 @@ public class RandomizedClusterFactory implements ScenarioObjectClusterFactory {
 			for (EObject child : scenarioObject.eContents()) {
 				if (randomly.nextFloat() < takeContaintmentChance) {
 					List<EObject> childCluster = cluster(child, takeContaintmentChance * RECURSION_WEIGHT);
-					
+
 					childCluster.removeIf(obj -> !allowedInCluster(obj));
 					scenarioObjects.addAll(childCluster);
 				}
 			}
-		} 
+		}
 
 		return scenarioObjects;
 	}
