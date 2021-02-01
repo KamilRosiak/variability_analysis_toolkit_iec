@@ -193,9 +193,11 @@ public class SortingMatcher extends AbstractMatcher {
 				K second = container.getSecond();
 
 				if (!markedElements.contains(first) && !markedElements.contains(second)) {
+					
 					T containerClone = SerializationUtils.clone(container);
 					containerClone.setFirst(null);
 					containerClone.setSecond(container.getSecond());
+					containerClone.setOptions(container.getOptions());
 					//TODO: Remove all container that have elements on the opposite side
 					//removeOptionals(true, containerClone);
 					
@@ -252,8 +254,6 @@ public class SortingMatcher extends AbstractMatcher {
 						removeOptionals(leftSide, iecCont);	
 						}	
 				}
-				
-					
 			}
 		}
 	}

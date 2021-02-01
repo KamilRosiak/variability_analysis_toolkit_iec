@@ -58,7 +58,7 @@ public class MutationContext {
 	 */
 	public void logChange(EObject toBeChangedObject) {
 		// track event
-		mutationEvents.add("Change logged for: " + toBeChangedObject.toString());
+		mutationEvents.add("> Change logged for: " + toBeChangedObject.toString());
 
 		// to be changed object was inserted before
 		Optional<MutationPair> newlyInsertedPair = mutationPairs.stream()
@@ -88,7 +88,7 @@ public class MutationContext {
 	 */
 	public void logRemoval(EObject toBeRemovedMutObject) {
 		// track event
-		mutationEvents.add("Removal logged for: " + toBeRemovedMutObject.toString());
+		mutationEvents.add("> Removal logged for: " + toBeRemovedMutObject.toString());
 
 		// to be removed object was changed before
 		Optional<MutationPair> changedPair = mutationPairs.stream().filter(pair -> pair.hasOrigin() && pair.hasMutant())
@@ -166,7 +166,7 @@ public class MutationContext {
 	 */
 	public void logInsertion(EObject container, EObject toBeInsertedObject) {
 		// track event
-		mutationEvents.add("Insertion logged for: " + toBeInsertedObject.toString() + " into container " + container);
+		mutationEvents.add("> Insertion logged for: " + toBeInsertedObject.toString() + " into container " + container);
 
 		// if the container object was previously generated, do not log as new insertion
 		boolean containerWasGenerated = mutationPairs.stream().filter(pair -> !pair.hasOrigin() && pair.hasMutant())

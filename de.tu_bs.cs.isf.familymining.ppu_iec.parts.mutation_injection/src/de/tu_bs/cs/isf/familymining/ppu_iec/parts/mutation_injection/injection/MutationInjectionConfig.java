@@ -113,8 +113,8 @@ public class MutationInjectionConfig {
 		setIntPref(prefs, MTR_MAX_MUTATIONS, MTR_MAX_MUTATIONS_DEFAULT);
 		Mutator compoundMutator = ContextInjectionFactory.make(CompoundMutator.class, context);
 		context.set(Mutator.class, compoundMutator);
-		
-		MutationInjection mutationInjection = ContextInjectionFactory.make(CompleteMutationInjection.class, context);
+		//MutationInjection mutationInjection = ContextInjectionFactory.make(MultiMutationInjection.class, context);
+		MutationInjection mutationInjection = ContextInjectionFactory.make(SingleMutationInjection.class, context);
 		context.set(MutationInjection.class, mutationInjection);
 		
 		try {

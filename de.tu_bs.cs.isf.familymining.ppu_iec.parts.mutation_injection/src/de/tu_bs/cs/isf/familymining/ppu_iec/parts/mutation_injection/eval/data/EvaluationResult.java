@@ -3,17 +3,17 @@ package de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.eval.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.eval.BinaryClassification;
+
 public class EvaluationResult {
-
 	private String name;
-
 	private String directory;
-
 	private int totalRuns;
+	private List<RunResult> resultFirstMetric = new ArrayList<>();
+	private List<RunResult> resultSecondMetric = new ArrayList<>();
+	private BinaryClassification binClasFirstMetric = new BinaryClassification();
+	private BinaryClassification binClasSecondMetric = new BinaryClassification();
 
-	private List<RunResult> resultFirstMetric= new ArrayList<>();
-	private List<RunResult> resultSecondMetric= new ArrayList<>();
-	
 	public String getName() {
 		return name;
 	}
@@ -38,7 +38,6 @@ public class EvaluationResult {
 		this.totalRuns = totalRuns;
 	}
 
-
 	public List<RunResult> getResultFirstMetric() {
 		return resultFirstMetric;
 	}
@@ -46,7 +45,6 @@ public class EvaluationResult {
 	public void setResultFirstMetric(List<RunResult> resultFirstMetric) {
 		this.resultFirstMetric = resultFirstMetric;
 	}
-
 
 	public List<RunResult> getResultSecondMetric() {
 		return resultSecondMetric;
@@ -56,29 +54,55 @@ public class EvaluationResult {
 		this.resultSecondMetric = resultSecondMetric;
 	}
 
+	/**
+	 * This method updates the classification for based on a list of run results.
+	 */
+	private void updateClassification(BinaryClassification binClassification, List<RunResult> results) {
+		for(RunResult result: results) {
+			binClassification.setTruePositives(binClassification.getTruePositives() + result.getClassisfication().getTruePositives());
+			binClassification.setTrueNegatives(binClassification.getTrueNegatives() + result.getClassisfication().getTrueNegatives());
+			binClassification.setFalseNegatives(binClassification.getFalseNegatives() + result.getClassisfication().getFalseNegatives());
+			binClassification.setFalsePositives(binClassification.getFalsePositives() + result.getClassisfication().getFalsePositives());
+			binClassification.setNumberChanges(binClassification.getNumberChanges() + result.getNumberMutations());
+			binClassification.setNumberDetected(binClassification.getNumberDetected() + result.getNumberChangesFound());
+		}
+	}
+
+	public BinaryClassification getBinClasFirstMetric() {
+		return binClasFirstMetric;
+	}
+
+	public void setBinClasFirstMetric(BinaryClassification binClasFirstMetric) {
+		this.binClasFirstMetric = binClasFirstMetric;
+	}
+
+	public BinaryClassification getBinClasSecondMetric() {
+		return binClasSecondMetric;
+	}
+
+	public void setBinClasSecondMetric(BinaryClassification binClasSecondMetric) {
+		this.binClasSecondMetric = binClasSecondMetric;
+	}
+
+	@Override
+	public String toString() {
+		updateClassification(binClasFirstMetric, getResultFirstMetric());
+		updateClassification(binClasSecondMetric, getResultSecondMetric());
+		
+		String msg = " Runs: " + totalRuns + " toalMutants: " + binClasFirstMetric.getNumberChanges() +"\n";
+		msg+= "First Metric Result: \n" + binClasFirstMetric +"\n";
+		msg+= "Second Metric Result: \n" + binClasSecondMetric +"\n";
+		return msg;
+	}
+	
 
 	public static class RunResult {
 		private int run;
 		private String name;
-		
 		// debug
 		private int numberMutations;
 		private int numberChangesFound;
-		
-		// mutants that are killed by the compare engine
-		private float truePositives;
-		// in mutants but not in changes
-		private float falseNegatives;
-		// changed artifacts in changes not in mutants
-		private float falsePositives;
-
-		public float getFalsePositives() {
-			return falsePositives;
-		}
-
-		public void setFalsePositives(float falsePositives) {
-			this.falsePositives = falsePositives;
-		}
+		private BinaryClassification classisfication = new BinaryClassification();
 
 		public int getRun() {
 			return run;
@@ -96,30 +120,6 @@ public class EvaluationResult {
 			this.name = name;
 		}
 
-		public float getRecall() {
-			return truePositives / (truePositives + falseNegatives);
-		}
-
-		public float getPrecision() {
-			return truePositives / (truePositives + falsePositives);
-		}
-
-		public float getTruePositives() {
-			return truePositives;
-		}
-
-		public void setTruePositives(int truePositives) {
-			this.truePositives = truePositives;
-		}
-
-		public float getFalseNegatives() {
-			return falseNegatives;
-		}
-
-		public void setFalseNegatives(int falseNegatives) {
-			this.falseNegatives = falseNegatives;
-		}
-
 		public int getNumberMutations() {
 			return numberMutations;
 		}
@@ -135,10 +135,21 @@ public class EvaluationResult {
 		public void setNumberChangesFound(int numberChangesFound) {
 			this.numberChangesFound = numberChangesFound;
 		}
-		
+
 		@Override
 		public String toString() {
-			return getName()+ " Changes: "+  getNumberChangesFound() +" Mutants: "+ getNumberMutations() +" (TP: " + getTruePositives() + " FP: " + getFalsePositives() + " FN: " + getFalseNegatives() + " Precision: " + getPrecision() + " Recall: " +getRecall()+")";
+			return getName() + " Changes: " + getNumberChangesFound() + " Mutants: " + getNumberMutations() + " (TP: "
+					+ getClassisfication().getTruePositives() + " FP: " + getClassisfication().getFalsePositives()
+					+ " FN: " + getClassisfication().getFalseNegatives() + " Precision: "
+					+ getClassisfication().getPrecision() + " Recall: " + getClassisfication().getRecall() + ")";
+		}
+
+		public BinaryClassification getClassisfication() {
+			return classisfication;
+		}
+
+		public void setClassisfication(BinaryClassification classisfication) {
+			this.classisfication = classisfication;
 		}
 	}
 }
