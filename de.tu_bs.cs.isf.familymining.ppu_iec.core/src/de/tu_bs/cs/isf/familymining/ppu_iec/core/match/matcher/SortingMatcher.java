@@ -203,7 +203,7 @@ public class SortingMatcher extends AbstractMatcher {
 					
 					container.setSecond(null);
 					//removeOptionals(false, container);
-					
+				
 					containers.add(containerClone);
 					containers.add(container);
 					markedElements.add(first);

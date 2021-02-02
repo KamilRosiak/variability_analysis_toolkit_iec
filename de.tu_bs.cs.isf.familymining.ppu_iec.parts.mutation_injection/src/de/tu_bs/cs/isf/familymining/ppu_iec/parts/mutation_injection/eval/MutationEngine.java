@@ -22,7 +22,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.tu_bs.cs.isf.e4cf.core.compare.templates.AbstractContainer;
 import de.tu_bs.cs.isf.e4cf.core.preferences.util.PreferencesUtil;
 import de.tu_bs.cs.isf.e4cf.core.preferences.util.key_value.KeyValueNode;
+import de.tu_bs.cs.isf.e4cf.core.status_bar.util.E4CStatus;
+import de.tu_bs.cs.isf.e4cf.core.stringtable.E4CEventTable;
 import de.tu_bs.cs.isf.e4cf.core.util.RCPContentProvider;
+import de.tu_bs.cs.isf.e4cf.core.util.ServiceContainer;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.metric.MetricContainer;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.metric.util.MetricContainerSerializer;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.solution.ConfigurationResultRoot;
@@ -57,7 +60,8 @@ public class MutationEngine {
 
 	@Inject
 	private Randomization randomly;
-
+	
+	@Inject ServiceContainer services;
 	/**
 	 * Start the mutation cycle with all the PPU IEC Scenarios as seeds.
 	 */
@@ -147,10 +151,10 @@ public class MutationEngine {
 					mutationResult.getMutationRegistry().getMutationPairs());
 			runResult.setNumberMutations(mutantList.size());
 			runResult.setNumberChangesFound(changeList.size());
-			printObjects(run, changeList, mutationResult.getMutationRegistry());
+			//printObjects(run, changeList, mutationResult.getMutationRegistry());
 
 			// search for matches between mutants and found changes
-			int foundMutants = searchForMutants(changeList, mutantList);
+			int foundMutants = searchForMutants(changeList, mutantList, runResult);
 			// evaluate
 			runResult.getClassisfication().setTruePositives(foundMutants);
 			runResult.getClassisfication().setFalseNegatives(mutantList.size());
@@ -190,10 +194,7 @@ public class MutationEngine {
 	 * This method iterates over both list and removes pairs if elements are
 	 * matching
 	 */
-	private int searchForMutants(List<AbstractContainer> changeList, List<MutationPair> totalMutants) {
-		// TRUE POSITIVE
-		int foundMutants = 0;
-
+	private int searchForMutants(List<AbstractContainer> changeList, List<MutationPair> totalMutants, RunResult runResult) {
 		Iterator<AbstractContainer> changeIterator = changeList.iterator();
 		while (changeIterator.hasNext()) {
 			AbstractContainer currentContainer = changeIterator.next();
@@ -205,9 +206,10 @@ public class MutationEngine {
 				if (mutantPair.getOrigin() == null && mutantPair.getMutant() != null
 						&& currentContainer.getFirst() == null && currentContainer.getSecond() != null
 						&& mutantPair.getMutant().equals(currentContainer.getSecond())) {
+					runResult.addFoundChange(new HitContainer(currentContainer, mutantPair, CloneType.TypeIII));
 					mutantsIterator.remove();
 					changeIterator.remove();
-					foundMutants++;
+
 					break;
 				}
 
@@ -215,9 +217,10 @@ public class MutationEngine {
 				if (mutantPair.getOrigin() != null && mutantPair.getMutant() == null
 						&& currentContainer.getFirst() != null && currentContainer.getSecond() == null
 						&& mutantPair.getOrigin().equals(currentContainer.getFirst())) {
+					runResult.addFoundChange(new HitContainer(currentContainer, mutantPair, CloneType.TypeIII));
 					mutantsIterator.remove();
 					changeIterator.remove();
-					foundMutants++;
+
 					break;
 				}
 
@@ -226,14 +229,14 @@ public class MutationEngine {
 						&& currentContainer.getFirst() != null && currentContainer.getSecond() != null
 						&& mutantPair.getOrigin().equals(currentContainer.getFirst())
 						&& mutantPair.getMutant().equals(currentContainer.getSecond())) {
+					runResult.addFoundChange(new HitContainer(currentContainer, mutantPair, CloneType.TypeII));
 					mutantsIterator.remove();
 					changeIterator.remove();
-					foundMutants++;
 					break;
 				}
 			}
 		}
-		return foundMutants;
+		return runResult.getFoundChanges().size();
 	}
 
 	public void export(EvaluationResult evalResult) {
