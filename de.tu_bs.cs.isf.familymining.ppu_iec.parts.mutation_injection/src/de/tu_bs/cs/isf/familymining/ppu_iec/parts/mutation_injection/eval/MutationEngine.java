@@ -22,8 +22,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.tu_bs.cs.isf.e4cf.core.compare.templates.AbstractContainer;
 import de.tu_bs.cs.isf.e4cf.core.preferences.util.PreferencesUtil;
 import de.tu_bs.cs.isf.e4cf.core.preferences.util.key_value.KeyValueNode;
-import de.tu_bs.cs.isf.e4cf.core.status_bar.util.E4CStatus;
-import de.tu_bs.cs.isf.e4cf.core.stringtable.E4CEventTable;
 import de.tu_bs.cs.isf.e4cf.core.util.RCPContentProvider;
 import de.tu_bs.cs.isf.e4cf.core.util.ServiceContainer;
 import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.metric.MetricContainer;
@@ -69,7 +67,7 @@ public class MutationEngine {
 		startMutation(this::selectSeed);
 	}
 
-	public void startMutation(Supplier<Configuration> seedSupplier) {
+	public EvaluationResult startMutation(Supplier<Configuration> seedSupplier) {
 		// prepare scenarios for eval cycles
 		String resultDirectory = "paper-eval";
 		scenarioStorage.setMutationDirectory(resultDirectory);
@@ -88,8 +86,6 @@ public class MutationEngine {
 			System.out.println("RUN__" + run + "____________________________");
 			mutationCycle(seed, run, metrics, evalResult);
 		}
-		System.out.println(evalResult);
-
 		// export the results
 		evalResult.setName(
 				"result_" + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME).replace(":", "_"));
@@ -97,6 +93,7 @@ public class MutationEngine {
 		evalResult.setTotalRuns(runs);
 
 		export(evalResult);
+		return evalResult;
 	}
 
 	/**
@@ -151,7 +148,7 @@ public class MutationEngine {
 					mutationResult.getMutationRegistry().getMutationPairs());
 			runResult.setNumberMutations(mutantList.size());
 			runResult.setNumberChangesFound(changeList.size());
-			//printObjects(run, changeList, mutationResult.getMutationRegistry());
+			printObjects(run, changeList, mutationResult.getMutationRegistry());
 
 			// search for matches between mutants and found changes
 			int foundMutants = searchForMutants(changeList, mutantList, runResult);
@@ -209,7 +206,6 @@ public class MutationEngine {
 					runResult.addFoundChange(new HitContainer(currentContainer, mutantPair, CloneType.TypeIII));
 					mutantsIterator.remove();
 					changeIterator.remove();
-
 					break;
 				}
 
@@ -220,7 +216,6 @@ public class MutationEngine {
 					runResult.addFoundChange(new HitContainer(currentContainer, mutantPair, CloneType.TypeIII));
 					mutantsIterator.remove();
 					changeIterator.remove();
-
 					break;
 				}
 

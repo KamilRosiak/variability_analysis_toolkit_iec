@@ -13,7 +13,7 @@ public class Type2Mutator implements Mutator {
 
 	private RandomMutator randomMutator;
 
-	private static final int MAX_APPLIED_MUTATIONS = 3;
+	private static final int MAX_APPLIED_MUTATIONS = 1;
 
 	@PostConstruct
 	public void addMutations(NameChanger nameChanger, EnumChanger enumChanger, NumberChanger numberChanger) {

@@ -12,7 +12,7 @@ public class Type3Mutator implements Mutator {
 
 	private RandomMutator randomMutator;
 
-	private static final int MAX_APPLIED_MUTATIONS = 3;
+	private static final int MAX_APPLIED_MUTATIONS = 1;
 
 	@PostConstruct
 	public void addMutations(StatementInserter stmtInserter, StatementRemover stmtRemover) {

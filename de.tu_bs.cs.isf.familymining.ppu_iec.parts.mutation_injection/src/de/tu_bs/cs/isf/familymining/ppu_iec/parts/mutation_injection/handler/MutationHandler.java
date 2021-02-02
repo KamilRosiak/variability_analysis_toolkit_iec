@@ -6,6 +6,8 @@ import java.util.function.Supplier;
 
 import javax.inject.Inject;
 
+import org.eclipse.e4.core.contexts.ContextInjectionFactory;
+import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.CanExecute;
 import org.eclipse.e4.core.di.annotations.Evaluate;
 import org.eclipse.e4.core.di.annotations.Execute;
@@ -13,8 +15,12 @@ import org.eclipse.e4.core.di.annotations.Execute;
 import de.tu_bs.cs.isf.e4cf.core.file_structure.FileTreeElement;
 import de.tu_bs.cs.isf.e4cf.core.util.ServiceContainer;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.eval.MutationEngine;
+import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.eval.data.EvaluationResult;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection.MutationInjectionConfig;
+import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.Mutator;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.Randomization;
+import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.Type2Mutator;
+import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.Type3Mutator;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Configuration;
 import de.tu_bs.cs.isf.familymining.ppu_iec.rcp_e4.EMFModelLoader.impl.EMFModelLoader;
 
@@ -44,10 +50,21 @@ public class MutationHandler {
 	 * @param engine
 	 */
 	@Execute
-	public void executeMutation(ServiceContainer services, MutationInjectionConfig config, MutationEngine engine) {
+	public void executeMutation(ServiceContainer services, MutationInjectionConfig config, MutationEngine engine, IEclipseContext context) {
 		List<FileTreeElement> scenarioSelection = services.rcpSelectionService.getCurrentSelectionsFromExplorer();
 		if (!scenarioSelection.isEmpty()) {
-			engine.startMutation(selectedSeedSupplier(scenarioSelection));
+			/**
+			context.set(Mutator.class, ContextInjectionFactory.make(Type2Mutator.class, context));
+			EvaluationResult resultT2 = engine.startMutation(selectedSeedSupplier(scenarioSelection));
+			System.out.println("---------T2-Cl0nZ-------------");
+			System.out.println(resultT2);
+			engine = ContextInjectionFactory.make(MutationEngine.class, context);
+			*/
+			context.set(Mutator.class, ContextInjectionFactory.make(Type3Mutator.class, context));
+			EvaluationResult resultT3 = engine.startMutation(selectedSeedSupplier(scenarioSelection));
+			System.out.println("---------T3-Cl0nZ-------------");
+			System.out.println(resultT3);
+			
 		} else {
 			engine.startMutation();
 		}
