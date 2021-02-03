@@ -596,6 +596,11 @@ public class CompareEngine implements Runnable {
 						if(recImplOption != null) {
 							stImplContainer.setImplOption(recImplOption);
 						}
+					} else if (!sourceSubStatements.isEmpty() || !targetSubStatements.isEmpty()) {
+						LanguageImplementationOption<STImplContainer> recImplOption = compareSTImpl(sourceSubStatements, targetSubStatements , metric);
+						if(recImplOption != null) {
+							stImplContainer.setImplOption(recImplOption);
+						}
 					}
 				}
 			}
