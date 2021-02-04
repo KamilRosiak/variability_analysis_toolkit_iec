@@ -232,6 +232,10 @@ public class CompareEngine implements Runnable {
 		
 		if(sourceModelVariables.isEmpty() && targetModelVariables.isEmpty()) {
 			modelOption = null;
+		} else if (sourceModelVariables.isEmpty() || targetModelVariables.isEmpty()) {
+			modelOption = new ModelVariableOption(metric, metric.getModelVariableOptionAttr());
+			sourceModelVariables.stream().forEach(e -> modelOption.addContainer(new VariableContainer(e, null, metric, PPUStringTable.GLOBAL_VARS_DESCRIPTION, true)));
+			targetModelVariables.stream().forEach(e -> modelOption.addContainer(new VariableContainer(null, e, metric, PPUStringTable.GLOBAL_VARS_DESCRIPTION, true)));
 		} else {
 			modelOption = new ModelVariableOption(metric, metric.getModelVariableOptionAttr());
 			for(Variable sourceVar : sourceModelVariables) {
@@ -390,13 +394,14 @@ public class CompareEngine implements Runnable {
 	 */
 	public void compareVarList(List<Variable> sourceVars, List<Variable> targetVars, POUVariableOption pouVarOption, String varTyp, MetricContainer metric) {
 		if(sourceVars.isEmpty() || targetVars.isEmpty()) {
-			sourceVars.stream().forEach(e -> pouVarOption.addContainer(new VariableContainer(e, null, metric, varTyp)));
-			targetVars.stream().forEach(e -> pouVarOption.addContainer(new VariableContainer(null, e, metric, varTyp)));
-		}
-
-		for(Variable sourceVar : sourceVars) {
-			for(Variable targetVar : targetVars) {
-				pouVarOption.addContainer(compareVariables(sourceVar, targetVar, varTyp));
+			sourceVars.stream().forEach(e -> pouVarOption.addContainer(new VariableContainer(e, null, metric, varTyp, true)));
+			targetVars.stream().forEach(e -> pouVarOption.addContainer(new VariableContainer(null, e, metric, varTyp, true)));
+			
+		} else {
+			for(Variable sourceVar : sourceVars) {
+				for(Variable targetVar : targetVars) {
+					pouVarOption.addContainer(compareVariables(sourceVar, targetVar, varTyp));
+				}
 			}
 		}
 	}

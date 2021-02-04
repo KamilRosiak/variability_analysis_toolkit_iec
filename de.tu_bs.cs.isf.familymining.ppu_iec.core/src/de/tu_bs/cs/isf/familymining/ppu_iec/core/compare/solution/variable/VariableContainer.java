@@ -22,6 +22,11 @@ public class VariableContainer extends IECAbstractContainer<Variable> {
 		setVarType(varType);
 	}
 	
+	public VariableContainer(Variable first, Variable second, MetricContainer metric, String varTyp, Boolean isCompared) {
+		this(first, second,metric,varTyp);
+		setCompared(isCompared);
+	}
+	
 	/**
 	 * @return Type of vars {@link CompareEngineConsts}
 	 */

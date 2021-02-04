@@ -147,7 +147,7 @@ public class MutationEngine {
 					mutationResult.getMutationRegistry().getMutationPairs());
 			runResult.setNumberMutations(mutantList.size());
 			runResult.setNumberChangesFound(changeList.size());
-			printObjects(run, changeList, mutationResult.getMutationRegistry());
+			//printObjects(run, changeList, mutationResult.getMutationRegistry());
 
 			// search for matches between mutants and found changes
 			int foundMutants = searchForMutants(changeList, mutantList, runResult);

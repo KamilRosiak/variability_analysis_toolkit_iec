@@ -19,16 +19,20 @@ public class Type3Mutator implements Mutator {
 	private RandomMutator randomMutator;
 
 	private static final int MAX_APPLIED_MUTATIONS = 1;
-
+	/**
 	@PostConstruct
 	public void addMutations(StatementInserter stmtInserter, StatementRemover stmtRemover,
 			POUActionInserter actInserter, POUActionRemover actRemover, POURemover pouRemove, POUInserter pouInsert,
 			POUVariableInserter pouVarInser, VariableRemover varRemover) {
-		randomMutator = new RandomMutator(MAX_APPLIED_MUTATIONS, Arrays.asList(stmtInserter, stmtRemover,actInserter,actRemover, pouRemove,pouInsert,pouVarInser, varRemover));
+		randomMutator = new RandomMutator(MAX_APPLIED_MUTATIONS, Arrays.asList(stmtInserter, stmtRemover, actInserter,
+				actRemover, pouRemove, pouInsert, pouVarInser, varRemover));
 	}
-
-
-
+**/
+	
+	@PostConstruct
+	public void addMutations(VariableRemover varRemover) {
+		randomMutator = new RandomMutator(MAX_APPLIED_MUTATIONS, Arrays.asList(varRemover));
+	}
 	public void mutate(MutationContext ctx) {
 		randomMutator.mutate(ctx);
 	}
