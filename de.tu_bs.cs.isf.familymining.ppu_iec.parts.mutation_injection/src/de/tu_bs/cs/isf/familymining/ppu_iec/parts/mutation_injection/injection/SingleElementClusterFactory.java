@@ -10,6 +10,7 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Action
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Configuration;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Declaration;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.POU;
+import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Variable;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.AbstractAction;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.SequentialFunctionChart;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.Step;
@@ -24,7 +25,7 @@ public class SingleElementClusterFactory implements ScenarioObjectClusterFactory
 	public List<EObject> createFromConfiguration(Configuration config) {
 		return createSingleObjectContext(config);
 	}
-
+	
 	@Override
 	public List<EObject> createFromPOU(POU pou) {
 		return createSingleObjectContext(pou);
@@ -73,6 +74,11 @@ public class SingleElementClusterFactory implements ScenarioObjectClusterFactory
 	@Override
 	public List<EObject> createFromSFCTransition(Transition transition) {
 		return createSingleObjectContext(transition);
+	}
+	
+	@Override
+	public List<EObject> createFromVariable(Variable variable) {
+		return createSingleObjectContext(variable);
 	}
 	
 	private List<EObject> createSingleObjectContext(EObject eobject) {

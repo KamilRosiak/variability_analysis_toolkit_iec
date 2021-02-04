@@ -27,6 +27,7 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Action
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Configuration;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Declaration;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.POU;
+import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Variable;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.AbstractAction;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.SequentialFunctionChart;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.Step;
@@ -62,6 +63,7 @@ public class RandomizedClusterFactory implements ScenarioObjectClusterFactory {
 	private float sfcStepChance;
 	private float sfcActionChance;
 	private float sfcTransChance;
+
 
 	/**
 	 * Sets the chances to create a cluster encountering the corresponding object.
@@ -199,5 +201,10 @@ public class RandomizedClusterFactory implements ScenarioObjectClusterFactory {
 	private boolean allowedInCluster(EObject scenarioObject) {
 		return Stream.of(CLASS_BLACKLIST)
 				.noneMatch(blackListedClass -> blackListedClass.isAssignableFrom(scenarioObject.getClass()));
+	}
+
+	@Override
+	public List<EObject> createFromVariable(Variable variable) {
+		return createClusterByChance(0.3f, variable);
 	}
 }

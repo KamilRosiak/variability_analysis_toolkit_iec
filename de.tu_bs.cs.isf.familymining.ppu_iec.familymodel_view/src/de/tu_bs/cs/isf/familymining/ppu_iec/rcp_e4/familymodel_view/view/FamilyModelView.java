@@ -367,7 +367,6 @@ public class FamilyModelView {
 			scope = varContainer.getSecond().getScope();
 		}
 		second = varContainer.getRightLabel();
-
 		dispatchBasedOnCategory(varContainer.getSimilarity(), parent, varContainer, first, second, scope);
 
 	}
@@ -376,38 +375,38 @@ public class FamilyModelView {
 	 * TODO comment
 	 */
 	private void dispatchBasedOnCategory(float similarity, TreeItem varRoot, VariableContainer modelVarCont, String first, String second, VariableDeclaration scope) {
-		if (scope.equals(VariableDeclaration.VAR_INPUT)) {
 		
+		if (scope.equals(VariableDeclaration.VAR_INPUT)) {
+			TreeItem inputVars = createSubsystem(varRoot, FMStringTable.SUBSYSTEM_VARIABLES_IN, null);
+			createTreeItem(modelVarCont.getSimilarity(), inputVars, modelVarCont, first, second);
 			for (TreeItem item : varRoot.getItems()) {
 				if (item.getText().equals(FMStringTable.SUBSYSTEM_VARIABLES_IN)) {
 					createTreeItem(modelVarCont.getSimilarity(), item, modelVarCont, first, second);
 					return;
 				}
 			}
-			TreeItem inputVars = createSubsystem(varRoot, FMStringTable.SUBSYSTEM_VARIABLES_IN, null);
-			createTreeItem(modelVarCont.getSimilarity(), inputVars, modelVarCont, first, second);
 		}
 		else if (scope.equals(VariableDeclaration.VAR_OUTPUT)) {
-		
+			TreeItem inputVars = createSubsystem(varRoot, FMStringTable.SUBSYSTEM_VARIABLES_OUT, null);
+			createTreeItem(modelVarCont.getSimilarity(), inputVars, modelVarCont, first, second);
+			
 			for (TreeItem item : varRoot.getItems()) {
 				if (item.getText().equals(FMStringTable.SUBSYSTEM_VARIABLES_OUT)) {
 					createTreeItem(modelVarCont.getSimilarity(), item, modelVarCont, first, second);
 					return;
 				}
 			}
-			TreeItem inputVars = createSubsystem(varRoot, FMStringTable.SUBSYSTEM_VARIABLES_OUT, null);
-			createTreeItem(modelVarCont.getSimilarity(), inputVars, modelVarCont, first, second);
 		}
 		else if (scope.equals(VariableDeclaration.VAR)) {
-		
+			TreeItem inputVars = createSubsystem(varRoot, FMStringTable.SUBSYSTEM_VARIABLES_INTERNAL, null);
+			createTreeItem(modelVarCont.getSimilarity(), inputVars, modelVarCont, first, second);
 			for (TreeItem item : varRoot.getItems()) {
 				if (item.getText().equals(FMStringTable.SUBSYSTEM_VARIABLES_INTERNAL)) {
 					createTreeItem(modelVarCont.getSimilarity(), item, modelVarCont, first, second);
 					return;
 				}
 			}
-			TreeItem inputVars = createSubsystem(varRoot, FMStringTable.SUBSYSTEM_VARIABLES_INTERNAL, null);
-			createTreeItem(modelVarCont.getSimilarity(), inputVars, modelVarCont, first, second);
+
 		}
 	}
 

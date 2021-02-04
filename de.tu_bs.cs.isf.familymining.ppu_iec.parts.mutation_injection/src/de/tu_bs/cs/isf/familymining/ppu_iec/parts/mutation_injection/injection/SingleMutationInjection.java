@@ -13,6 +13,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.google.common.collect.Lists;
 
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.MutationContext;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.MutationResult;
@@ -21,6 +22,7 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.Ra
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Action;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Configuration;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.POU;
+import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Variable;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.AbstractAction;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.SequentialFunctionChart;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.Step;
@@ -30,11 +32,12 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtext.Struc
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtextexpression.Expression;
 
 /**
- * Mutation injection entry point. Let's clients mutate a scenario.
- * The mutation is parameterized by the concrete {@link Mutator} and {@link ScenarioObjectClusterFactor} as well
- * as the preferences within the eclipse context.
- * For easier initialization, inject {@link SingleMutationInjectionConfig} into the eclipse context or use it as a template 
- * for injecting your objects.
+ * Mutation injection entry point. Let's clients mutate a scenario. The mutation
+ * is parameterized by the concrete {@link Mutator} and
+ * {@link ScenarioObjectClusterFactor} as well as the preferences within the
+ * eclipse context. For easier initialization, inject
+ * {@link SingleMutationInjectionConfig} into the eclipse context or use it as a
+ * template for injecting your objects.
  * 
  * @author Oliver Urbaniak
  *
@@ -45,19 +48,21 @@ public class SingleMutationInjection implements MutationInjection {
 
 	@Inject
 	private Mutator mutator;
-	
+
 	@Inject
 	private ScenarioObjectClusterFactory factory;
-	
-	@Inject 
+
+	@Inject
 	private Randomization randomly;
-	
+
 	/**
-	 * Applies mutations as defined in the {@link Mutator} generating a mutant scenario. 
+	 * Applies mutations as defined in the {@link Mutator} generating a mutant
+	 * scenario.
 	 * 
 	 * @param scenario mutated by the mutator.
 	 * 
-	 * @return the mutation result contains the scenario pair (original, mutated) and the mutation registry
+	 * @return the mutation result contains the scenario pair (original, mutated)
+	 *         and the mutation registry
 	 * 
 	 * @see Mutator
 	 * @see MutationRegistry
@@ -66,9 +71,9 @@ public class SingleMutationInjection implements MutationInjection {
 	public MutationResult generateMutant(final Configuration scenario) {
 		Configuration mutScenario = EcoreUtil.copy(scenario);
 		MutationRegistry mutRegistry = new MutationRegistry();
-		
+
 		BiMap<EObject, EObject> mapping = constructOriginalToMutatedTreeMapping(scenario, mutScenario);
-		
+
 		MutationContext mutCtx = null;
 		EObject mutatedScenarioObject = null;
 		do {
@@ -78,28 +83,30 @@ public class SingleMutationInjection implements MutationInjection {
 			if (mutatedScenarioObject == null) {
 				continue;
 			}
-						
+
 			mutCtx = new MutationContext(mapping);
 			mutCtx.getCtxObjects().add(mutatedScenarioObject);
-			
+
 			mutator.mutate(mutCtx);
 		} while (mutCtx == null || mutCtx.getMutationPairs().isEmpty());
-		
+
 		mutRegistry.getMutCtxs().add(mutCtx);
-		
+
 		return new MutationResult(scenario, mutScenario, mutRegistry);
 	}
-	
+
 	/**
-	 * Constructs a mapping whereby each object from <i>original</i> is mapped onto the equivalent object in <i>toBeMutated</i>.
+	 * Constructs a mapping whereby each object from <i>original</i> is mapped onto
+	 * the equivalent object in <i>toBeMutated</i>.
 	 * 
-	 * @param original original scenario
-	 * @param toBeMutated mutated scenario, not 
+	 * @param original    original scenario
+	 * @param toBeMutated mutated scenario, not
 	 * @return
 	 */
-	private BiMap<EObject, EObject> constructOriginalToMutatedTreeMapping(Configuration original, Configuration toBeMutated) {
+	private BiMap<EObject, EObject> constructOriginalToMutatedTreeMapping(Configuration original,
+			Configuration toBeMutated) {
 		BiMap<EObject, EObject> mapping = HashBiMap.create();
-		
+
 		TreeIterator<EObject> origIt = EcoreUtil.getAllProperContents(original, true);
 		TreeIterator<EObject> mutatedIt = EcoreUtil.getAllProperContents(toBeMutated, true);
 		while (origIt.hasNext() && mutatedIt.hasNext()) {
@@ -107,24 +114,25 @@ public class SingleMutationInjection implements MutationInjection {
 			EObject mutObject = mutatedIt.next();
 			mapping.put(origObject, mutObject);
 		}
-		
+
 		if (origIt.hasNext() || mutatedIt.hasNext()) {
 			throw new InequalTreeException("Trees do not have the same structure.");
 		}
-		
+
 		return mapping;
 	}
-	
+
 	/**
-	 * Creates a cluster with <i>eobject</i> as the root. A cluster is a connected set of EObjects.
-	 * Two EObjects are connected iff they are in a containment relationship.
+	 * Creates a cluster with <i>eobject</i> as the root. A cluster is a connected
+	 * set of EObjects. Two EObjects are connected iff they are in a containment
+	 * relationship.
 	 * 
 	 * @param eobject
-	 * @return 
+	 * @return
 	 */
 	private EObject createClusterFrom(EObject eobject) {
-		
-		// create a cluster from a key scenario object
+
+		// create a cluster from a key scenario object 
 		List<EObject> cluster = new ArrayList<>();
 		if (eobject instanceof POU) {
 			cluster = factory.createFromPOU((POU) eobject);
@@ -144,7 +152,10 @@ public class SingleMutationInjection implements MutationInjection {
 			cluster = factory.createFromSFCAction((AbstractAction) eobject);
 		} else if (eobject instanceof Transition) {
 			cluster = factory.createFromSFCTransition((Transition) eobject);
+		} else if (eobject instanceof Variable) {
+			cluster = factory.createFromVariable((Variable)eobject);
 		}
+	
 		return cluster.isEmpty() ? null : cluster.get(0);
 	}
 

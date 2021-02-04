@@ -8,9 +8,7 @@ import org.eclipse.e4.core.di.annotations.Creatable;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.MutationContext;
-import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.generators.ActionGenerator;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.generators.POUGenerator;
-import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Action;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Configuration;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.POU;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Resource;
@@ -30,11 +28,6 @@ public class POUInserter extends POUMutation {
 		List<POUImpl> pou = getRandomizedPOUs(mutCtx);
 		
 		if(!pou.isEmpty()) {
-			POUImpl inserationPOU = getRandomPOU(getRandomizedPOUs(mutCtx));
-			Action actionToInsert = ActionGenerator.generateAction();
-			
-			
-			
 			Resource res = getResource((Configuration)EcoreUtil.getRootContainer(pou.get(0)));
 			POU generatedPOU = POUGenerator.generateRandomPOU();
 			res.getPous().add(generatedPOU);

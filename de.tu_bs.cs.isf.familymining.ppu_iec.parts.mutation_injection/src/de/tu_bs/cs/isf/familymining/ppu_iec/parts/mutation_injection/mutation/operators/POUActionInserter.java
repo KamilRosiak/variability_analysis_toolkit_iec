@@ -26,7 +26,7 @@ public class POUActionInserter extends POUActionMutation {
 				pouToInsert.getActions().add(actionToInsert);
 
 				mutCtx.logInsertion(pouToInsert, actionToInsert);
-				mutCtx.getCtxObjects().add(actionToInsert);
+				//mutCtx.getCtxObjects().add(actionToInsert);
 				mutCtx.setChangedTreeStructure(true);
 
 				return true;

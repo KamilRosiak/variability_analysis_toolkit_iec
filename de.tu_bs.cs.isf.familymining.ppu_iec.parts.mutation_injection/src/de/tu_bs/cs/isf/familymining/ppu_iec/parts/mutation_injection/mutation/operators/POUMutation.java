@@ -74,9 +74,12 @@ public abstract class POUMutation implements Mutation{
 	 * @param pousWithActions
 	 * @return
 	 */
-	protected POUImpl getRandomPOU(List<POUImpl> pousWithActions) {
-		int randIndex = getRandomly().nextInt(pousWithActions.size());
-		return pousWithActions.get(randIndex);
+	protected POUImpl getRandomPOU(List<POUImpl> pouList) {
+		if(pouList.isEmpty()) {
+			return null;
+		}
+		int randIndex = getRandomly().nextInt(pouList.size());
+		return pouList.get(randIndex);
 	}
 	
 	public Randomization getRandomly() {

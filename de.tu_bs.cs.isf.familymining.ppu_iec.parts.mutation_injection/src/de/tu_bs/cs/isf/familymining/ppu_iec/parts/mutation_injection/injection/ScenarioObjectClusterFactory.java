@@ -8,6 +8,7 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Action
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Configuration;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Declaration;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.POU;
+import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Variable;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.AbstractAction;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.SequentialFunctionChart;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.Step;
@@ -31,6 +32,8 @@ public interface ScenarioObjectClusterFactory {
 	List<EObject> createFromConfiguration(Configuration config);
 	
 	List<EObject> createFromPOU(POU pou);
+	
+	List<EObject> createFromVariable(Variable variable);
 	
 	List<EObject> createFromAction(Action action);
 	

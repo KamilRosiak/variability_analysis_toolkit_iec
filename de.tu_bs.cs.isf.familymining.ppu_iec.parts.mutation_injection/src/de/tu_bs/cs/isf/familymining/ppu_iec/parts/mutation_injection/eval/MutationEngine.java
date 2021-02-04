@@ -83,7 +83,6 @@ public class MutationEngine {
 		// run the mutation iteration
 		for (int run = 1; run <= runs; run++) {
 			Configuration seed = seedSupplier.get();
-			System.out.println("RUN__" + run + "____________________________");
 			mutationCycle(seed, run, metrics, evalResult);
 		}
 		// export the results
@@ -148,7 +147,7 @@ public class MutationEngine {
 					mutationResult.getMutationRegistry().getMutationPairs());
 			runResult.setNumberMutations(mutantList.size());
 			runResult.setNumberChangesFound(changeList.size());
-			//printObjects(run, changeList, mutationResult.getMutationRegistry());
+			printObjects(run, changeList, mutationResult.getMutationRegistry());
 
 			// search for matches between mutants and found changes
 			int foundMutants = searchForMutants(changeList, mutantList, runResult);

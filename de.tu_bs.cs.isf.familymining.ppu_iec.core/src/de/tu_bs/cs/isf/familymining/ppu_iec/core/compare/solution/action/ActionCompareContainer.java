@@ -22,6 +22,11 @@ public class ActionCompareContainer extends IECAbstractContainer<Action> {
 	public ActionCompareContainer(Action first, Action second, MetricContainer metric) {
 		super(first, second, metric);
 	}
+	
+	public ActionCompareContainer(Action first, Action second, MetricContainer metric, Boolean isCompared) {
+		super(first, second, metric);
+		setCompared(isCompared);
+	}
 
 	public ActionImplementationOption getActionImplOption() {
 		return actionImplOption;
