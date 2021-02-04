@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import org.eclipse.e4.core.di.annotations.Creatable;
 import org.eclipse.e4.core.di.extensions.Preference;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
@@ -17,6 +18,7 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.MutationCon
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.generators.StatementGenerator;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtext.Statement;
 
+@Creatable
 public class StatementInserter extends StatementMutation {
 
 	@Inject

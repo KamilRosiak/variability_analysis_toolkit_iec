@@ -17,6 +17,7 @@ import de.tu_bs.cs.isf.e4cf.core.util.ServiceContainer;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.eval.MutationEngine;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.eval.data.EvaluationResult;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.injection.MutationInjectionConfig;
+import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.CompoundMutator;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.Mutator;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.Randomization;
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.mutation.Type2Mutator;
@@ -53,13 +54,12 @@ public class MutationHandler {
 	public void executeMutation(ServiceContainer services, MutationInjectionConfig config, MutationEngine engine, IEclipseContext context) {
 		List<FileTreeElement> scenarioSelection = services.rcpSelectionService.getCurrentSelectionsFromExplorer();
 		if (!scenarioSelection.isEmpty()) {
-			/**
+		/**
 			context.set(Mutator.class, ContextInjectionFactory.make(Type2Mutator.class, context));
 			EvaluationResult resultT2 = engine.startMutation(selectedSeedSupplier(scenarioSelection));
 			System.out.println("---------T2-Cl0nZ-------------");
 			System.out.println(resultT2);
-			engine = ContextInjectionFactory.make(MutationEngine.class, context);
-			*/
+			**/
 			context.set(Mutator.class, ContextInjectionFactory.make(Type3Mutator.class, context));
 			EvaluationResult resultT3 = engine.startMutation(selectedSeedSupplier(scenarioSelection));
 			System.out.println("---------T3-Cl0nZ-------------");
