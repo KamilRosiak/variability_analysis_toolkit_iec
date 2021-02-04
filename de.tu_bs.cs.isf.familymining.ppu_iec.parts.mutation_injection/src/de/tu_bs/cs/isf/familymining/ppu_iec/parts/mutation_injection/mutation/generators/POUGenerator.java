@@ -15,7 +15,8 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtextexpres
 @Creatable
 @Singleton
 public class POUGenerator {
-	private static ConfigurationFactory configFac = ConfigurationFactory.eINSTANCE;
+	private static final ConfigurationFactory configFac = ConfigurationFactory.eINSTANCE;
+	
 	/**
 	 * Returns a generated POU without implementation.
 	 * @return
