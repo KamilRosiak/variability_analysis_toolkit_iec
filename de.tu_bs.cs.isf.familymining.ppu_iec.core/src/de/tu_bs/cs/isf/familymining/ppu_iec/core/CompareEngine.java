@@ -372,7 +372,7 @@ public class CompareEngine implements Runnable {
 		if(targetInoutVars.isEmpty() && sourceInputVars.isEmpty() && 
 				targetInputVars.isEmpty() && sourceOutputVars.isEmpty() &&  
 				targetOutputVars.isEmpty() && sourceInternalVars.isEmpty() && 
-				targetInternalVars.isEmpty() ) {
+				targetInternalVars.isEmpty() && sourceInoutVars.isEmpty()) {
 			pouVarOption = null;
 			
 		} else {

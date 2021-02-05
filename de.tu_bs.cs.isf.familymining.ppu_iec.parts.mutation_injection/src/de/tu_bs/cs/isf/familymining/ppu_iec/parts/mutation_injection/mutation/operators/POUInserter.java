@@ -34,12 +34,9 @@ public class POUInserter extends POUMutation {
 			
 			mutCtx.logInsertion(res, generatedPOU);
 			mutCtx.setChangedTreeStructure(true);
+			return true;
 		} else {
 			return false;
 		}
-
-		return false;
 	}
-	
-
 }

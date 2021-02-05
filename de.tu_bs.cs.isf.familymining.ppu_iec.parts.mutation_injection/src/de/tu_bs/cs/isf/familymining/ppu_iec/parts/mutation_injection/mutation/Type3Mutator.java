@@ -28,8 +28,6 @@ public class Type3Mutator implements Mutator {
 				actRemover, pouRemove, pouInsert, pouVarInser, varRemover));
 	}
 
-	
-
 	public void mutate(MutationContext ctx) {
 		randomMutator.mutate(ctx);
 	}
