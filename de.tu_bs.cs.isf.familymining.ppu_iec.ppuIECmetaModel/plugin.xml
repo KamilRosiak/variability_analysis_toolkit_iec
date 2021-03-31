@@ -6,32 +6,23 @@
 
 <plugin>
 
-null   <extension point="org.eclipse.emf.ecore.generated_package">
-      <!-- @generated ppuIECmetaModel -->
-      <package
-            uri="http://www.example.org/ppuIECScenario"
-            class="de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.ppuIECScenario.PpuIECScenarioPackage"
-            genModel="models/model_old_ppu_iec/ppuIECmetaModel.genmodel"/>
-   </extension>
+null
 
-   <extension point="org.eclipse.emf.ecore.generated_package">
-      <!-- @generated configuration -->
-      <package
-            uri="http://www.example.org/ppuIECScenario/config"
-            class="de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.ConfigurationPackage"
-            genModel="models/model_Configuration/configuration/configuration.genmodel"/>
-   </extension>
 
-   <extension point="org.eclipse.emf.ecore.generated_package">
-      <!-- @generated SequentialFunctionChart -->
-      <package
-            uri="http://www.example.org/ppuIECScenario/SFC"
-            class="de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.SequentialFunctionChartPackage"
-            genModel="models/model_SFC/SequentialFunctionChart.genmodel"/>
-   </extension>
 
 null
 null
+
+
+
+
+
+
+
+
+
+
+
    <extension point="org.eclipse.emf.ecore.generated_package">
       <!-- @generated comparisonMetric -->
       <package
@@ -41,11 +32,11 @@ null
    </extension>
 
    <extension point="org.eclipse.emf.ecore.generated_package">
-      <!-- @generated mergedModel -->
+      <!-- @generated configuration -->
       <package
-            uri="https://www.tu-braunschweig.de/isf/ppuIECScenario/MergedModel"
-            class="de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.mergedModel.MergedModelPackage"
-            genModel="models/model_mergedModel/mergedModel.genmodel"/>
+            uri="http://www.example.org/ppuIECScenario/config"
+            class="de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.ConfigurationPackage"
+            genModel="models/model_Configuration/configuration/configuration.genmodel"/>
    </extension>
 
    <extension point="org.eclipse.emf.ecore.generated_package">
@@ -65,27 +56,19 @@ null
    </extension>
 
    <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated InstructionList -->
+      <package
+            uri="http://www.example.org/ppuIECScenario/IL"
+            class="instructionlist.InstructionListPackage"
+            genModel="models/model_IL/InstructionList.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
       <!-- @generated LadderDiagram -->
       <package
             uri="http://www.example.org/ppuIECScenario/LadderDiagram"
             class="de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.ladderdiagram.LadderDiagramPackage"
             genModel="models/model_LD/LadderDiagram.genmodel"/>
-   </extension>
-
-   <extension point="org.eclipse.emf.ecore.generated_package">
-      <!-- @generated StructuredTextExpression -->
-      <package
-            uri="http://www.example.org/ppuIECScenario/STE"
-            class="de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtextexpression.StructuredTextExpressionPackage"
-            genModel="models/model_ST/model_expression/StructuredTextExpression.genmodel"/>
-   </extension>
-
-   <extension point="org.eclipse.emf.ecore.generated_package">
-      <!-- @generated StructuredTextStatement -->
-      <package
-            uri="http://www.example.org/ppuIECScenario/STS"
-            class="de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.StructuredTextStatement.StructuredTextStatementPackage"
-            genModel="models/model_ST/model_statement/StructuredTextStatement.genmodel"/>
    </extension>
 
    <extension point="org.eclipse.emf.ecore.generated_package">
@@ -97,6 +80,22 @@ null
    </extension>
 
    <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated mergedModel -->
+      <package
+            uri="https://www.tu-braunschweig.de/isf/ppuIECScenario/MergedModel"
+            class="de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.mergedModel.MergedModelPackage"
+            genModel="models/model_mergedModel/mergedModel.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated SequentialFunctionChart -->
+      <package
+            uri="http://www.example.org/ppuIECScenario/SFC"
+            class="de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.SequentialFunctionChartPackage"
+            genModel="models/model_SFC/SequentialFunctionChart.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
       <!-- @generated StructuredText -->
       <package
             uri="http://www.example.org/ppuIECScenario/ST"
@@ -105,19 +104,11 @@ null
    </extension>
 
    <extension point="org.eclipse.emf.ecore.generated_package">
-      <!-- @generated InstructionList -->
+      <!-- @generated StructuredTextExpression -->
       <package
-            uri="http://www.example.org/ppuIECScenario/IL"
-            class="instructionlist.InstructionListPackage"
-            genModel="models/model_IL/InstructionList.genmodel"/>
-   </extension>
-
-   <extension point="org.eclipse.emf.ecore.generated_package">
-      <!-- @generated program -->
-      <package
-            uri="http://www.example.org/ppuIECScenario/Program"
-            class="program.ProgramPackage"
-            genModel="models/model_Program/program.genmodel"/>
+            uri="http://www.example.org/ppuIECScenario/STE"
+            class="de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtextexpression.StructuredTextExpressionPackage"
+            genModel="models/model_ST/model_expression/StructuredTextExpression.genmodel"/>
    </extension>
 
 </plugin>

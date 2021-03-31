@@ -29,6 +29,7 @@ public class ModelCompareContainer extends IECAbstractContainer<Configuration> {
 	}
 
 	public void setModelImplementationOption(ModelImplementaionOption modelImplOption) {
+		addOption(modelImplOption);
 		this.modelImplOption = modelImplOption;
 	}
 
@@ -37,6 +38,7 @@ public class ModelCompareContainer extends IECAbstractContainer<Configuration> {
 	}
 
 	public void setModelVariableOption(ModelVariableOption modelVarOption) {
+		addOption(modelVarOption);
 		this.modelVarOption = modelVarOption;
 	}
 	
@@ -86,6 +88,7 @@ public class ModelCompareContainer extends IECAbstractContainer<Configuration> {
 		this.setModelImplementationOption(null);
 		this.setModelVariableOption(null);
 		this.getResults().clear();
+		this.getOptions().clear();
 	}
 
 	@Override

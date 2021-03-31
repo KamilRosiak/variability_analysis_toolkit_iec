@@ -2,7 +2,7 @@ package de.tu_bs.cs.isf.familymining.ppu_iec.core.contribution.family_model_prot
 
 import de.tu_bs.cs.isf.e4cf.core.transform.Transformation;
 import de.tu_bs.cs.isf.e4cf.family_model_view.prototype.LabelProvider;
-import de.tu_bs.cs.isf.familymining.ppu_iec.core.code_gen.st.StructuredTextToStringExporter;
+import de.tu_bs.cs.isf.familymining.ppu_iec.code_gen.st.StructuredTextToStringExporter;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Action;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.ArrayVariable;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Configuration;

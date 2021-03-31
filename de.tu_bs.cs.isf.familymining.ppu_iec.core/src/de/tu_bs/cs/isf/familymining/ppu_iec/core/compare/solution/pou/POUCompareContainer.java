@@ -29,6 +29,7 @@ public class POUCompareContainer extends IECAbstractContainer<POU> {
 	}
 
 	public void setPouActionOption(POUActionOption pouActionOption) {
+		addOption(pouActionOption);
 		this.pouActionOption = pouActionOption;
 	}
 
@@ -37,6 +38,7 @@ public class POUCompareContainer extends IECAbstractContainer<POU> {
 	}
 
 	public void setPouImplOption(POUImplementationOption pouImplOption) {
+		addOption(pouImplOption);
 		this.pouImplOption = pouImplOption;
 	}
 
@@ -45,6 +47,7 @@ public class POUCompareContainer extends IECAbstractContainer<POU> {
 	}
 
 	public void setPouVarOption(POUVariableOption pouVarOption) {
+		addOption(pouVarOption);
 		this.pouVarOption = pouVarOption;
 	}
 	
@@ -102,6 +105,7 @@ public class POUCompareContainer extends IECAbstractContainer<POU> {
 		setPouImplOption(null);
 		setPouVarOption(null);
 		getResults().clear();
+		getOptions().clear();
 	}
 
 	@Override

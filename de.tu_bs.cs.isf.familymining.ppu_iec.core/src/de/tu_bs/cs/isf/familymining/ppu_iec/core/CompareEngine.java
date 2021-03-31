@@ -118,6 +118,7 @@ public class CompareEngine implements Runnable {
 		
 		matcher.match(result);
 		result.updateSimilarity();
+		
 		setResult(result);
 		SolutionSerializer.encode(result, RCPContentProvider.getCurrentWorkspacePath()+E4CStringTable.FAMILY_MODEL_DIRECTORY,E4CStringTable.FILE_ENDING_FAMILY_MODEL, false);
 		services.eventBroker.send(PPUEventTable.ADD_RESULT, result);
@@ -231,6 +232,10 @@ public class CompareEngine implements Runnable {
 		
 		if(sourceModelVariables.isEmpty() && targetModelVariables.isEmpty()) {
 			modelOption = null;
+		} else if (sourceModelVariables.isEmpty() || targetModelVariables.isEmpty()) {
+			modelOption = new ModelVariableOption(metric, metric.getModelVariableOptionAttr());
+			sourceModelVariables.stream().forEach(e -> modelOption.addContainer(new VariableContainer(e, null, metric, PPUStringTable.GLOBAL_VARS_DESCRIPTION, true)));
+			targetModelVariables.stream().forEach(e -> modelOption.addContainer(new VariableContainer(null, e, metric, PPUStringTable.GLOBAL_VARS_DESCRIPTION, true)));
 		} else {
 			modelOption = new ModelVariableOption(metric, metric.getModelVariableOptionAttr());
 			for(Variable sourceVar : sourceModelVariables) {
@@ -367,7 +372,7 @@ public class CompareEngine implements Runnable {
 		if(targetInoutVars.isEmpty() && sourceInputVars.isEmpty() && 
 				targetInputVars.isEmpty() && sourceOutputVars.isEmpty() &&  
 				targetOutputVars.isEmpty() && sourceInternalVars.isEmpty() && 
-				targetInternalVars.isEmpty() ) {
+				targetInternalVars.isEmpty() && sourceInoutVars.isEmpty()) {
 			pouVarOption = null;
 			
 		} else {
@@ -388,9 +393,15 @@ public class CompareEngine implements Runnable {
 	 * this method compares two sets of variables
 	 */
 	public void compareVarList(List<Variable> sourceVars, List<Variable> targetVars, POUVariableOption pouVarOption, String varTyp, MetricContainer metric) {
-		for(Variable sourceVar : sourceVars) {
-			for(Variable targetVar : targetVars) {
-				pouVarOption.addContainer(compareVariables(sourceVar, targetVar, varTyp));
+		if(sourceVars.isEmpty() || targetVars.isEmpty()) {
+			sourceVars.stream().forEach(e -> pouVarOption.addContainer(new VariableContainer(e, null, metric, varTyp, true)));
+			targetVars.stream().forEach(e -> pouVarOption.addContainer(new VariableContainer(null, e, metric, varTyp, true)));
+			
+		} else {
+			for(Variable sourceVar : sourceVars) {
+				for(Variable targetVar : targetVars) {
+					pouVarOption.addContainer(compareVariables(sourceVar, targetVar, varTyp));
+				}
 			}
 		}
 	}
@@ -422,18 +433,9 @@ public class CompareEngine implements Runnable {
 			 pouActionOption = null;
 			 
 		} else if(sourcePOU.getActions().isEmpty() || targetPOU.getActions().isEmpty()) {
-			pouActionOption = new POUActionOption(metric, metric.getActionImplementationAttr());
-			
-			for(Action sourceAction : sourcePOU.getActions()) {
-				ActionCompareContainer actionContainer = new ActionCompareContainer(sourceAction, null, metric);
-				actionContainer.setCompared(true);
-				pouActionOption.addContainer(actionContainer);
-			}
-			for(Action targetAction : targetPOU.getActions()) {
-				ActionCompareContainer actionContainer = new ActionCompareContainer(targetAction, null, metric);
-				actionContainer.setCompared(true);
-				pouActionOption.addContainer(new ActionCompareContainer(targetAction, null, metric));
-			}
+			pouActionOption = new POUActionOption(metric, metric.getPouActionAttr());
+			sourcePOU.getActions().stream().forEach(e-> pouActionOption.addContainer(new ActionCompareContainer(e, null, metric, true)));
+			targetPOU.getActions().stream().forEach(e-> pouActionOption.addContainer(new ActionCompareContainer(null, e, metric, true)));
 		} else {
 			pouActionOption = new POUActionOption(metric, metric.getPouActionAttr());
 			
@@ -592,6 +594,11 @@ public class CompareEngine implements Runnable {
 					
 					//Recursively compare of subStatements
 					if(!sourceSubStatements.isEmpty() && !targetSubStatements.isEmpty()) {
+						LanguageImplementationOption<STImplContainer> recImplOption = compareSTImpl(sourceSubStatements, targetSubStatements , metric);
+						if(recImplOption != null) {
+							stImplContainer.setImplOption(recImplOption);
+						}
+					} else if (!sourceSubStatements.isEmpty() || !targetSubStatements.isEmpty()) {
 						LanguageImplementationOption<STImplContainer> recImplOption = compareSTImpl(sourceSubStatements, targetSubStatements , metric);
 						if(recImplOption != null) {
 							stImplContainer.setImplOption(recImplOption);

@@ -52,6 +52,7 @@ public abstract class AbstractLanguageContainer<ElementType extends EObject> ext
 	@Override
 	public void reset() {
 		getResults().clear();
+		getOptions().clear();
 		setImplOption(null);
 	}
 	
@@ -60,6 +61,7 @@ public abstract class AbstractLanguageContainer<ElementType extends EObject> ext
 	}
 
 	public void setImplOption(LanguageImplementationOption<? extends AbstractLanguageContainer<?>> nestedSTImpl) {
+		addOption(nestedSTImpl);
 		this.implOption = nestedSTImpl;
 	}
 	

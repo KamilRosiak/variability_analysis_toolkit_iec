@@ -9,5 +9,11 @@
             uri="fragment.e4xmi">
       </fragment>
    </extension>
+   <extension
+         point="de.tu_bs.cs.isf.e4cf.core.PreferencesPage">
+      <pref_page_attr
+            pref_page_attr="de.tu_bs.cs.isf.familymining.ppu_iec.parts.mutation_injection.contribution.MutationPreferencePage">
+      </pref_page_attr>
+   </extension>
 
 </plugin>

@@ -10,10 +10,10 @@ import org.eclipse.e4.core.di.annotations.Creatable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import de.tu_bs.cs.isf.familymining.ppu_iec.code_gen.st.ExpressionToStringExporter;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.ArrayVariable;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Struct;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Variable;
-import de.tu_bs.cs.isf.familymining.ppu_iec.core.code_gen.st.ExpressionToStringExporter;
 
 /**
  * {@code <dataType>..</dataType>}

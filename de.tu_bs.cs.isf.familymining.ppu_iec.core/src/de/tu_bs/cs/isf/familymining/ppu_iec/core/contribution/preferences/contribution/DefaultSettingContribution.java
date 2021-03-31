@@ -42,7 +42,7 @@ public class DefaultSettingContribution {
 		new LabeledDecsion(group, SWT.None, COMPARE_WEIGHTED , isWeightedValue);
 		
 		metricValue = PreferencesUtil.getValueWithDefault(PPUStringTable.BUNDLE_NAME, DEFAULT_METRIC_PREF, "");
-		new FileGroup(group, SWT.NONE, metricValue);
+		new FileGroup(group, SWT.NONE, metricValue,"default metric: ");
 		
 		matcherValue = PreferencesUtil.getValueWithDefault(PPUStringTable.BUNDLE_NAME, DEFAULT_MATCHER_PREF, "");
 		new ComboGroup(group, SWT.None, matcherValue);

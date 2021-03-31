@@ -20,18 +20,18 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.core.compare.metric.util.MetricConta
 public class FileGroup {
 	private KeyValueNode metricValue;
 	
-	public FileGroup(Composite parent, int style, KeyValueNode metricValue) {
+	public FileGroup(Composite parent, int style, KeyValueNode metricValue, String text) {
 		this.metricValue = metricValue;
-		createControl(parent, style);
+		createControl(parent, style, text);
 	}
 	
-	private void createControl(Composite parent, int style) {
+	private void createControl(Composite parent, int style,String text) {
 		Composite comp = new Composite(parent, style);
 		comp.setLayout(new GridLayout(3,false));
 		comp.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
 		Label description = new Label(comp, SWT.None);
-		description.setText("Default Metric:");
+		description.setText(text);
 		
 		Label value = new Label(comp, SWT.NONE);
 		value.setText(metricValue.getStringValue().substring(metricValue.getStringValue().lastIndexOf("\\") + 1));

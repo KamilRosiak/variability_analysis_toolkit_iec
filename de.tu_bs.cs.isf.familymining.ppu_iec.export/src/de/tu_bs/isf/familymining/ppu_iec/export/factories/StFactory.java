@@ -8,8 +8,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.e4.core.di.annotations.Creatable;
 import org.w3c.dom.Element;
 
+import de.tu_bs.cs.isf.familymining.ppu_iec.code_gen.st.StructuredTextToStringExporter;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtext.StructuredText;
-import de.tu_bs.cs.isf.familymining.ppu_iec.core.code_gen.st.StructuredTextToStringExporter;
 import de.tu_bs.isf.familymining.ppu_iec.export.constants.XmlDataTable;
 import de.tu_bs.isf.familymining.ppu_iec.export.xsd_objects.FormattedText;
 

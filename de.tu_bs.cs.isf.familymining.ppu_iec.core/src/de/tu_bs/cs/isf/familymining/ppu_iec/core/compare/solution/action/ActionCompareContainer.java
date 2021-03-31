@@ -22,12 +22,18 @@ public class ActionCompareContainer extends IECAbstractContainer<Action> {
 	public ActionCompareContainer(Action first, Action second, MetricContainer metric) {
 		super(first, second, metric);
 	}
+	
+	public ActionCompareContainer(Action first, Action second, MetricContainer metric, Boolean isCompared) {
+		super(first, second, metric);
+		setCompared(isCompared);
+	}
 
 	public ActionImplementationOption getActionImplOption() {
 		return actionImplOption;
 	}
 
 	public void setActionImplOption(ActionImplementationOption actionImplOption) {
+		addOption(actionImplOption);
 		this.actionImplOption = actionImplOption;
 	}
 	
@@ -57,6 +63,7 @@ public class ActionCompareContainer extends IECAbstractContainer<Action> {
 	public void reset() {
 		setActionImplOption(null);
 		getResults().clear();
+		getOptions().clear();
 	}
 
 	@Override

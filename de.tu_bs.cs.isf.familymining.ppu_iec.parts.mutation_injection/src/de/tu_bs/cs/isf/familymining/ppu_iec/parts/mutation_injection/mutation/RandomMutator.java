@@ -45,18 +45,15 @@ public class RandomMutator implements Mutator {
 		Arrays.fill(mutationMiss, false);
 		
 		int mutationCount = 0;
-		MutationContext curCtx = ctx;
 		do {
 			int randIndex = pickMutationIndex();
-			MutationContext newCtx = mutations.get(randIndex).apply(curCtx);
-			if (!newCtx.equals(curCtx)) {
+			boolean changedContext = mutations.get(randIndex).apply(ctx);
+			if (changedContext) {
 				mutationCount++;
 				Arrays.fill(mutationMiss, false);
 			} else {
 				mutationMiss[randIndex] = true;
 			}
-			
-			curCtx = newCtx;
 		} while (mutationCount < maxMutationCount && !allTrue(mutationMiss));
 	}
 
@@ -81,5 +78,10 @@ public class RandomMutator implements Mutator {
 			}
 		}
 		return -1;
+	}
+
+	@Override
+	public MutatorType getMutatorType() {
+		return MutatorType.MIXED;
 	}
 }

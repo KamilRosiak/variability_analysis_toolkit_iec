@@ -1,7 +1,7 @@
-package de.tu_bs.cs.isf.familymining.ppu_iec.core.code_gen.st;
+package de.tu_bs.cs.isf.familymining.ppu_iec.code_gen.st;
 
 import static de.tu_bs.cs.isf.e4cf.core.transform.TransformationHelper.ifInstanceOfThen;
-import static de.tu_bs.cs.isf.familymining.ppu_iec.core.code_gen.st.STSymbolTable.*;
+import static de.tu_bs.cs.isf.familymining.ppu_iec.code_gen.st.STSymbolTable.*;
 
 import java.util.Arrays;
 import java.util.List;

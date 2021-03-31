@@ -42,8 +42,10 @@ public class FamilyModelController {
 	
 	@Focus
 	public void setFocus() {	
-		view.getTree().setFocus();
-		selectionService.setSelection(view.getTree());
+		if (view != null) {
+			view.getTree().setFocus();
+			selectionService.setSelection(view.getTree());
+		}
 	}
 
 	/**

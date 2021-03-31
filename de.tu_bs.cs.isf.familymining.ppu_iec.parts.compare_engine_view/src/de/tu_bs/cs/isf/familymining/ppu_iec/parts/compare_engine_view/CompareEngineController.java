@@ -16,12 +16,11 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.core.util.compare.MultiModelContaine
 import de.tu_bs.cs.isf.familymining.ppu_iec.parts.compare_engine_view.view.CompareEngineView;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Configuration;
 
-
 public class CompareEngineController {
 	private CompareEngineView view;
 	private MultiModelContainer multiContainer;
 	private ServiceContainer services;
-	
+
 	@PostConstruct
 	public void createControl(Composite parent, ServiceContainer services) {
 		setView(new CompareEngineView(parent, services));
@@ -40,35 +39,35 @@ public class CompareEngineController {
 	@Optional
 	public void initialize(@UIEventTopic(PPUEventTable.START_COMPARE_ENGINE) List<Configuration> programs) {
 		view.setSourceModel(programs.get(0));
-		view.setTargetModel(programs.get(1));	
+		view.setTargetModel(programs.get(1));
 	}
-	
+
 	@Inject
 	@Optional
 	public void quickCompare(@UIEventTopic(PPUEventTable.QUICK_COMPARE_ENGINE) List<Configuration> programs) {
-		initialize(programs);	
+		initialize(programs);
 		view.quickCompare();
 	}
-	
+
 	@Inject
 	@Optional
 	public void multiCompare(@UIEventTopic(PPUEventTable.MULTI_COMPARE_ENGINE) List<Configuration> modelList) {
 		multiContainer = new MultiModelContainer(modelList, services.eventBroker);
-		for(int i = 0 ; i < modelList.size() ; i++) {
-			for(int j = i ; j <modelList.size() ; j++) {
+		for (int i = 0; i < modelList.size(); i++) {
+			for (int j = i; j < modelList.size(); j++) {
 				view.setSourceModel(modelList.get(i));
 				view.setTargetModel(modelList.get(j));
 				view.quickCompare();
 			}
-		}	
+		}
 	}
-	
+
 	@Inject
 	@Optional
 	public void addResult(@UIEventTopic(PPUEventTable.ADD_RESULT) ConfigurationResultRoot result) {
-		if(multiContainer != null) {
+		if (multiContainer != null) {
 			multiContainer.addResult(result);
-			if(multiContainer.checkContainerStatus()) {
+			if (multiContainer.checkContainerStatus()) {
 				multiContainer.createCSV();
 			}
 		} else {
