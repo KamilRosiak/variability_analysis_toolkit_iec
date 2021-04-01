@@ -49,12 +49,16 @@ public class SFCActionContainer extends IECAbstractContainer<AbstractAction> {
 	public String getLeftLabel() {
 		if(getFirst() != null) {
 			if(getFirst() instanceof ComplexAction) {
-				if(((ComplexAction)getFirst()).getPouAction() !=null) {
-					return ((ComplexAction)getFirst()).getPouAction().getName();
+				ComplexAction complexAction = (ComplexAction) getFirst();
+				if(complexAction.getPouAction() != null) {
+					if (complexAction.getPouVariable() != null) {
+						return complexAction.getPouVariable().getName()+"."+complexAction.getPouAction().getName();
+					}
+					return complexAction.getPouAction().getName();
 				}
 				return "";
 			} else if (getFirst() instanceof SimpleAction){
-				return ((SimpleAction)getFirst()).getActionVariable().getName();
+				return ((SimpleAction)getFirst()).getCondition().getName();
 			} else {
 				return "";
 			}
@@ -67,12 +71,16 @@ public class SFCActionContainer extends IECAbstractContainer<AbstractAction> {
 	public String getRightLabel() {
 		if(getSecond() != null) {
 			if(getSecond() instanceof ComplexAction) {
-				if(((ComplexAction)getSecond()).getPouAction() !=null) {
-					return ((ComplexAction)getSecond()).getPouAction().getName();
+				ComplexAction complexAction = (ComplexAction) getSecond();
+				if(complexAction.getPouAction() != null) {
+					if (complexAction.getPouVariable() != null) {
+						return complexAction.getPouVariable().getName()+"."+complexAction.getPouAction().getName();
+					}
+					return complexAction.getPouAction().getName();
 				}
 				return "";
 			} else if (getSecond() instanceof SimpleAction){
-				return ((SimpleAction)getSecond()).getActionVariable().getName();
+				return ((SimpleAction)getSecond()).getCondition().getName();
 			} else {
 				return "";
 			}

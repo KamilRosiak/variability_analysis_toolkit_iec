@@ -57,9 +57,12 @@
         eType="#//StepQualifier" defaultValueLiteral="UNDEFINED"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="SimpleAction" eSuperTypes="#//AbstractAction">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="actionVariable" eType="ecore:EClass ../model_Configuration/configuration/configuration.ecore#//Variable"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="condition" lowerBound="1"
+        eType="ecore:EClass ../model_Configuration/configuration/configuration.ecore#//Variable"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ComplexAction" eSuperTypes="#//AbstractAction">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="pouAction" eType="ecore:EClass ../model_Configuration/configuration/configuration.ecore#//Action"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="pouAction" lowerBound="1"
+        eType="ecore:EClass ../model_Configuration/configuration/configuration.ecore#//Action"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="pouVariable" eType="ecore:EClass ../model_Configuration/configuration/configuration.ecore#//Variable"/>
   </eClassifiers>
 </ecore:EPackage>
