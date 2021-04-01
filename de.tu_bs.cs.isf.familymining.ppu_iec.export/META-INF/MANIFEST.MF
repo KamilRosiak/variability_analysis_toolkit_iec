@@ -8,6 +8,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.jface,
  org.eclipse.swt,
  javax.inject,
+ org.eclipse.e4.core.contexts,
  org.eclipse.e4.core.di.annotations,
  org.eclipse.emf.common,
  org.eclipse.emf.ecore,

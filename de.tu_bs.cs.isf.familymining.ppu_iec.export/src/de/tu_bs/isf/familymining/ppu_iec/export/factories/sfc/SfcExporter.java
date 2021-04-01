@@ -1,10 +1,9 @@
 package de.tu_bs.isf.familymining.ppu_iec.export.factories.sfc;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +15,7 @@ import java.util.stream.Collectors;
 
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Action;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.POU;
+import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Variable;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.AbstractAction;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.ComplexAction;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.SequentialFunctionChart;
@@ -23,20 +23,30 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionch
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.Step;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.StepQualifier;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.Transition;
+import de.tu_bs.isf.familymining.ppu_iec.export.components.selection.FMSelection;
 import de.tu_bs.isf.familymining.ppu_iec.export.xsd_objects.Body;
-import de.tu_bs.isf.familymining.ppu_iec.export.xsd_objects.Body.SFC;
 import de.tu_bs.isf.familymining.ppu_iec.export.xsd_objects.Body.SFC.InVariable;
 import de.tu_bs.isf.familymining.ppu_iec.export.xsd_objects.Body.SFC.JumpStep;
 import de.tu_bs.isf.familymining.ppu_iec.export.xsd_objects.Body.SFC.Transition.Condition;
 import de.tu_bs.isf.familymining.ppu_iec.export.xsd_objects.Connection;
 import de.tu_bs.isf.familymining.ppu_iec.export.xsd_objects.ConnectionPointIn;
 import de.tu_bs.isf.familymining.ppu_iec.export.xsd_objects.ConnectionPointOut;
+import de.tu_bs.isf.familymining.ppu_iec.export.xsd_objects.Position;
 
 public class SfcExporter {
 
+	private static final int DEFAULT_POS_X = 0;
+	private static final int DEFAULT_POS_Y = 0;
 	private static final String FORMAL_PARAM_STEP = "sfc";
-	private static final int UNKNOW_ID = 1000;
 
+	/**
+	 * The selection of exported POUs, actions, variables.
+	 */
+	private FMSelection selection;
+
+	/**
+	 * Assigns ids for newly created elements.
+	 */
 	private IdService idService;
 
 	/**
@@ -44,7 +54,14 @@ public class SfcExporter {
 	 */
 	private Map<Integer, Object> sfcDomMapping = new HashMap<>();
 
+	private SequentialFunctionChart sfc;
+
+	public SfcExporter(FMSelection selection) {
+		this.selection = selection;
+	}
+
 	public Body.SFC createSfc(SequentialFunctionChart sfc) {
+		this.sfc = sfc;
 		Body.SFC sfcBody = new Body.SFC();
 
 		// claim ids reserved by existing steps, transitions and actions to prevent id
@@ -60,14 +77,10 @@ public class SfcExporter {
 			throw new RuntimeException("There is no initial step specified.");
 		}
 
-		List<Step> steps = sfc.getSteps();
+		List<Step> steps = new ArrayList<>(sfc.getSteps());
 		steps.sort((s1, s2) -> {
-			int r = Boolean.compare(s1.getInitialStep(), s2.getInitialStep());
-			if (r != 0) {
-				return r;
-			} else {
-				return Integer.compare(s1.getLocal_ID(), s2.getLocal_ID());
-			}
+			int r = Boolean.compare(s2.getInitialStep(), s1.getInitialStep());
+			return r != 0 ? r : Integer.compare(s1.getLocal_ID(), s2.getLocal_ID());
 		});
 
 		for (Step step : steps) {
@@ -77,19 +90,29 @@ public class SfcExporter {
 		return sfcBody;
 	}
 
-	public void processStep(Step step, Body.SFC sfcBody) {
+	private void processStep(Step step, Body.SFC sfcBody) {
 		// instantiate step and attach local properties
 		Body.SFC.Step stepInstance = (Body.SFC.Step) sfcDomMapping.get(step.getLocal_ID());
 		if (stepInstance == null) {
 			stepInstance = new Body.SFC.Step();
 			stepInstance.setLocalId(toLocalId(step.getLocal_ID()));
 			stepInstance.setName(step.getName());
+			stepInstance.setInitialStep(step.getInitialStep());
+			stepInstance.setPosition(createPosition(DEFAULT_POS_X, DEFAULT_POS_Y));
+
+			stepInstance.setConnectionPointIn(new ConnectionPointIn());
+			Body.SFC.Step.ConnectionPointOut connOut = new Body.SFC.Step.ConnectionPointOut();
+			connOut.setFormalParameter(FORMAL_PARAM_STEP);
+			stepInstance.setConnectionPointOut(connOut);
 		}
 
 		handleIncomingReferences(step, sfcBody, stepInstance);
 
 		sfcBody.getCommentOrErrorOrConnector().add(stepInstance);
-		sfcBody.getCommentOrErrorOrConnector().add(createActionBlock(step.getActions(), step.getLocal_ID()));
+
+		if (!step.getActions().isEmpty()) {
+			sfcBody.getCommentOrErrorOrConnector().add(createActionBlock(step.getActions(), step.getLocal_ID()));
+		}
 
 		handleOutgoingReferences(step, sfcBody, stepInstance);
 	}
@@ -114,12 +137,14 @@ public class SfcExporter {
 			ConnectionPointIn stepConnIn = createInConnections(false, predecessorTransition.getLocal_ID());
 			stepInstance.setConnectionPointIn(stepConnIn);
 
-			sfcBody.getCommentOrErrorOrConnector().add(predecessorTransitionInstance);
+			if (!sfcBody.getCommentOrErrorOrConnector().contains(predecessorTransitionInstance)) {
+				sfcBody.getCommentOrErrorOrConnector().add(predecessorTransitionInstance);
+			}
 			sfcDomMapping.putIfAbsent(predecessorTransition.getLocal_ID(), predecessorTransitionInstance);
-		} else if (step.getOutgoingTransitions().size() > 1) {
+		} else if (step.getIncomingTransitions().size() > 1) {
 			// case 2: multiple transitions converge (selection convergence) onto onto this
 			// step
-			Deque<Transition> predecessorTransitionQueue = new ArrayDeque<>(step.getOutgoingTransitions());
+			Deque<Transition> predecessorTransitionQueue = new ArrayDeque<>(step.getIncomingTransitions());
 
 			// Preallocate the outermost transition
 			Transition outermostTransition = predecessorTransitionQueue.pollLast();
@@ -128,7 +153,7 @@ public class SfcExporter {
 				sfcBody.getCommentOrErrorOrConnector().add(outerTransitionInstance);
 			}
 			sfcDomMapping.putIfAbsent(outermostTransition.getLocal_ID(), outerTransitionInstance);
-			
+
 			int predecessorId = outermostTransition.getLocal_ID();
 			do {
 				// Allocate the inner transition
@@ -142,22 +167,24 @@ public class SfcExporter {
 				// combine inner transition and predecessor with a new selection convergence
 				Body.SFC.SelectionConvergence convergence = new Body.SFC.SelectionConvergence();
 				convergence.setLocalId(idService.claimId());
+				convergence.setPosition(createPosition(DEFAULT_POS_X, DEFAULT_POS_Y));
 				List<Body.SFC.SelectionConvergence.ConnectionPointIn> convConnIn = createConvergenceConnections(true,
 						predecessorId, innerTransition.getLocal_ID());
 				convergence.getConnectionPointIn().addAll(convConnIn);
 				sfcBody.getCommentOrErrorOrConnector().add(convergence);
-				
+
 				predecessorId = convergence.getLocalId().intValue();
 			} while (predecessorTransitionQueue.size() >= 1);
-			
+
 			// Connect this step with the recent convergence
 			stepInstance.setConnectionPointIn(createInConnections(false, predecessorId));
 		}
 	}
 
 	/**
-	 * Connects all outgoing connections with the step instance. The newly encountered transitions are
-	 * created on-the-fly and added to the xml dom mapping
+	 * Connects all outgoing connections with the step instance. The newly
+	 * encountered transitions are created on-the-fly and added to the xml dom
+	 * mapping
 	 * 
 	 * @param step
 	 * @param sfcBody
@@ -169,20 +196,13 @@ public class SfcExporter {
 		if (step.getOutgoingTransitions().size() == 1) {
 			// case 1: a single successor transition
 			Transition successorTransition = step.getOutgoingTransitions().get(0);
-
-			Body.SFC.Transition transitionInstance = new Body.SFC.Transition();
-			transitionInstance.setLocalId(toLocalId(successorTransition.getLocal_ID()));
+			Body.SFC.Transition transitionInstance = createTransition(successorTransition, sfcBody);
 
 			// interconnect step and transition
-			ConnectionPointIn transitionConnIn = new ConnectionPointIn();
-			Connection transitionConn = new Connection();
-			transitionConn.setFormalParameter(FORMAL_PARAM_STEP);
-			transitionConn.setRefLocalId(stepInstance.getLocalId());
-			transitionConnIn.getConnection().add(transitionConn);
+			ConnectionPointIn transitionConnIn = createInConnections(true, step.getLocal_ID());
 			transitionInstance.setConnectionPointIn(transitionConnIn);
 
-			sfcBody.getCommentOrErrorOrConnector().add(stepInstance);
-			if (!sfcBody.getCommentOrErrorOrConnector().contains(transitionInstance)) {				
+			if (!sfcBody.getCommentOrErrorOrConnector().contains(transitionInstance)) {
 				sfcBody.getCommentOrErrorOrConnector().add(transitionInstance);
 			}
 			sfcDomMapping.putIfAbsent(successorTransition.getLocal_ID(), transitionInstance);
@@ -191,48 +211,48 @@ public class SfcExporter {
 			// --> constructs a divergence tree with transitions as a leaves and divergences
 			// as inner nodes
 
-			sfcBody.getCommentOrErrorOrConnector().add(stepInstance);
-
 			Deque<Transition> successorTransitionQueue = new ArrayDeque<>(step.getOutgoingTransitions());
 			int predecessorId = step.getLocal_ID();
 			do {
-				// create divergence and attach incoming predecessor connection: [predecessor]
-				// <- [divergence]
+				// create divergence and attach incoming predecessor connection:
+				// [predecessor] <- [divergence]
 				Body.SFC.SelectionDivergence divergence = new Body.SFC.SelectionDivergence();
 				divergence.setLocalId(idService.claimId());
+				divergence.setPosition(createPosition(DEFAULT_POS_X, DEFAULT_POS_Y));
 				divergence.setConnectionPointIn(createInConnections(false, predecessorId));
 
-				// create the successor transition and attach it to the divergence: [divergence]
-				// <- [transition]
+				Body.SFC.SelectionDivergence.ConnectionPointOut connOut = new Body.SFC.SelectionDivergence.ConnectionPointOut();
+				connOut.setFormalParameter(FORMAL_PARAM_STEP);
+				divergence.getConnectionPointOut().add(connOut);
+				divergence.getConnectionPointOut().add(connOut);
+
+				sfcBody.getCommentOrErrorOrConnector().add(divergence);
+
+				// create the successor transition and attach it to the divergence:
+				// [divergence] <- [transition]
 				Transition curTransition = successorTransitionQueue.poll();
-				Body.SFC.Transition curTransitionInstance = new Body.SFC.Transition();
-				curTransitionInstance.setLocalId(toLocalId(curTransition.getLocal_ID()));
-				ConnectionPointIn curTransitionConnIn = new ConnectionPointIn();
-				Connection curTransitionConn = new Connection();
-				curTransitionConn.setFormalParameter(FORMAL_PARAM_STEP);
-				curTransitionConn.setRefLocalId(divergence.getLocalId());
-				curTransitionConnIn.getConnection().add(curTransitionConn);
-				
+				Body.SFC.Transition curTransitionInstance = createTransition(curTransition, sfcBody);
+				ConnectionPointIn curTransitionConnIn = createInConnections(true, divergence.getLocalId().intValue());
+				curTransitionInstance.setConnectionPointIn(curTransitionConnIn);
+
 				if (!sfcBody.getCommentOrErrorOrConnector().contains(curTransitionInstance)) {
-					curTransitionInstance.setConnectionPointIn(curTransitionConnIn);					
+					sfcBody.getCommentOrErrorOrConnector().add(curTransitionInstance);
 				}
 				sfcDomMapping.putIfAbsent(curTransition.getLocal_ID(), curTransitionInstance);
 
 				predecessorId = divergence.getLocalId().intValue();
 			} while (successorTransitionQueue.size() > 1);
 
-			// create final transition and attach it to the last divergence: [divergence] <- [final transition]
+			// create final transition, attach it to the last divergence:
+			// [divergence] <- [final transition]
 			Transition finalTransition = successorTransitionQueue.poll();
-			createTransition(finalTransition, sfcBody);
-			
-			Body.SFC.Transition finalTransitionInstance = new Body.SFC.Transition();
-			finalTransitionInstance.setLocalId(toLocalId(finalTransition.getLocal_ID()));
-			ConnectionPointIn finalTransitionConnIn = new ConnectionPointIn();
-			Connection finalTransitionConn = new Connection();
-			finalTransitionConn.setFormalParameter(FORMAL_PARAM_STEP);
-			finalTransitionConn.setRefLocalId(toLocalId(predecessorId));
-			finalTransitionConnIn.getConnection().add(finalTransitionConn);
+			Body.SFC.Transition finalTransitionInstance = createTransition(finalTransition, sfcBody);
+			ConnectionPointIn finalTransitionConnIn = createInConnections(true, predecessorId);
 			finalTransitionInstance.setConnectionPointIn(finalTransitionConnIn);
+			if (!sfcBody.getCommentOrErrorOrConnector().contains(finalTransitionInstance)) {
+				sfcBody.getCommentOrErrorOrConnector().add(finalTransitionInstance);
+			}
+
 			sfcDomMapping.put(finalTransition.getLocal_ID(), finalTransitionInstance);
 		}
 	}
@@ -240,7 +260,8 @@ public class SfcExporter {
 	/**
 	 * Creates an independent transition without connections to other
 	 * con-/divergences or steps (excluding jumps as they are simplified in the sfc
-	 * ecore model).
+	 * ecore model). If the transition holds a condition, a input variable in an SFC
+	 * network, an inVar element is added to the <i>sfcBody</i>.
 	 * 
 	 * @param transition the ecore model transition
 	 * @param sfcBody    the xml root for sfc
@@ -257,24 +278,26 @@ public class SfcExporter {
 		Body.SFC.Transition transitionInstance = new Body.SFC.Transition();
 		transitionInstance.setLocalId(toLocalId(transition.getLocal_ID()));
 		transitionInstance.setConnectionPointIn(new ConnectionPointIn());
+		transitionInstance.setPosition(createPosition(DEFAULT_POS_X, DEFAULT_POS_Y));
 
 		if (transition.getCondition() != null && !transition.getCondition().isEmpty()) {
-			InVariable inVar = new InVariable();
-			BigInteger inVarId = idService.claimId();
-			inVar.setLocalId(inVarId);
-			inVar.setExpression(transition.getCondition());
+			InVariable inVarInstance = createInVariable(transition.getCondition());
+			if (!sfcBody.getCommentOrErrorOrConnector().contains(inVarInstance)) {
+				sfcBody.getCommentOrErrorOrConnector().add(inVarInstance);
+			}
 
 			Condition condition = new Condition();
 			ConnectionPointIn conditionConnIn = new ConnectionPointIn();
 			Connection conditionConnection = new Connection();
-			conditionConnection.setRefLocalId(inVarId);
+			conditionConnection.setRefLocalId(inVarInstance.getLocalId());
 			conditionConnIn.getConnection().add(conditionConnection);
 			condition.setConnectionPointIn(conditionConnIn);
 			transitionInstance.setCondition(condition);
 		}
 
-		// TODO: jump step part needs to be rewritten in order to support convergence handling!!!
-		
+		// TODO: jump step part needs to be rewritten in order to support convergence
+		// handling!!!
+
 		// we try to maintain the original order by placing the transition between its
 		// "inVariable" and "jumpStep" (if available)
 		if (transition.isIsJump()) {
@@ -286,12 +309,15 @@ public class SfcExporter {
 			// new one
 			Step jumpTarget = transition.getTargetStep().get(0);
 			JumpStep jumpStep = findJumpStep(transition, sfcBody).orElseGet(() -> createJumpStep(jumpTarget.getName()));
+			// TODO: "findJumpStep" considers jump steps with the same target to be equal
+			// --> change it
 
 			Connection jumpConn = new Connection();
 			jumpConn.setRefLocalId(toLocalId(transition.getLocal_ID()));
 			jumpStep.getConnectionPointIn().getConnection().add(jumpConn);
 
-			// the ecore model does not express jump steps as steps, it marks the transitions 
+			// the ecore model does not express jump steps as steps, it marks the
+			// transitions
 			sfcBody.getCommentOrErrorOrConnector().add(transitionInstance);
 			sfcBody.getCommentOrErrorOrConnector().add(jumpStep);
 		}
@@ -300,6 +326,16 @@ public class SfcExporter {
 		}
 
 		return transitionInstance;
+	}
+
+	public Body.SFC.InVariable createInVariable(String expression) {
+		Body.SFC.InVariable inVarInstance = new Body.SFC.InVariable();
+		inVarInstance.setLocalId(idService.claimId());
+		inVarInstance.setPosition(createPosition(DEFAULT_POS_X, DEFAULT_POS_Y));
+		inVarInstance.setConnectionPointOut(new ConnectionPointOut());
+		inVarInstance.setExpression(expression);
+
+		return inVarInstance;
 	}
 
 	/**
@@ -365,24 +401,6 @@ public class SfcExporter {
 		return connPoints;
 	}
 
-	private void addOutConnection(Body.SFC.Transition transition, int localId) {
-		if (transition.getConnectionPointOut() == null) {
-			ConnectionPointOut connOut = new ConnectionPointOut();
-			transition.setConnectionPointOut(connOut);
-		}
-
-		Connection conn = new Connection();
-		conn.setFormalParameter(FORMAL_PARAM_STEP);
-		conn.setRefLocalId(toLocalId(localId));
-	}
-
-	private Body.SFC.InVariable createInVariable(int localId, String expression) {
-		Body.SFC.InVariable inVariableInstance = new Body.SFC.InVariable();
-		inVariableInstance.setLocalId(toLocalId(localId));
-		inVariableInstance.setExpression(expression);
-		return inVariableInstance;
-	}
-
 	/**
 	 * Converts a list of {@link AbstractAction}s back to an instance of
 	 * {@code <actionBlock>...</actionBlock>}.
@@ -391,18 +409,21 @@ public class SfcExporter {
 	 * @param refLocalId  the step reference
 	 * @return {@code <actionBlock>...</actionBlock>}
 	 */
-	public Body.SFC.ActionBlock createActionBlock(List<AbstractAction> actionBlock, int refLocalId) {
+	public Body.SFC.ActionBlock createActionBlock(List<AbstractAction> actions, int refLocalId) {
 		Body.SFC.ActionBlock actionBlockInstance = new Body.SFC.ActionBlock();
-
-		// TODO: The id from actionBlock is not retained in the model and is selected
-		// arbitrarily atm
-		actionBlockInstance.setLocalId(toLocalId(UNKNOW_ID));
+		actionBlockInstance.setLocalId(idService.claimId());
+		actionBlockInstance.setPosition(createPosition(DEFAULT_POS_X, DEFAULT_POS_Y));
 
 		ConnectionPointIn connIn = new ConnectionPointIn();
 		Connection conn = new Connection();
 		conn.setRefLocalId(toLocalId(refLocalId));
 		connIn.getConnection().add(conn);
 		actionBlockInstance.setConnectionPointIn(connIn);
+
+		for (AbstractAction action : actions) {
+			Body.SFC.ActionBlock.Action actionInstance = createAction(action);
+			actionBlockInstance.getAction().add(actionInstance);
+		}
 
 		return actionBlockInstance;
 	}
@@ -417,6 +438,10 @@ public class SfcExporter {
 	public Body.SFC.ActionBlock.Action createAction(AbstractAction action) {
 		Body.SFC.ActionBlock.Action actionInstance = new Body.SFC.ActionBlock.Action();
 		actionInstance.setLocalId(toLocalId(action.getLocalId()));
+		actionInstance.setDuration("");
+		actionInstance.setIndicator("");
+		actionInstance.setRelPosition(createPosition(DEFAULT_POS_X, DEFAULT_POS_Y));
+		actionInstance.setConnectionPointOut(new ConnectionPointOut());
 
 		if (action.getQualifier() != StepQualifier.UNDEFINED) {
 			actionInstance.setQualifier(action.getQualifier().toString());
@@ -425,20 +450,25 @@ public class SfcExporter {
 		if (action instanceof SimpleAction) {
 			SimpleAction simpleAction = (SimpleAction) action;
 			Body.SFC.ActionBlock.Action.Reference refVariableInstance = new Body.SFC.ActionBlock.Action.Reference();
-			refVariableInstance.setName(simpleAction.getActionVariable().getName());
+			refVariableInstance.setName(simpleAction.getCondition().getName());
 			actionInstance.setReference(refVariableInstance);
 		} else {
+			// complex actions may reference other actions in the same or in other pous
 			ComplexAction complexAction = (ComplexAction) action;
 			Action pouAction = complexAction.getPouAction();
-			if (pouAction.eContainer() instanceof POU) {
-				POU complexActionPou = (POU) pouAction.eContainer();
+			Variable pouVar = complexAction.getPouVariable();
+
+			if (pouAction != null) {
 				Body.SFC.ActionBlock.Action.Reference refActionInstance = new Body.SFC.ActionBlock.Action.Reference();
-				refActionInstance
-						.setName(String.format("%s.%s", complexActionPou.getIdentifier(), pouAction.getName()));
+				if (pouVar != null) {
+					refActionInstance.setName(String.format("%s.%s", pouVar.getName(), pouAction.getName()));
+				} else {
+					refActionInstance.setName(String.format("%s", pouAction.getName()));
+				}
 				actionInstance.setReference(refActionInstance);
 			} else {
-				throw new RuntimeException(
-						String.format("No POU can be found for the complex action %s.", pouAction.getName()));
+				throw new RuntimeException(String
+						.format("No POU can be found for the complex action's reference on %s.", pouAction.getName()));
 			}
 		}
 
@@ -448,11 +478,19 @@ public class SfcExporter {
 	private JumpStep createJumpStep(String targetName) {
 		JumpStep jumpStep = new JumpStep();
 		jumpStep.setLocalId(idService.claimId());
+		jumpStep.setPosition(createPosition(DEFAULT_POS_X, DEFAULT_POS_Y));
 		jumpStep.setTargetName(targetName);
 		ConnectionPointIn jumpConnIn = new ConnectionPointIn();
 		jumpStep.setConnectionPointIn(jumpConnIn);
 
 		return jumpStep;
+	}
+
+	private Position createPosition(int x, int y) {
+		Position pos = new Position();
+		pos.setX(BigDecimal.valueOf(x));
+		pos.setY(BigDecimal.valueOf(y));
+		return pos;
 	}
 
 	/**
@@ -481,13 +519,13 @@ public class SfcExporter {
 	}
 
 	private class IdService {
-		int curId = 0;
-		Set<Integer> reservedIds = new TreeSet<>();
+		private int curId = 0;
+		private Set<Integer> reservedIds = new TreeSet<>();
 
 		public IdService(SequentialFunctionChart sfc) {
 			reservedIds.clear();
 			sfc.getSteps().stream().map(Step::getLocal_ID).forEach(reservedIds::add);
-			sfc.getSteps().stream().flatMap(step -> step.getActions().stream()).map(AbstractAction::getLocalId)
+			sfc.getSteps().stream().flatMap(step -> step.getActions().stream()).mapToInt(AbstractAction::getLocalId)
 					.forEach(reservedIds::add);
 			sfc.getTransitions().stream().map(Transition::getLocal_ID).forEach(reservedIds::add);
 		}
@@ -496,6 +534,7 @@ public class SfcExporter {
 			while (reservedIds.contains(curId)) {
 				curId++;
 			}
+			reservedIds.add(curId);
 			return toLocalId(curId);
 		}
 	}

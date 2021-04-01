@@ -8,6 +8,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
+import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Creatable;
 import org.xml.sax.SAXException;
 
@@ -28,7 +29,11 @@ public class PLCOpenXmlExporter {
 	@Inject
 	public ProjectFactory projectFactory;
 	
-	
+	/**
+	 * The selection will be subject to injection for factories to use.
+	 */
+	@Inject
+	private IEclipseContext eclispeCtx;
 	/**
 	 * Exports selected family model elements to PLCOpenXml.
 	 * @param selection Selected family model elements.
@@ -39,10 +44,12 @@ public class PLCOpenXmlExporter {
 	 */
 	public void export(FMSelection selection, String outputPath) throws JAXBException, SAXException, ClassNotFoundException
 	{		
+		eclispeCtx.set(FMSelection.class, selection);
 		Project project = projectFactory.createProject(selection);		
 		JAXBContext jaxbContext = JAXBContext.newInstance(project.getClass().getPackage().getName());
 		Marshaller marshaller = jaxbContext.createMarshaller();		
 		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 		marshaller.marshal(project, new File(outputPath));
+		eclispeCtx.remove(FMSelection.class);
 	}
 }
