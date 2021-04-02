@@ -14,7 +14,6 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Action;
-import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.POU;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.configuration.Variable;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.AbstractAction;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.ComplexAction;
@@ -23,7 +22,6 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionch
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.Step;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.StepQualifier;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.Transition;
-import de.tu_bs.isf.familymining.ppu_iec.export.components.selection.FMSelection;
 import de.tu_bs.isf.familymining.ppu_iec.export.xsd_objects.Body;
 import de.tu_bs.isf.familymining.ppu_iec.export.xsd_objects.Body.SFC.InVariable;
 import de.tu_bs.isf.familymining.ppu_iec.export.xsd_objects.Body.SFC.JumpStep;
@@ -33,6 +31,32 @@ import de.tu_bs.isf.familymining.ppu_iec.export.xsd_objects.ConnectionPointIn;
 import de.tu_bs.isf.familymining.ppu_iec.export.xsd_objects.ConnectionPointOut;
 import de.tu_bs.isf.familymining.ppu_iec.export.xsd_objects.Position;
 
+/**
+ * Exports instances of {@link SequentialFunctionChart} to instances of
+ * {@link Body.SFC}, an Ecore to PLCOpen XML conversion.<br>
+ * <br>
+ * As the Ecore model is much more dense than the PLCOpen XML format, some of
+ * the data needs to be generated. The {@code Body.SFC.SelectionConvergence} and
+ * {@code Body.SFC.SelectionDivergence} elements interconnect a step with more
+ * than 2 transitions. Since the model tracks these connections as references on
+ * {@code Step}, these elements must be generated. A {@code Body.SFC.JumpStep}
+ * is an element that jumps to another step upon activation. This info is
+ * encapsulated in a {@code Transition}. While {@code AbstractAction} represents
+ * the {@code Body.SFC.ActionBlock.Action} elements, it is stored directly in
+ * the step. The PLCOpen XML schema groups these elements under a
+ * {@code Body.SFC.ActionBlock} which must be generated as well.<br>
+ * <br>
+ * The PLCOpen XML schema can be downloaded on
+ * <i>https://plcopen.org/technical-activities/xml-exchange</i> by scrolling to
+ * the bottom and clicking the button <i>Download full specification</i>.<br>
+ * For more information about the structure of the language see
+ * <i>https://www.plcopen.org/system/files/downloads/tc6_xml_v201_technical_doc.pdf</i>.
+ * 
+ * 
+ * @see SFCNodeCallback
+ * @author Oliver Urbaniak
+ * 
+ */
 public class SfcExporter {
 
 	private static final int DEFAULT_POS_X = 0;
@@ -40,12 +64,7 @@ public class SfcExporter {
 	private static final String FORMAL_PARAM_STEP = "sfc";
 
 	/**
-	 * The selection of exported POUs, actions, variables.
-	 */
-	private FMSelection selection;
-
-	/**
-	 * Assigns ids for newly created elements.
+	 * Assigns ids for generated elements.
 	 */
 	private IdService idService;
 
@@ -54,22 +73,28 @@ public class SfcExporter {
 	 */
 	private Map<Integer, Object> sfcDomMapping = new HashMap<>();
 
-	private SequentialFunctionChart sfc;
-
-	public SfcExporter(FMSelection selection) {
-		this.selection = selection;
-	}
-
+	/**
+	 * Creates an instance of {@code Body.SFC}.<br>
+	 * <br>
+	 * This SFC export is step-centric which means that the SFC graph is created by
+	 * processing step after step. Since all transitions are directly connected to
+	 * at least one step, this will produce a complete graph.<br>
+	 * <br>
+	 * 
+	 * <pre>
+	 * {@code 
+	 * <SFC>
+	 *   ...
+	 * </SFC>}
+	 * </pre>
+	 * 
+	 * @param sfc the SFC Ecore model instance
+	 * @return an instance of PLCOpen xml sfc root
+	 */
 	public Body.SFC createSfc(SequentialFunctionChart sfc) {
-		this.sfc = sfc;
 		Body.SFC sfcBody = new Body.SFC();
 
-		// claim ids reserved by existing steps, transitions and actions to prevent id
-		// collision
 		idService = new IdService(sfc);
-
-		// before parsing the steps, convert all the transitions without their
-		// connections
 		sfcDomMapping.clear();
 
 		Optional<Step> initStep = sfc.getSteps().stream().filter(Step::getInitialStep).findFirst();
@@ -90,6 +115,25 @@ public class SfcExporter {
 		return sfcBody;
 	}
 
+	/**
+	 * Creates an instance of {@code Body.SFC.Step} including the connected
+	 * transitions and con-/divergences.<br>
+	 * <br>
+	 * 
+	 * <pre>
+	 * {@code 
+	 * <step localId="..." name="..." initialStep="...">
+	 *   <position x="0" y="0"/>
+	 *   <connectionPointIn>
+	 *     <connection refLocalId="..." formalParameter="sfc"/>
+	 *   </connectionPointIn>
+	 *   <connectionPointOut formalParameter="sfc"/>
+	 * </step>}
+	 * </pre>
+	 * 
+	 * @param step    the step Ecore model element
+	 * @param sfcBody the PLCOpen xml root for sfc
+	 */
 	private void processStep(Step step, Body.SFC sfcBody) {
 		// instantiate step and attach local properties
 		Body.SFC.Step stepInstance = (Body.SFC.Step) sfcDomMapping.get(step.getLocal_ID());
@@ -119,11 +163,13 @@ public class SfcExporter {
 
 	/**
 	 * Connects all incoming transitions with the step instance. The transitions and
-	 * all prerequisite elements are also added to the sfc body.
+	 * other prerequisite elements are created as needed and added to the sfc body.
+	 * Note that new transitions will not be completed.
+	 * Only after both steps around it are processed, the transition will be complete.<br>
 	 * 
-	 * @param step
-	 * @param sfcBody
-	 * @param stepInstance
+	 * @param step         the step Ecore model element
+	 * @param sfcBody      the PLCOpen xml root for sfc
+	 * @param stepInstance the step in PLCOpen format
 	 */
 	private void handleIncomingReferences(Step step, Body.SFC sfcBody, Body.SFC.Step stepInstance) {
 		if (step.getIncomingTransitions().size() == 1) {
@@ -182,13 +228,14 @@ public class SfcExporter {
 	}
 
 	/**
-	 * Connects all outgoing connections with the step instance. The newly
-	 * encountered transitions are created on-the-fly and added to the xml dom
-	 * mapping
+	 * Connects all outgoing transitions with the step instance. The transitions and
+	 * other prerequisite elements are created as needed and added to the sfc body.
+	 * Note that new transitions will not be completed in this method.
+	 * Only after both steps around it are processed, the transition will be complete.<br>
 	 * 
-	 * @param step
-	 * @param sfcBody
-	 * @param stepInstance
+	 * @param step         the step ecore model element
+	 * @param sfcBody      the xml root for sfc
+	 * @param stepInstance the step in PLCOpen format
 	 */
 	private void handleOutgoingReferences(Step step, Body.SFC sfcBody, Body.SFC.Step stepInstance) {
 		// only handle forward references - we also do not handle simultaneous
@@ -259,14 +306,30 @@ public class SfcExporter {
 
 	/**
 	 * Creates an independent transition without connections to other
-	 * con-/divergences or steps (excluding jumps as they are simplified in the sfc
-	 * ecore model). If the transition holds a condition, a input variable in an SFC
-	 * network, an inVar element is added to the <i>sfcBody</i>.
+	 * con-/divergences or steps (excluding jumps as they are part of the SFC Ecore
+	 * model). If the transition holds a condition, an input variable in an SFC
+	 * network, an inVar element is added to the <i>sfcBody</i>. <br>
+	 * <br>
+	 * 
+	 * <pre>
+	 * {@code 
+	 * <transition localId="...">
+	 *   <position x="0" y="0"/>
+	 *   <connectionPointIn>
+	 *     <connection refLocalId="..." formalParameter="sfc"/>
+	 *   </connectionPointIn>
+	 *   <condition>
+	 *     <connectionPointIn>
+	 *       <connection refLocalId="..."/>
+	 *     </connectionPointIn>
+	 *   </condition>
+	 * </transition>}
+	 * </pre>
 	 * 
 	 * @param transition the ecore model transition
 	 * @param sfcBody    the xml root for sfc
 	 */
-	public Body.SFC.Transition createTransition(Transition transition, Body.SFC sfcBody) {
+	private Body.SFC.Transition createTransition(Transition transition, Body.SFC sfcBody) {
 		// check for an already created transition with the same id
 		Body.SFC.Transition predecessorTransitionInstance = (Body.SFC.Transition) sfcDomMapping
 				.get(transition.getLocal_ID());
@@ -295,9 +358,6 @@ public class SfcExporter {
 			transitionInstance.setCondition(condition);
 		}
 
-		// TODO: jump step part needs to be rewritten in order to support convergence
-		// handling!!!
-
 		// we try to maintain the original order by placing the transition between its
 		// "inVariable" and "jumpStep" (if available)
 		if (transition.isIsJump()) {
@@ -309,15 +369,11 @@ public class SfcExporter {
 			// new one
 			Step jumpTarget = transition.getTargetStep().get(0);
 			JumpStep jumpStep = findJumpStep(transition, sfcBody).orElseGet(() -> createJumpStep(jumpTarget.getName()));
-			// TODO: "findJumpStep" considers jump steps with the same target to be equal
-			// --> change it
 
 			Connection jumpConn = new Connection();
 			jumpConn.setRefLocalId(toLocalId(transition.getLocal_ID()));
 			jumpStep.getConnectionPointIn().getConnection().add(jumpConn);
 
-			// the ecore model does not express jump steps as steps, it marks the
-			// transitions
 			sfcBody.getCommentOrErrorOrConnector().add(transitionInstance);
 			sfcBody.getCommentOrErrorOrConnector().add(jumpStep);
 		}
@@ -328,7 +384,21 @@ public class SfcExporter {
 		return transitionInstance;
 	}
 
-	public Body.SFC.InVariable createInVariable(String expression) {
+	/**
+	 * 
+	 * <pre>
+	 * {@code 
+	 * <inVariable localId="...">
+	 *   <position x="0" y="0"/>
+	 *   <connectionPointOut/>
+	 *   <expression>...</expression>
+	 * </inVariable>}
+	 * </pre>
+	 * 
+	 * @param expression
+	 * @return
+	 */
+	private Body.SFC.InVariable createInVariable(String expression) {
 		Body.SFC.InVariable inVarInstance = new Body.SFC.InVariable();
 		inVarInstance.setLocalId(idService.claimId());
 		inVarInstance.setPosition(createPosition(DEFAULT_POS_X, DEFAULT_POS_Y));
@@ -384,7 +454,7 @@ public class SfcExporter {
 	 * 
 	 * @param includeParameterFlag
 	 * @param refLocalIds
-	 * @return
+	 * @return a set of {@code <connectionPointIn>...</connectionPointIn>}
 	 */
 	private List<Body.SFC.SelectionConvergence.ConnectionPointIn> createConvergenceConnections(
 			boolean includeParameterFlag, int... refLocalIds) {
@@ -429,8 +499,7 @@ public class SfcExporter {
 	}
 
 	/**
-	 * Converts an {@link AbstractAction} back to an instance of
-	 * {@code <action>...</action>}.
+	 * Converts an {@link AbstractAction} back to an {@link Body.SFC.ActionBlock.Action}.
 	 * 
 	 * @param action action subject to conversion
 	 * @return {@code <action>...</action>}
@@ -467,14 +536,19 @@ public class SfcExporter {
 				}
 				actionInstance.setReference(refActionInstance);
 			} else {
-				throw new RuntimeException(String
-						.format("No POU can be found for the complex action's reference on %s.", pouAction.getName()));
+				throw new RuntimeException("The complex action has no reference on a POU action.");
 			}
 		}
 
 		return actionInstance;
 	}
 
+	/**
+	 * Creates an instance of {@link Body.SFC.JumpStep}.
+	 * 
+	 * @param targetName the target step name
+	 * @return {@code <jumpStep>...</jumpStep>}
+	 */
 	private JumpStep createJumpStep(String targetName) {
 		JumpStep jumpStep = new JumpStep();
 		jumpStep.setLocalId(idService.claimId());
@@ -486,6 +560,13 @@ public class SfcExporter {
 		return jumpStep;
 	}
 
+	/**
+	 * Creates an instance of {@link Position}.
+	 * 
+	 * @param x 
+	 * @param y 
+	 * @return {@code <position>...</position>}
+	 */
 	private Position createPosition(int x, int y) {
 		Position pos = new Position();
 		pos.setX(BigDecimal.valueOf(x));
@@ -518,6 +599,11 @@ public class SfcExporter {
 		return BigInteger.valueOf(n);
 	}
 
+	/**
+	 * Provides ids on request. The provided ids start at 0 and are restricted by the ids already reserved in an SFC.
+	 * 
+	 * @author Oliver Urbaniak
+	 */
 	private class IdService {
 		private int curId = 0;
 		private Set<Integer> reservedIds = new TreeSet<>();
