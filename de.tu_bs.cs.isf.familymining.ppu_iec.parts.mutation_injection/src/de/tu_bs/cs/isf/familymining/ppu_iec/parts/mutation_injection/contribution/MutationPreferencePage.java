@@ -41,23 +41,23 @@ public class MutationPreferencePage implements IPreferencePage {
 		createKeyValuePairView("Number of Mutations per Run", page, numberMutationsNode);
 		createMetricSelection(page);
 	}
-	
+
 	private Group createMetricSelection(Composite parent) {
 		Group group = new Group(parent, SWT.NONE);
-		group.setLayout(new GridLayout(1,false));
-		
-		group.setLayoutData(new GridData(SWT.FILL,SWT.CENTER,true,false));
+		group.setLayout(new GridLayout(1, false));
+
+		group.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		group.setText("select metrics for the evaluation");
-		
+
 		firstMetric = PreferencesUtil.getValueWithDefault(MutationST.BUNDLE_NAME, MutationST.FIRST_METRIC_KEY, "");
-		new FileGroup(group, SWT.NONE, firstMetric,"first metric: ");
-		
+		new FileGroup(group, SWT.NONE, firstMetric, "first metric: ");
+
 		secondMetric = PreferencesUtil.getValueWithDefault(MutationST.BUNDLE_NAME, MutationST.SECOND_METRIC_KEY, "");
 		new FileGroup(group, SWT.NONE, secondMetric, "second metric: ");
 
 		return group;
 	}
-	
+
 	private void createKeyValuePairView(String label, Composite page, KeyValueNode keyValue) {
 		Group grp = new Group(page, SWT.NONE);
 		grp.setLayout(new GridLayout(2, false));

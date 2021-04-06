@@ -74,8 +74,7 @@ public class MutationEngine {
 
 		// prepare result structure
 		EvaluationResult evalResult = new EvaluationResult();
-		int runs = PreferencesUtil.getValueWithDefault(MutationST.BUNDLE_NAME, MutationST.NUMBER_RUNS_PREF, 1)
-				.getIntValue();
+		int runs = PreferencesUtil.getValueWithDefault(MutationST.BUNDLE_NAME, MutationST.NUMBER_RUNS_PREF, 1).getIntValue();
 
 		// load metric container
 		List<MetricContainer> metrics = loadMetrics();
