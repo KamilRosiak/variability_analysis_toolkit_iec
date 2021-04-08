@@ -42,11 +42,11 @@ public class SFC_StepInTransitionAttr extends AbstractSFCImplAttribute{
 
 		//create iterator 
 		Iterator<Transition> sourceIterator = sourceInTransitions.iterator();
-		Iterator<Transition> targetIterator = targetInTransitions.iterator();
 		
 		int matchedTransitions = 0;
 		while(sourceIterator.hasNext()) {
 			Transition sourceTransition = sourceIterator.next();
+			Iterator<Transition> targetIterator = targetInTransitions.iterator();
 			while(targetIterator.hasNext()) {
 				Transition targetTransition = targetIterator.next();
 				if(compareCondition(sourceTransition.getCondition(), targetTransition.getCondition()) 

@@ -148,7 +148,7 @@ public abstract class ScenarioTest {
 		SimpleAction simpleAction = sfcFactory.createSimpleAction();
 		simpleAction.setLocalId(localId);
 		simpleAction.setQualifier(stepQualifier);
-		simpleAction.setActionVariable(variable);
+		simpleAction.setCondition(variable);
 		return simpleAction;
 	}
 }

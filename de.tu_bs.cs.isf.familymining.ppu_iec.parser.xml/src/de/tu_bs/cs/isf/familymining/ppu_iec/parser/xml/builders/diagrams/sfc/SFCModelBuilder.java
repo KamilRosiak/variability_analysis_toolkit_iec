@@ -92,8 +92,6 @@ public class SFCModelBuilder implements IModelBuilder<SequentialFunctionChart> {
 			
 			if (SFCFillCallable == null) throw new NullPointerException("NodeCallable for SFCParser is null");
 			
-			
-			
 			SFCFillCallable.processNode(SFCNode);
 			
 			// post-process the transitions

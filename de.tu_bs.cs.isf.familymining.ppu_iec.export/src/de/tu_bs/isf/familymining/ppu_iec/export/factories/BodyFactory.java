@@ -10,6 +10,7 @@ import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.diagram.DiagramType;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.languageelement.LanguageElement;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.sequentialfunctionchart.SequentialFunctionChart;
 import de.tu_bs.cs.isf.familymining.ppu_iec.ppuIECmetaModel.structuredtext.StructuredText;
+import de.tu_bs.isf.familymining.ppu_iec.export.factories.sfc.SfcFactory;
 import de.tu_bs.isf.familymining.ppu_iec.export.xsd_objects.Body;
 
 /**

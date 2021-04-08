@@ -51,8 +51,8 @@ public class SFC_NamesOfActions extends AbstractSFCLangAttribute {
 			for (AbstractAction fa : firstActions) {
 				for (AbstractAction sa : secondActions) {
 					if (fa instanceof SimpleAction && sa instanceof SimpleAction)  {
-						Variable faVar = ((SimpleAction) fa).getActionVariable();
-						Variable saVar = ((SimpleAction) sa).getActionVariable();
+						Variable faVar = ((SimpleAction) fa).getCondition();
+						Variable saVar = ((SimpleAction) sa).getCondition();
 						if (faVar.getName().equals(saVar.getName())) {
 							matches++;
 							break;

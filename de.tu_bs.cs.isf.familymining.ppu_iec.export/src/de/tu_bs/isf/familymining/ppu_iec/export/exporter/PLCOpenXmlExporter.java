@@ -27,8 +27,7 @@ public class PLCOpenXmlExporter {
 	 */
 	@Inject
 	public ProjectFactory projectFactory;
-	
-	
+
 	/**
 	 * Exports selected family model elements to PLCOpenXml.
 	 * @param selection Selected family model elements.

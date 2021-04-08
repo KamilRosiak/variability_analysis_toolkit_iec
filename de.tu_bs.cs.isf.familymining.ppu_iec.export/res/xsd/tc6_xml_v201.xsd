@@ -960,7 +960,7 @@ Specifies if the processor should try to preserve the additional data element, d
 									<xsd:element name="addData" type="ppx:addData" minOccurs="0"/>
 									<xsd:element name="documentation" type="ppx:formattedText" minOccurs="0"/>
 								</xsd:sequence>
-								<xsd:attribute name="localId" type="xsd:unsignedLong" use="required"/>
+								<xsd:attribute name="localId" type="xsd:unsicognedLong" use="required"/>
 								<xsd:attribute name="qualifier" use="optional" default="N">
 									<xsd:simpleType>
 										<xsd:restriction base="xsd:NMTOKEN">
@@ -1246,9 +1246,9 @@ Specifies if the processor should try to preserve the additional data element, d
 					</xsd:sequence>
 					<xsd:attribute name="localId" type="xsd:unsignedLong" use="required"/>
 					<xsd:attribute name="height" type="xsd:decimal" use="optional"/>
-					<xsd:attribute name="width" type="xsd:decimal" use="optional"/>
-					<xsd:attribute name="executionOrderId" type="xsd:unsignedLong" use="optional"/>
-					<xsd:attribute name="negated" type="xsd:boolean" use="optional" default="false"/>
+					<xsd:attribute name="width" type="xsd:decimal" use="optional"/>
+                    <xsd:attribute name="executionOrderId" type="xsd:unsignedLong" use="optional" />
+                    <xsd:attribute name="negated" type="xsd:boolean" use="optional" default="false"/>
 					<xsd:attribute name="edge" type="ppx:edgeModifierType" use="optional" default="none"/>
 					<xsd:attribute name="storage" type="ppx:storageModifierType" use="optional" default="none"/>
 					<xsd:attribute name="globalId" type="xsd:ID" use="optional"/>

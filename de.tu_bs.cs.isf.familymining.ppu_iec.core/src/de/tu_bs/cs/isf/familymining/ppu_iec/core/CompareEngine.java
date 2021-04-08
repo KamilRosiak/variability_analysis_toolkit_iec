@@ -826,13 +826,22 @@ public class CompareEngine implements Runnable {
 				if(sourceAction instanceof SimpleAction && targetAction instanceof SimpleAction) {
 					SimpleAction simpleSource = (SimpleAction)sourceAction;
 					SimpleAction simpleTarget = (SimpleAction)targetAction;
-					actionOption.addContainer(compareVariables(simpleSource.getActionVariable(), simpleTarget.getActionVariable(), "ACTION_VAR"));
+					actionOption.addContainer(compareVariables(simpleSource.getCondition(), simpleTarget.getCondition(), "ACTION_VAR"));
 	
 				} else if (sourceAction instanceof ComplexAction && targetAction instanceof ComplexAction) {
-					Action complexSource = ((ComplexAction)sourceAction).getPouAction();
-					Action complexTarget = ((ComplexAction)targetAction).getPouAction();
-					if(complexSource != null && complexTarget != null) {
-						actionOption.addContainer(compareActions(complexSource, complexTarget, metric));
+					ComplexAction complexSource = (ComplexAction) sourceAction;
+					ComplexAction complexTarget = (ComplexAction) targetAction;
+					
+					Action complexSourceAction = complexSource.getPouAction();
+					Action complexTargetAction = complexTarget.getPouAction();
+					if(complexSourceAction != null && complexTargetAction != null) {
+						actionOption.addContainer(compareActions(complexSourceAction, complexTargetAction, metric));
+					}
+					
+					Variable complexSourceVariable = complexSource.getPouVariable();
+					Variable complexTargetVariable = complexTarget.getPouVariable();
+					if (complexSourceVariable != null && complexTargetVariable != null) {
+						actionOption.addContainer(compareVariables(complexSourceVariable, complexTargetVariable, "ACTION_VAR"));						
 					}
 				}	
 			}
